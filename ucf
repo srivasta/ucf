@@ -35,31 +35,6 @@
 # make sure we exit on error
 set -e
 
-# Is debconf already running? Kinda tricky, because it will be after the
-# confmodule is sourced, so only test before that.
-if [ -z "$DEBCONF_ALREADY_RUNNING" ]; then
-	if [ "$DEBIAN_HAS_FRONTEND" ]; then
-		DEBCONF_ALREADY_RUNNING='YES'
-	else
-		DEBCONF_ALREADY_RUNNING='NO'
-	fi
-fi
-export DEBCONF_ALREADY_RUNNING
-
-# Start up debconf or at least get the db_* commands available.
-if [ -e /usr/share/debconf/confmodule ]; then
-	. /usr/share/debconf/confmodule
-	# Only set the title if debconf was not already running.
-	# If it was running, then we do not want to clobber the
-	# title used for configuring the whole package with debconf.
-	if [ "$DEBCONF_ALREADY_RUNNING" = 'NO' ]; then
-		if ! db_settitle ucf/title 2>/dev/null; then
-			# Older debconf that does not support that command.
-			db_title "Modified configuration file"
-		fi
-	fi
-fi
-	
 # set the version and revision
 progname="`basename \"$0\"`"
 pversion='$Revision: 1.26 $'
@@ -171,8 +146,6 @@ purge_md5sum () {
     fi
 }
 
-
-
 replace_md5sum () {
     for i in $(/usr/bin/seq 6 -1 0); do
 	if [ -e "${statedir}/hashfile.${i}" ]; then
@@ -221,8 +194,7 @@ replace_md5sum () {
     if [ "X$THREEWAY" != "X" ]; then
 	$action cp -f "$orig_new_file" "$statedir/cache/$cached_file"
     fi
-    cp -f "$orig_new_file" $dest_file.dpkg-dist
-
+    # cp -f "$orig_new_file" "$dest_file.dpkg-dist"
 }
 
 replace_conf_file () {
@@ -259,17 +231,12 @@ replace_conf_file () {
 # Long term variables#
 #
 docmd='YES'
-action='withecho'
+#action='withecho'
+action=
 DEBUG=0
 VERBOSE=''
 statedir='/var/lib/ucf';
 THREEWAY=
-
-if [ "$DEBCONF_ALREADY_RUNNING" = 'YES' ]; then
-	DEBCONF_OK='NO'
-else
-	DEBCONF_OK='YES'
-fi
 
 # Note that we use `"$@"' to let each command-line parameter expand to a
 # separate word. The quotes around `$@' are essential!
@@ -311,21 +278,6 @@ while true ; do
     esac
 done
 
-if [ "$DEBCONF_ALREADY_RUNNING" ] && [ "$DEBCONF_OK" = NO ]; then
-	# Commented out for now, uncomment after a while to begin nagging
-	# maintainers to fix their scripts.
-	#cat \
-<<END
-*** WARNING: ucf was run from a maintainer script that uses debconf, but
-             the script did not pass --debconf-ok to ucf. The maintainer
-             script should be fixed to not stop debconf before calling ucf,
-             and pass it this parameter. For now, ucf will revert to using
-             old-style, non-debconf prompting. Ugh!
-
-             Please inform the package maintainer about this problem.
-END
-fi
-
 if [ "X$PURGE" = "XYES" ]; then
     if [ $# != 1 ]; then
 	echo >&2 "*** ERROR: Need exactly one argument when purging, got $#";
@@ -366,11 +318,27 @@ elif [ ! "x$conf_source_dir" = "x" ]; then
     setq source_dir "$conf_source_dir" "The Source directory"
 else
     if [ "X$new_file" != "X" ]; then
-	setq source_dir $(dirname $new_file) "The Source directory"
+	setq source_dir $(dirname "$new_file") "The Source directory"
     else
 	setq source_dir /tmp
     fi
     
+fi
+
+if [ "X$PAGER" != "X" ]; then
+    my_pager=$(type -a -p $PAGER);
+elif [ -s /usr/bin/pager ]; then
+    my_pager=$(type -a -p $(readlink /etc/alternatives/pager))
+elif [ -e /bin/more ]; then
+    my_pager=/bin/more
+else
+    my_pager=
+fi
+
+if [ "X$my_pager" = "X" ]; then
+    STOP=YES
+elif [ "X$my_pager" = "X/bin/more" ]; then
+    STOP=YES
 fi
 
 # Command line, env variable, config file, or default
@@ -500,6 +468,59 @@ newsum=$(md5sum "$new_file" | awk '{print $1}')
 
 ######################################################################
 ########                                                     #########
+########                  DebConf stuff                      #########
+########                                                     #########
+######################################################################
+
+# Is debconf already running? Kinda tricky, because it will be after the
+# confmodule is sourced, so only test before that.
+if [ -z "$DEBCONF_ALREADY_RUNNING" ]; then
+	if [ "$DEBIAN_HAS_FRONTEND" ]; then
+		DEBCONF_ALREADY_RUNNING='YES'
+	else
+		DEBCONF_ALREADY_RUNNING='NO'
+	fi
+fi
+export DEBCONF_ALREADY_RUNNING
+
+# Start up debconf or at least get the db_* commands available.
+if [ -e /usr/share/debconf/confmodule ]; then
+	. /usr/share/debconf/confmodule
+	# Only set the title if debconf was not already running.
+	# If it was running, then we do not want to clobber the
+	# title used for configuring the whole package with debconf.
+	if [ "$DEBCONF_ALREADY_RUNNING" = 'NO' ]; then
+		if ! db_settitle ucf/title 2>/dev/null; then
+			# Older debconf that does not support that command.
+			db_title "Modified configuration file"
+		fi
+	fi
+fi
+	
+
+if [ "$DEBCONF_ALREADY_RUNNING" = 'YES' ]; then
+	DEBCONF_OK='NO'
+else
+	DEBCONF_OK='YES'
+fi
+
+if [ "$DEBCONF_ALREADY_RUNNING" ] && [ "$DEBCONF_OK" = NO ]; then
+	# Commented out for now, uncomment after a while to begin nagging
+	# maintainers to fix their scripts.
+	#cat \
+<<END
+*** WARNING: ucf was run from a maintainer script that uses debconf, but
+             the script did not pass --debconf-ok to ucf. The maintainer
+             script should be fixed to not stop debconf before calling ucf,
+             and pass it this parameter. For now, ucf will revert to using
+             old-style, non-debconf prompting. Ugh!
+
+             Please inform the package maintainer about this problem.
+END
+fi
+
+######################################################################
+########                                                     #########
 ########               Do the replacement                    #########
 ########                                                     #########
 ######################################################################
@@ -526,6 +547,7 @@ if [ -e "$dest_file" ]; then
 			    exit 0;
 			else
 			    replace_md5sum;
+			    cp -f "$orig_new_file" "$dest_file.dpkg-dist"
 			    exit 0;
 			fi
 		    fi
@@ -541,6 +563,7 @@ if [ -e "$dest_file" ]; then
 			exit 0;
 		    else
 			replace_md5sum;
+			cp -f "$orig_new_file" "$dest_file.dpkg-dist"
 			exit 0;
 		    fi
 		fi
@@ -631,6 +654,7 @@ if [ "$destsum" = "$lastsum" ]; then
 	exit 0;
     else
 	replace_md5sum;
+	cp -f "$orig_new_file" "$dest_file.dpkg-dist"
 	exit 0;
     fi
 else
@@ -644,6 +668,7 @@ else
     fi
     if [ "X$force_conffold" != "X" ]; then
 	replace_md5sum;
+	cp -f "$orig_new_file" "$dest_file.dpkg-dist"
 	exit 0;
     fi
 #      c: If the destination file is the same as the new maintianer provided one,
@@ -723,6 +748,10 @@ EOPEND
 		;;
 	    "$choice_diff"|D|d)
 		( diff -uBbw "$dest_file" "$new_file" | sensible-pager ) >/dev/tty </dev/tty
+		if [ "X$STOP" != "X" ]; then
+		    echo >&2 "Please hit enter to continue";
+		    read -e ANSWER </dev/tty
+		fi
 		;;
 	    "$choice_diff_threeway"|3|t|T)
 		if [ -e "$statedir/cache/$cached_file" \
@@ -730,8 +759,16 @@ EOPEND
 		    ( diff3 -L Current -L Older -L New -A \
 			"$dest_file" "$statedir/cache/$cached_file" \
 			"$new_file" | sensible-pager ) >/dev/tty </dev/tty
+		    if [ "X$STOP" != "X" ]; then
+			echo >&2 "Please hit enter to continue";
+			read -e ANSWER </dev/tty
+		    fi
 		else 
 		    ( diff -uBbw "$dest_file" "$new_file" | sensible-pager ) >/dev/tty >/dev/tty
+		    if [ "X$STOP" != "X" ]; then
+			echo >&2 "Please hit enter to continue";
+			read -e ANSWER </dev/tty
+		    fi
 		fi
 		;;
 	    "$choice_merge_threeway"|M|m)
@@ -764,6 +801,7 @@ EOPEND
 		if [ -e "$dest_file" ]; then
 		    replace_md5sum;
 		fi
+		cp -f "$orig_new_file" "$dest_file.dpkg-dist"
 		exit 0;
 		;;
 	    *)
