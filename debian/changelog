@@ -1,3 +1,9 @@
+ucf (0.09) unstable; urgency=low
+
+  * Umm. use egrep when you mean egrep.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sun, 10 Nov 2002 22:57:57 -0600
+
 ucf (0.08) unstable; urgency=high
 
   * Add a --purge option to ucf, to remove all hints about a configuration
