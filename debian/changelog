@@ -1,3 +1,9 @@
+ucf (0.07) unstable; urgency=low
+
+  * Fix a few missing grep trigger set -e failures.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Wed,  6 Mar 2002 01:14:57 -0600
+
 ucf (0.06) unstable; urgency=high
 
   * Added the ionformational script lcf and the associated man page.
