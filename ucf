@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.19 $'
+pversion='$Revision: 1.20 $'
 
 ######################################################################
 ########                                                     #########
@@ -88,7 +88,7 @@ By default, the directory the new_file lives in is assumed to be the src-dir,
 which is where we look for any historical md5sums.
 
 END
-	;
+	
 }
 
 
@@ -571,7 +571,7 @@ Configuration file \`$dest_file'
       Z     : start a new shell to examine the situation
  The default action is to keep your current version.
 EOPRMT
-	;
+	
 	echo -n >&2 "*** " $(basename "$dest_file") \
 	    " (Y/I/N/O/D/Z) [default=N] ?"
 	read -e ANSWER;
