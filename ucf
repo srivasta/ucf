@@ -447,7 +447,7 @@ if [ -e "$dest_file" ]; then
 #         file in question, we should look and see if the currently
 #         installed file matches any of the old md5sums; in which case
 #         it can be silently replaced.
-	if [ -d "$old_mdsum_dir" -o -f "$old_md5sum_file" ]; then
+	if [ -d "$old_mdsum_dir" -o -f "$old_mdsum_file" ]; then
 	    if [ -d "$old_mdsum_dir"  ]; then
 		for file in ${old_mdsum_dir}/*; do
 		    oldsum=$(cat "$file"  | awk '{print $1}');
@@ -464,8 +464,8 @@ if [ -e "$dest_file" ]; then
 			fi
 		    fi
 		done
-	    elif [ -f "$old_md5sum_file" ]; then
-		oldsum=$(egrep "^${destsum}" "$old_md5sum_file")
+	    elif [ -f "$old_mdsum_file" ]; then
+		oldsum=$(egrep "^${destsum}" "$old_mdsum_file")
 		if [ "X$oldsum" != "X" ]; then
 #                    Bingo
 		    if [ "X$force_conffold" = "X" ]; then
@@ -498,8 +498,8 @@ if [ -e "$dest_file" ]; then
 			awk '{print $1;}')
 		    do_replace_md5sum=1;
 		fi
-	    elif [ -f "$old_md5sum_file" ]; then
-		oldsum=$(egrep "[[:space:]]default$" "$old_md5sum_file" | \
+	    elif [ -f "$old_mdsum_file" ]; then
+		oldsum=$(egrep "[[:space:]]default$" "$old_mdsum_file" | \
 		    awk '{print $1;}')
 		if [ "X$oldsum" != "X" ]; then
 #                    Bingo

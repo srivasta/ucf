@@ -212,7 +212,7 @@ EOF
     fi
 fi
 
-if [ -d "$old_mdsum_dir" -o -f "$old_md5sum_file" ]; then
+if [ -d "$old_mdsum_dir" -o -f "$old_mdsum_file" ]; then
     if [ -d "$old_mdsum_dir"  ]; then
 	for file in ${old_mdsum_dir}/*; do
 	    oldsum=$(cat "$file"  | awk '{print $1}');
@@ -222,11 +222,11 @@ if [ -d "$old_mdsum_dir" -o -f "$old_md5sum_file" ]; then
 		exit 0;
 	    fi
 	done
-    elif [ -f "$old_md5sum_file" ]; then
-	oldsum=$(grep "^${destsum}" "$old_md5sum_file")
+    elif [ -f "$old_mdsum_file" ]; then
+	oldsum=$(grep "^${destsum}" "$old_mdsum_file")
 	if [ "X$oldsum" != "X" ]; then
 #        Bingo
-	    echo  $(grep "^${destsum}" "$old_md5sum_file" | awk '{print $2}')
+	    echo  $(grep "^${destsum}" "$old_mdsum_file" | awk '{print $2}')
 	    exit 0;
 	fi
     fi
@@ -245,8 +245,8 @@ if [ -d "$old_mdsum_dir" -o -f "$old_md5sum_file" ]; then
 	    echo default;
 	    exit 0;
 	fi
-    elif [ -f "$old_md5sum_file" ]; then
-	oldsum=$(grep "[[:space:]]default$" "$old_md5sum_file" | \
+    elif [ -f "$old_mdsum_file" ]; then
+	oldsum=$(grep "[[:space:]]default$" "$old_mdsum_file" | \
 	    awk '{print $1;}')
 	if [ "X$oldsum" != "X" ]; then
 #                    Bingo
