@@ -35,6 +35,63 @@
 # make sure we exit on error
 set -e
 
+
+######################################################################
+########                                                     #########
+########                  DebConf stuff                      #########
+########                                                     #########
+######################################################################
+
+# Is debconf already running? Kinda tricky, because it will be after the
+# confmodule is sourced, so only test before that.
+if [ -z "$DEBCONF_ALREADY_RUNNING" ]; then
+	if [ "$DEBIAN_HAS_FRONTEND" ]; then
+		DEBCONF_ALREADY_RUNNING='YES'
+	else
+		DEBCONF_ALREADY_RUNNING='NO'
+	fi
+fi
+export DEBCONF_ALREADY_RUNNING
+
+# Start up debconf or at least get the db_* commands available.
+if [ -e /usr/share/debconf/confmodule ]; then
+	. /usr/share/debconf/confmodule
+	# Only set the title if debconf was not already running.
+	# If it was running, then we do not want to clobber the
+	# title used for configuring the whole package with debconf.
+	if [ "$DEBCONF_ALREADY_RUNNING" = 'NO' ]; then
+		if ! db_settitle ucf/title 2>/dev/null; then
+			# Older debconf that does not support that command.
+			db_title "Modified configuration file"
+		fi
+	fi
+fi
+	
+
+if [ -z "$DEBCONF_OK" ]; then
+    if [ "$DEBCONF_ALREADY_RUNNING" = 'YES' ]; then
+	DEBCONF_OK='NO'
+    else
+	DEBCONF_OK='YES'
+    fi
+fi
+
+if [ "$DEBCONF_ALREADY_RUNNING" ] && [ "$DEBCONF_OK" = NO ]; then
+	# Commented out for now, uncomment after a while to begin nagging
+	# maintainers to fix their scripts.
+	#cat \
+<<END
+*** WARNING: ucf was run from a maintainer script that uses debconf, but
+             the script did not pass --debconf-ok to ucf. The maintainer
+             script should be fixed to not stop debconf before calling ucf,
+             and pass it this parameter. For now, ucf will revert to using
+             old-style, non-debconf prompting. Ugh!
+
+             Please inform the package maintainer about this problem.
+END
+fi
+
+
 # set the version and revision
 progname="`basename \"$0\"`"
 pversion='$Revision: 1.26 $'
@@ -484,60 +541,6 @@ EOF
 fi
 newsum=$(md5sum "$new_file" | awk '{print $1}')
 
-######################################################################
-########                                                     #########
-########                  DebConf stuff                      #########
-########                                                     #########
-######################################################################
-
-# Is debconf already running? Kinda tricky, because it will be after the
-# confmodule is sourced, so only test before that.
-if [ -z "$DEBCONF_ALREADY_RUNNING" ]; then
-	if [ "$DEBIAN_HAS_FRONTEND" ]; then
-		DEBCONF_ALREADY_RUNNING='YES'
-	else
-		DEBCONF_ALREADY_RUNNING='NO'
-	fi
-fi
-export DEBCONF_ALREADY_RUNNING
-
-# Start up debconf or at least get the db_* commands available.
-if [ -e /usr/share/debconf/confmodule ]; then
-	. /usr/share/debconf/confmodule
-	# Only set the title if debconf was not already running.
-	# If it was running, then we do not want to clobber the
-	# title used for configuring the whole package with debconf.
-	if [ "$DEBCONF_ALREADY_RUNNING" = 'NO' ]; then
-		if ! db_settitle ucf/title 2>/dev/null; then
-			# Older debconf that does not support that command.
-			db_title "Modified configuration file"
-		fi
-	fi
-fi
-	
-
-if [ -z "$DEBCONF_OK" ]; then
-    if [ "$DEBCONF_ALREADY_RUNNING" = 'YES' ]; then
-	DEBCONF_OK='NO'
-    else
-	DEBCONF_OK='YES'
-    fi
-fi
-
-if [ "$DEBCONF_ALREADY_RUNNING" ] && [ "$DEBCONF_OK" = NO ]; then
-	# Commented out for now, uncomment after a while to begin nagging
-	# maintainers to fix their scripts.
-	#cat \
-<<END
-*** WARNING: ucf was run from a maintainer script that uses debconf, but
-             the script did not pass --debconf-ok to ucf. The maintainer
-             script should be fixed to not stop debconf before calling ucf,
-             and pass it this parameter. For now, ucf will revert to using
-             old-style, non-debconf prompting. Ugh!
-
-             Please inform the package maintainer about this problem.
-END
-fi
 
 ######################################################################
 ########                                                     #########

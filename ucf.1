@@ -129,7 +129,8 @@ Make the script be very verbose about setting internal variables.
 Set the source directory (historical md5sums are expected to live in
 files and sub directories of this directory) to foo. By default, the
 directory the new_file lives in is assumed to be the source
-directory. Setting this option settings in the environment variable
+directory. Setting this option overrides settings in the environment
+variable
 .B UCF_SOURCE_DIR,
 and in the  configuration  file variable
 .B conf_source_dir.
@@ -137,7 +138,7 @@ and in the  configuration  file variable
 .B "\-\-sum\-file  foo"
 Force the historical md5sums to be read from this file, rather than
 defaulting to living in the source directory.  Setting this option
-settings in the environment variable
+overrides settings in the environment variable
 .B UCF_OLD_MDSUM_FILE,
 and in the  configuration  file variable
 .B conf_old_mdsum_file.
@@ -161,19 +162,20 @@ which was the first version released into unstable and ultimately
 The version of ucf in woody does not contain this option.
 .TP
 .B "\-\-debconf\-ok"
-Indicate that it is ok for uct to use an already running debconf
-instance for prompting (it has awlays been ok to use ucf when debconf
-is not running -- it shall invoke debconf as needed). Since
-historically maintainer scripts that used debconf and also ucf had to
-disable/cripple debconf before running ucf (since ucf did not prompt
-with debconf, and needed stdio available), ucf must be cautious when
-called from a maintainer script that uses debconf. This option lets it
-know that the maintainer script has not told debconf to stop, or
-redirected its stdio from debconf, or anything of the sort -- and thus
-it is safe to use debconf even when the script discoveres that debconf
-is running.  Packages that call ucf with this option should take care
-to depend on version 0.28 or higher of ucf (the first to support use
-this option).
+Indicate that it is ok for 
+.I ucf 
+to use an already running debconf instance for prompting (it has
+awlays been ok to use ucf when debconf is not running -- it shall
+invoke debconf as needed). Since historically maintainer scripts that
+used debconf and also ucf had to disable/cripple debconf before
+running ucf (since ucf did not prompt with debconf, and needed stdio
+available), ucf must be cautious when called from a maintainer script
+that uses debconf. This option lets it know that the maintainer script
+has not told debconf to stop, or redirected its stdio from debconf, or
+anything of the sort -- and thus it is safe to use debconf even when
+the script discoveres that debconf is running.  Packages that call ucf
+with this option should take care to depend on version 0.28 or higher
+of ucf (the first to support use this option).
 .SH USAGE
 The most common case usage is pretty simple: a single line invocation
 in the postinst on configure, and another single line in the postrm to
@@ -193,7 +195,7 @@ versions of this file contained.
 .PP
 The way to do this is to either create a file called
 .B <New file>.md5sum, 
-with one md5sum each line, (the file names you use are ignored, except
+with one md5sum on each line, (the file names you use are ignored, except
 for the entry named default), or create a directory, called
 .B <New file>.md5sum.d,
 which should contain any number of files, each containing a single
@@ -229,9 +231,9 @@ If the file
 or the directory
 .B <New file>.md5sum.d
 does not exist, or none of the md5sums match, we test the installed 
-.I <Destination>.
+.I <Destination>
 file to see whether it is the same as the 
-.I <New file>
+.I <New file>.
 If not, we ask the user whether they want us to replace the file.
 .PP
 An additional facility is also offered: optionally, ucf can store one
@@ -279,7 +281,7 @@ needed:
 .I /usr/share/foo/configuration
 .I /etc/foo.conf
 .PP 
-On purge, on should tell ucf to forget about the file (see detailed
+On purge, one should tell ucf to forget about the file (see detailed
 examples in /usr/share/doc/examples):
 .PP
 .B ucf
