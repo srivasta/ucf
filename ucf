@@ -60,7 +60,7 @@ setq() {
 	exit 1;
     else
 	if [ "x$VERBOSE" != "x" ]; then
-	    echo "$progname: $3 is $2";
+	    echo >&2 "$progname: $3 is $2";
 	fi
 	eval "$1=\"\$2\"";
     fi
@@ -204,7 +204,7 @@ replace_conf_file () {
     if [ -L "$dest_file" ]; then
 	real_file="$(readlink -nf $dest_file)"
 	if [ "x$real_file" = "x" ]; then
-	    echo "$dest_file is a broken symlink!"
+	    echo >&2 "$dest_file is a broken symlink!"
 	    $action rm -f "$dest_file";
 	    real_file="$dest_file"
 	fi
@@ -212,7 +212,9 @@ replace_conf_file () {
     if [ -e "$real_file" ]; then
 	if [ -z "$RETAIN_OLD" ]; then
 	    #echo "Saving  ${real_file}.dpkg-old,  in case."
-	    echo "Not saving ${real_file}, since it was unmodified"
+	    if [ "x$VERBOSE" != "x" ]; then
+		echo >&2 "Not saving ${real_file}, since it was unmodified"
+	    fi
 	else
 	    $action cp -f "${real_file}" "${real_file}.dpkg-old"
 	fi
@@ -274,7 +276,7 @@ while true ; do
        --three-way) THREEWAY=YES;                       shift   ;;
        --debconf-ok) DEBCONF_OK=YES;                    shift   ;;
 	--)  shift ;                                   break   ;;
-	*) echo "Internal error!" ; exit 1 ;;
+	*) echo >&2 "Internal error!" ; exit 1 ;;
     esac
 done
 
@@ -325,11 +327,11 @@ else
     
 fi
 
-if [ "X$PAGER" != "X" ]; then
+if [ "X$PAGER" != "X" -a type ] && type -a -p $PAGER >& /dev/null ; then
     my_pager=$(type -a -p $PAGER);
 elif [ -s /usr/bin/pager ]; then
     my_pager=$(type -a -p $(readlink /etc/alternatives/pager))
-elif [ -e /bin/more ]; then
+elif [ -x /bin/more ]; then
     my_pager=/bin/more
 else
     my_pager=
@@ -542,7 +544,7 @@ if [ -e "$dest_file" ]; then
 			if [ "X$force_conffold" = "X" ]; then
 #                           Bingo! replace, set the md5sum, and we are done 
 			    echo >&2 \
-			    "Replacing config file $dest_file with new version"
+				"Replacing config file $dest_file with new version"
 			    replace_conf_file;
 			    exit 0;
 			else
@@ -806,7 +808,7 @@ EOPEND
 		;;
 	    *)
 		if [ "$DEBCONF_OK" = "YES" ]; then
-			echo "Error: received an unknown string from debconf: '$RET'" >&2
+			echo "Error: unknown response from debconf:'$RET'" >&2
 			exit 1
 		else
 			echo
