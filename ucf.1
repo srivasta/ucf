@@ -4,9 +4,9 @@
 .\" Created On       : Fri Feb  1 11:17:32 2002
 .\" Created On Node  : glaurung.green-gryphon.com
 .\" Last Modified By : Manoj Srivastava
-.\" Last Modified On : Mon Apr 19 12:15:30 2004
+.\" Last Modified On : Tue Apr 20 15:10:30 2004
 .\" Last Machine Used: glaurung.internal.golden-gryphon.com
-.\" Update Count     : 40
+.\" Update Count     : 44
 .\" Status           : Unknown, Use with caution!
 .\" HISTORY          : 
 .\" Description      : 
@@ -93,7 +93,7 @@ time. Indeed, the transitioning facility is better than the one
 offered by 
 .B dpkg 
 while transitioning a file from a 
-.I non-conffile 
+.I non\-conffile 
 to 
 .I conffile 
 status. The second form in the SYNOPSIS above is for purging
@@ -101,19 +101,19 @@ information about the configuration file when the package is purged;
 and is critical for allowing smooth reinstallations.
 .SH OPTIONS
 .TP
-.B "-h, --help"
+.B "\-h, \-\-help"
 Print a short usage message
 .TP
-.B "-n, --no-action"
+.B "\-n, \-\-no\-action"
 Dry run. Print the actions that would be taken if the script is
 invoked, but take no action.
 .TP
-.B "-d [n], --debug [n]"
+.B "\-d [n], \-\-debug [n]"
 Set the debug level to the (optional) level
 .I n 
 (n defaults to 1). This turns on copious debugging information.
 .TP
-.B "-p,  --purge"
+.B "\-p, \-\-purge"
 Removes all vestiges of the file from the state hashfile. This is
 required to allow a package to be reinstalled after it is purged;
 since otherwise, the real configuration file is removed, but it
@@ -122,10 +122,10 @@ the md5sum of the new file matches that in the hashfile.  In short,
 remember to use this option in the postrm for every configuration file
 managed by ucf when the package is being purged.
 .TP
-.B "-v,  --verbose"
+.B "\-v, \-\-verbose"
 Make the script be very verbose about setting internal variables.
 .TP
-.B "-s foo, --src-dir  foo"
+.B "\-s foo, \-\-src\-dir  foo"
 Set the source directory (historical md5sums are expected to live in
 files and sub directories of this directory) to foo. By default, the
 directory the new_file lives in is assumed to be the source
@@ -134,7 +134,7 @@ directory. Setting this option settings in the environment variable
 and in the  configuration  file variable
 .B conf_source_dir.
 .TP
-.B "--sum_file  foo"
+.B "\-\-sum\-file  foo"
 Force the historical md5sums to be read from this file, rather than
 defaulting to living in the source directory.  Setting this option
 settings in the environment variable
@@ -142,7 +142,7 @@ settings in the environment variable
 and in the  configuration  file variable
 .B conf_old_mdsum_file.
 .TP
-.B "--three-way"
+.B "\-\-three\-way"
 This turns on the option, during installation, for the user to be
 offered a chance to see a merge of the changes between old maintainer
 version and the new maintainer version into the local copy of the
@@ -160,7 +160,7 @@ which was the first version released into unstable and ultimately
 .B Sarge.
 The version of ucf in woody does not contain this option.
 .TP
-.B "--debconf-ok"
+.B "\-\-debconf\-ok"
 Indicate that it is ok for uct to use an already running debconf instance
 for prompting. Since historically maintainer scripts that used debconf
 and also ucf had to disable/cripple debconf before running ucf (since ucf
@@ -279,33 +279,33 @@ On purge, on should tell ucf to forget about the file (see detailed
 examples in /usr/share/doc/examples):
 .PP
 .B ucf
-.I --purge
+.I \-\-purge
 .I /etc/foo.conf
 .PP
 The motivation for this script was to provide conffile like handling
 for start files for emacs lisp packages (for example,
-.I /etc/emacs21/site-start.d/50psgml-init.el
+.I /etc/emacs21/site\-start.d/50psgml\-init.el
 ) These start files are not
 shipped with the package, instead, they are installed during the
 post installation configuration phase by the script
-.I /usr/lib/emacsen-common/emacs-package-install $package_name.
+.I /usr/lib/emacsen\-common/emacs\-package\-install $package_name.
 .PP
 This script is meant to be invoked by the packages install script at
-.I /usr/lib/emacsen-common/packages/install/$package_name 
+.I /usr/lib/emacsen\-common/packages/install/$package_name 
 for each
 flavour of installed emacsen by calling it with the proper values of
 new file (
-.I /usr/share/emacs/site-lisp/<pkg>/<pkg>-init.el
+.I /usr/share/emacs/site\-lisp/<pkg>/<pkg\-init.el
 ), and dest file
 (
-.I /etc/emacs21/site-start.d/50<pkg>-init.el
+.I /etc/emacs21/site\-start.d/50<pkg\-init.el
 ), and it should do the rest.
 .SH "SEE ALSO"
 ucf.conf(5), diff3(1).
 The
 .B Debian
 Emacs policy, shipped with the package
-.I emacsen-common.
+.I emacsen\-common.
 .SH BUGS
 There are no bugs.  Any resemblance thereof is delirium. Really.
 .SH AUTHOR

@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Mon Apr 19 12:12:58 2004
+# Last Modified On : Tue Apr 20 15:03:08 2004
 # Last Machine Used: glaurung.internal.golden-gryphon.com
-# Update Count     : 172
+# Update Count     : 173
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -381,7 +381,7 @@ else
 fi
 
 if [ -n "$opt_old_mdsum_file" ]; then
-    setq old_mdsum_file "$opt_sum_file" "The md5sum is found here"
+    setq old_mdsum_file "$opt_old_mdsum_file" "The md5sum is found here"
 elif [ ! "x$UCF_OLD_MDSUM_FILE" = "x" ]; then
     setq old_mdsum_file "$UCF_OLD_MDSUM_FILE" "The md5sum is found here"
 elif [ ! "x$conf_old_mdsum_file" = "x" ]; then
