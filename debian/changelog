@@ -1,4 +1,4 @@
-ucf (0.04) unstable; urgency=low
+ucf (0.04) unstable; urgency=high
 
   * Hmm. Failed to replace the configuration file if the old file was a
     symbolic link to the new file (happened for gnus users). Thanks go to
