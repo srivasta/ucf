@@ -861,6 +861,7 @@ EOPEND
 		else 
 		    replace_conf_file;
 		fi
+                rm -f "$dest_file.dpkg-new" # don't need this around no mo'
                 exit 0
 		;;
 	    "$choice_shell"|Z|z)
