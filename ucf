@@ -32,13 +32,46 @@
 # (/etc/emacs21/site-stard.d/50<pkg>-init.el)), and it should do the rest.
 #
 
-
 # make sure we exit on error
 set -e
 
+# Is debconf already running? Kinda tricky, because it will be after the
+# confmodule is sourced, so only test before that.
+if [ -z "$DEBCONF_ALREADY_RUNNING" ]; then
+	if [ "$DEBIAN_HAS_FRONTEND" ]; then
+		DEBCONF_ALREADY_RUNNING='YES'
+	else
+		DEBCONF_ALREADY_RUNNING='NO'
+	fi
+fi
+export DEBCONF_ALREADY_RUNNING
+
+# Start up debconf or at least get the db_* commands available.
+if [ -e /usr/share/debconf/confmodule ]; then
+	. /usr/share/debconf/confmodule
+	# Only set the title if debconf was not already running.
+	# If it was running, then we do not want to clobber the
+	# title used for configuring the whole package with debconf.
+	if [ "$DEBCONF_ALREADY_RUNNING" = 'NO' ]; then
+		if ! db_settitle ucf/title 2>/dev/null; then
+			# Older debconf that does not support that command.
+			db_title "Modified configuration file"
+		fi
+	fi
+fi
+	
 # set the version and revision
 progname="`basename \"$0\"`"
 pversion='$Revision: 1.26 $'
+
+# These are strings that must match the untranslated choices
+# of the debconf question.
+choice_install_new="install the package maintainer's version"
+choice_keep_current="keep your currently-installed version"
+choice_diff="show the differences between the versions"
+choice_diff_threeway="show a 3 way difference between available versions of the file"
+choice_merge_threeway="do a 3 way merge between available versions of the file [Very Experimental]"
+choice_shell="start a new shell to examine the situation"
 
 ######################################################################
 ########                                                     #########
@@ -83,6 +116,8 @@ Options:
                              configuration file. )
              --state-dir bar Set the state directory to bar instead of the
                              default '/var/lib/ucf'. Used mostly for testing.
+             --debconf-ok    Indicate that it is ok for uct to use an already
+                             running debconf instance for prompting.
 Usage: $progname  -p  destination
      -p,     --purge         Remove any reference to destination from records
 
@@ -222,11 +257,17 @@ VERBOSE=''
 statedir='/var/lib/ucf';
 THREEWAY=
 
+if [ "$DEBCONF_ALREADY_RUNNING" = 'YES' ]; then
+	DEBCONF_OK='NO'
+else
+	DEBCONF_OK='YES'
+fi
+
 # Note that we use `"$@"' to let each command-line parameter expand to a
 # separate word. The quotes around `$@' are essential!
 # We need TEMP as the `eval set --' would nuke the return value of getopt.
 TEMP=`getopt -a -o hs:d:D::nv -n "$progname" \
-      --long help,src-dir:,dest-dir:DEBUG::,no-action,purge,verbose,three-way,state-dir: \
+      --long help,src-dir:,dest-dir:DEBUG::,no-action,purge,verbose,three-way,debconf-ok,state-dir: \
              -- "$@"`
 
 if [ $? != 0 ] ; then
@@ -256,11 +297,26 @@ while true ; do
 	    esac ;;
         -p|--purge) PURGE=YES;                         shift   ;;
        --three-way) THREEWAY=YES;                       shift   ;;
+       --debconf-ok) DEBCONF_OK=YES;                    shift   ;;
 	--)  shift ;                                   break   ;;
 	*) echo "Internal error!" ; exit 1 ;;
     esac
 done
 
+if [ "$DEBCONF_ALREADY_RUNNING" ] && [ "$DEBCONF_OK" = NO ]; then
+	# Commented out for now, uncomment after a while to begin nagging
+	# maintainers to fix their scripts.
+	#cat \
+<<END
+*** WARNING: ucf was run from a maintainer script that uses debconf, but
+             the script did not pass --debconf-ok to ucf. The maintainer
+             script should be fixed to not stop debconf before calling ucf,
+             and pass it this parameter. For now, ucf will revert to using
+             old-style, non-debconf prompting. Ugh!
+
+             Please inform the package maintainer about this problem.
+END
+fi
 
 if [ "X$PURGE" = "XYES" ]; then
     if [ $# != 1 ]; then
@@ -595,7 +651,31 @@ else
 
     done='NO';
     while [ "X$done" = "XNO" ]; do
-        cat >&2 <<EOPRMT
+	if [ "$DEBCONF_OK" = "YES" ] && [ "$DEBIAN_HAS_FRONTEND" ]; then
+		# Use debconf to prompt.
+		if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then
+			templ=ucf/changeprompt_threeway
+		else
+			templ=ucf/changeprompt
+		fi
+		db_fset $templ seen false
+		db_reset $templ
+		db_subst $templ FILE "$dest_file"
+		db_subst $templ BASENAME $(basename "$dest_file")
+		db_input critical $templ || true
+		if ! db_go; then
+			# The current ucf interface does not provide a way for it
+			# to tell its caller that the user chose to back up.
+			# However, we could get here, if the caller turned on
+			# debconf's backup capb. The best thing to do seems to be
+			# to ignore requests to back up.
+			continue
+		fi
+		db_get $templ
+		ANSWER="$RET"
+	else
+		# Prompt without using debconf.
+		cat >&2 <<EOPRMT
 Configuration file \`$dest_file'
  ==> File on system created by you or by a script.
  ==> File also in package provided by package maintainer.
@@ -604,48 +684,49 @@ Configuration file \`$dest_file'
     N or O  : keep your currently-installed version
       D     : show the differences between the versions
 EOPRMT
-	if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then
-	    cat >&2 <<EOTD
+		if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then
+			cat >&2 <<EOTD
     3 or T  : show a three way difference between current, older,
               and new versions of the file
       M     : Do a 3 way merge between current, older,
               and new versions of the file [Very Experimental]
 EOTD
-	fi
-	cat >&2 <<EOPEND
+		fi
+		cat >&2 <<EOPEND
       Z     : start a new shell to examine the situation
  The default action is to keep your current version.
 EOPEND
-	if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then
-	    echo -n >&2 "*** " $(basename "$dest_file") \
-		" (Y/I/N/O/D/3/T/M/Z) [default=N] ?"
-	else
-	    echo -n >&2 "*** " $(basename "$dest_file") \
-	    " (Y/I/N/O/D/Z) [default=N] ?"
+		if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then
+			echo -n >&2 "*** " $(basename "$dest_file") \
+			    " (Y/I/N/O/D/3/T/M/Z) [default=N] ?"
+		else
+			echo -n >&2 "*** " $(basename "$dest_file") \
+			    " (Y/I/N/O/D/Z) [default=N] ?"
+		fi
+		read -e ANSWER
 	fi
-	
-	read -e ANSWER;
+
 	case "$ANSWER" in
-	    y|Y|I|i)
+	    "$choice_install_new"|y|Y|I|i)
 		echo >&2 "Replacing config file $dest_file with new version"
 		RETAIN_OLD=YES
 		replace_conf_file;
 		exit 0;
-		;; 
-	    D|d)
-		diff -uBbw "$dest_file" "$new_file" | sensible-pager
-		;; 
-	    3|t|T) 
+		;;
+	    "$choice_diff"|D|d)
+		( diff -uBbw "$dest_file" "$new_file" | sensible-pager ) >/dev/tty </dev/tty
+		;;
+	    "$choice_diff_threeway"|3|t|T)
 		if [ -e "$statedir/cache/$cached_file" \
 		    -a "X$THREEWAY" != "X" ]; then
-		    diff3 -L Current -L Older -L New -A \
+		    ( diff3 -L Current -L Older -L New -A \
 			"$dest_file" "$statedir/cache/$cached_file" \
-			"$new_file" | sensible-pager
+			"$new_file" | sensible-pager ) >/dev/tty </dev/tty
 		else 
-		    diff -uBbw "$dest_file" "$new_file" | sensible-pager
+		    ( diff -uBbw "$dest_file" "$new_file" | sensible-pager ) >/dev/tty >/dev/tty
 		fi
 		;;
-	    M|m) 
+	    "$choice_merge_threeway"|M|m)
 		echo >&2 "Merging changes into the new version new version"
 		if [ -e "$statedir/cache/$cached_file" \
 		    -a "X$THREEWAY" != "X" ]; then
@@ -668,22 +749,28 @@ EOPEND
 		fi
                 exit 0
 		;;
-	    Z|z)
-		bash
+	    "$choice_shell"|Z|z)
+		bash >/dev/tty </dev/tty || true
 		;;
-	    n|N|o|O)
+	    $choice_keep_current|n|N|o|O|'')
 		if [ -e "$dest_file" ]; then
 		    replace_md5sum;
 		fi
 		exit 0;
 		;;
 	    *)
-		if [ -e "$dest_file" ]; then
-		    replace_md5sum;
+		if [ "$DEBCONF_OK" = "YES" ]; then
+			echo "Error: received an unknown string from debconf: '$RET'" >&2
+			exit 1
+		else
+			echo
+			echo "Please answer with one of the single letters listed." >&2
+			echo
 		fi
-		exit 0;
 	esac
     done
 fi
+
+db_stop
 
 exit 0;
