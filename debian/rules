@@ -5,9 +5,9 @@
 ## Created On       : Tue Jul  9 15:45:40 1996
 ## Created On Node  : melkor.pilgrim.umass.edu
 ## Last Modified By : Manoj Srivastava
-## Last Modified On : Sun Nov 10 21:25:55 2002
+## Last Modified On : Sun Nov 10 23:02:39 2002
 ## Last Machine Used: glaurung.green-gryphon.com
-## Update Count     : 80
+## Update Count     : 81
 ## Status           : Unknown, Use with caution!
 ## HISTORY          :
 ## Description      :
@@ -124,7 +124,6 @@ stamp-binary:
 	$(install_file)     ucf.conf.5        $(MAN5DIR)
 	$(install_file)     ucf.conf          $(ETCDIR)
 	$(install_file)     debian/changelog  $(DEBDOCDIR)/changelog
-	touch               $(DEBLIBDIR)/hashfile
 	gzip -9frq          $(MANDIR)
 	gzip -9frq          $(DEBDOCDIR)
 # make sure the copyright file is not compressed

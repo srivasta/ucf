@@ -1,3 +1,14 @@
+ucf (0.10) unstable; urgency=low
+
+  * Urk. Major breakage in ucf on upgrade; one loses
+    /var/lib/ucf/hashfile, due to a major thinko. The downside is that the
+    currently installed file shall be trated as the old version, and a
+    wquestion shall be asked if the upstream file is different. This bad,
+    but there is no real data loss; only a potential question asked on the
+    next upgrade of packages using ucf.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sun, 10 Nov 2002 23:09:22 -0600
+
 ucf (0.09) unstable; urgency=low
 
   * Umm. use egrep when you mean egrep.
