@@ -1,3 +1,12 @@
+ucf (0.14) unstable; urgency=low
+
+  * Another occurence of the missing \. Additional patches from Tore
+    Anderson to fix a flaw in the md5sum storage.            closes: Bug#189517
+  * patch from Tore Anderson to fix problems with diff3      closes: Bug#189617
+  * Finally get all the miising \.                           closes: Bug#189514
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sat, 19 Apr 2003 23:11:36 -0500
+
 ucf (0.13) unstable; urgency=medium
 
   * A missing \ at the ned of the line caused a syntax error.closes: Bug#189514
