@@ -27,7 +27,7 @@
 # HISTORY          : 
 # Description      : 
 # 
-# $Id: postrm,v 1.1 2002/11/11 05:17:30 srivasta Exp $
+# $Id: postrm,v 1.2 2002/11/11 05:19:26 srivasta Exp $
 
 
 # Abort if any command returns an error value
@@ -42,7 +42,6 @@ if [ "X$PACKAGE" = "X" ]; then
 fi
 
 # Ensure the menu system is updated
-[ ! -x /usr/bin/update-menus ] || /usr/bin/update-menus
 
 case "$1" in
     remove)

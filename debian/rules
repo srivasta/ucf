@@ -5,9 +5,9 @@
 ## Created On       : Tue Jul  9 15:45:40 1996
 ## Created On Node  : melkor.pilgrim.umass.edu
 ## Last Modified By : Manoj Srivastava
-## Last Modified On : Sun Nov 10 23:17:19 2002
+## Last Modified On : Sun Nov 10 23:18:22 2002
 ## Last Machine Used: glaurung.green-gryphon.com
-## Update Count     : 83
+## Update Count     : 84
 ## Status           : Unknown, Use with caution!
 ## HISTORY          :
 ## Description      :
@@ -115,7 +115,7 @@ stamp-binary:
 #	echo 	            "ucf: postinst-does-not-set-usr-doc-link" \
 #                                >> $(LINTIANDIR)/$(package)
 	$(install_program)  debian/postinst   $(TMPTOP)/DEBIAN/postinst
-	$(install_program)  debian/prerm      $(TMPTOP)/DEBIAN/postrm
+	$(install_program)  debian/postrm     $(TMPTOP)/DEBIAN/postrm
 	$(install_file)     debian/conffiles  $(TMPTOP)/DEBIAN/conffiles
 	$(install_program)  ucf               $(BINDIR)
 	$(install_file)     ucf.1             $(MAN1DIR)
