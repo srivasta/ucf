@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.20 $'
+pversion='$Revision: 1.21 $'
 
 ######################################################################
 ########                                                     #########
@@ -159,25 +159,25 @@ replace_md5sum () {
 	    if [ "X$VERBOSE" != "X" ]; then
 		echo "(egrep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\";"
 		egrep -v "[[:space:]]${dest_file}$"  "$statedir/hashfile" || true;
-		 md5sum "$new_file" | sed "s|$new_file|$dest_file|" ;
+		 md5sum "$orig_new_file" | sed "s|$orig_new_file|$dest_file|" ;
 	    fi
 	    egrep -v "[[:space:]]${dest_file}$" "$statedir/hashfile" > \
 		"$statedir/hashfile.tmp" || true; 
-	    md5sum "$new_file" | sed "s|$new_file|$dest_file|" >> \
+	    md5sum "$orig_new_file" | sed "s|$orig_new_file|$dest_file|" >> \
 		"$statedir/hashfile.tmp"; 
 	    mv -f "$statedir/hashfile.tmp"  "$statedir/hashfile" 
 	    set -e
 	else
 	    echo "(egrep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\""
-	    echo " md5sum \"$new_file\" | sed \"s|$new_file|$dest_file|\"; " 
+	    echo " md5sum \"$orig_new_file\" | sed \"s|$orig_new_file|$dest_file|\"; " 
 	    echo ") | sort > \"$statedir/hashfile\""
 	fi
     else
 	if [ "X$docmd" = "XYES" ]; then
-	    md5sum "$new_file" | sed "s|$new_file|$dest_file|"  > \
+	    md5sum "$orig_new_file" | sed "s|$orig_new_file|$dest_file|"  > \
 		"$statedir/hashfile" 
 	else
-	    echo " md5sum \"$new_file\" | sed \"s|$new_file|$dest_file|\" >" \
+	    echo " md5sum \"$orig_new_file\" | sed \"s|$orig_new_file|$dest_file|\" >" \
 		"\"$statedir/hashfile\""
 	fi
     fi
@@ -364,6 +364,7 @@ fi
 old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
 old_mdsum_file="$source_dir/"$(basename "${new_file}")".md5sum";
 cached_file=$(echo $dest_file | tr / :)
+orig_new_file="$new_file"	# Since sometimes we replace the newfile below
 
 if [ $DEBUG -gt 0 ]; then
     cat <<EOF

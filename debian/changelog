@@ -1,3 +1,10 @@
+ucf (0.15) unstable; urgency=medium
+
+  * Clean up some of the new file handling to pave the way for
+    /etc/conffiles/blah functionality
+
+ -- Manoj Srivastava <srivasta@debian.org>  Fri, 25 Apr 2003 14:55:17 -0500
+
 ucf (0.14) unstable; urgency=low
 
   * Another occurence of the missing \. Additional patches from Tore
