@@ -4,9 +4,9 @@
 ## Created On       : Tue Nov 18 22:00:27 2003
 ## Created On Node  : glaurung.green-gryphon.com
 ## Last Modified By : Manoj Srivastava
-## Last Modified On : Tue Nov 18 22:07:04 2003
+## Last Modified On : Tue Nov 18 22:43:32 2003
 ## Last Machine Used: glaurung.green-gryphon.com
-## Update Count     : 1
+## Update Count     : 2
 ## Status           : Unknown, Use with caution!
 ## HISTORY          : 
 ## Description      : 
@@ -60,5 +60,5 @@ install:
 	$(install_file)     examples/postrm   $(DEBDOCDIR)/examples/
 
 clean distclean:
-        @echo nothing to do for clean
+	@echo nothing to do for clean
 
