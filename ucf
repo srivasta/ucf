@@ -535,7 +535,7 @@ EOF
 	echo "Historical md5sums are not available"
     fi
 fi
-newsum=$(md5sum "$new_file" | awk '{print $1}')
+
 
 if [ "X$PURGE" = "XYES" ]; then
     if [ "X$VERBOSE" != "X" ]; then
@@ -545,6 +545,7 @@ if [ "X$PURGE" = "XYES" ]; then
     exit 0;
 fi
 
+newsum=$(md5sum "$new_file" | awk '{print $1}')
 
 
 ######################################################################
@@ -653,12 +654,26 @@ else  # "$dest_file" does not exist
 # Step 2: If destfile does not exist, create it, set the file
 #         "${old_mdsum_prefix}.old" to the md5sum of the new file, and we
 #         are done
-    if [ "X$lastsum" = "X" ] && [ ! -d "$old_mdsum_dir" ] && [ ! -f "$old_mdsum_file"]; then
+    if [ "X$lastsum" = "X" ]; then
+        # Ok, so there is no indication that the package was ever
+        # installed on this machine.
+	echo >&2 ""
+	echo >&2 "Creating config file $dest_file with new version"
+	replace_conf_file;
+	exit 0;
+    elif [ "$lastsum" = "$newsum" ]; then
+        # OK, new version of the file is the same as the last version
+        # we saw. Since the user apparently has deleted the file,
+        # nothing needs be done
+        echo >&2 "Not replacing deleted config file $dest_file";
+    else
+        # OK. New upstream version. Even though the user has deleted
+        # this file, they should be asked now, unless specified
+        # otherwise.
 	if [ "X$force_conffold" = "X" ]; then
-	    echo >&2 ""
-	    echo >&2 "Creating config file $dest_file with new version"
-	    replace_conf_file;
-	    exit 0;
+            destsum='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+        else
+            exit 0;
 	fi	
     fi
 fi
@@ -678,7 +693,6 @@ if [ "$lastsum" = "$newsum" ]; then
 fi
 #      a: If the md5sum of the dest file is the same as lastsum, replace the 
 #         destfile, saying we are replacing old config files
-destsum=$(md5sum "$dest_file" | awk '{print $1}')
 if [ "$destsum" = "$lastsum" ]; then
     if [ "X$force_conffold" = "X" ]; then
 	echo >&2 "Replacing config file $dest_file with new version"
@@ -794,9 +808,15 @@ EOPEND
 	    "$choice_diff_threeway"|3|t|T)
 		if [ -e "$statedir/cache/$cached_file" \
 		    -a "X$THREEWAY" != "X" ]; then
-		    ( diff3 -L Current -L Older -L New -A \
-			"$dest_file" "$statedir/cache/$cached_file" \
-			"$new_file" | sensible-pager ) >/dev/tty </dev/tty
+                    if [ -e "$dest_file" ]; then
+		        ( diff3 -L Current -L Older -L New -A \
+			    "$dest_file" "$statedir/cache/$cached_file" \
+			    "$new_file" | sensible-pager ) >/dev/tty </dev/tty
+                    else
+                        ( diff3 -L Current -L Older -L New -A \
+			    /dev/null "$statedir/cache/$cached_file" \
+			    "$new_file" | sensible-pager ) >/dev/tty </dev/tty
+                    fi
 		    if [ "X$STOP" != "X" ]; then
 			echo >&2 "Please hit enter to continue";
 			read -e ANSWER </dev/tty
