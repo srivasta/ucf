@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Sat Oct 18 21:28:25 2003
-# Last Machine Used: glaurung.green-gryphon.com
-# Update Count     : 161
+# Last Modified On : Fri Mar 12 14:43:08 2004
+# Last Machine Used: glaurung.internal.golden-gryphon.com
+# Update Count     : 165
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -226,18 +226,26 @@ replace_md5sum () {
 }
 
 replace_conf_file () {
-    if [ -e "$dest_file" ]; then
-	if [ -z "$RETAIN_OLD" ]; then
-	    #echo "Saving  ${dest_file}.dpkg-old,  in case."
-	    echo "Not saving ${dest_file}, since it was unmodified"
-	else
-	    $action cp -f "$dest_file" "${dest_file}.dpkg-old"
+    # do not mangle $dest_file since it's the one registered in the hashfile
+    # or we have been ask to register
+    real_file="$dest_file"
+    if [ -L "$dest_file" ]; then
+	real_file="$(readlink -nf $dest_file)"
+	if [ "x$real_file" = "x" ]; then
+	    echo "$dest_file is a broken symlink!"
+	    $action rm -f "$dest_file";
+	    real_file="$dest_file"
 	fi
     fi
-    if [ -L "$dest_file" ]; then
-	rm -f "$dest_file"
+    if [ -e "$real_file" ]; then
+	if [ -z "$RETAIN_OLD" ]; then
+	    #echo "Saving  ${real_file}.dpkg-old,  in case."
+	    echo "Not saving ${real_file}, since it was unmodified"
+	else
+	    $action cp -f "real_file" "${real_file}.dpkg-old"
+	fi
     fi
-    $action cp -f "$new_file" "$dest_file"
+    $action cp -f "$new_file" "real_file"
     replace_md5sum;
 }
 
@@ -266,8 +274,8 @@ fi
 # Note that we use `"$@"' to let each command-line parameter expand to a
 # separate word. The quotes around `$@' are essential!
 # We need TEMP as the `eval set --' would nuke the return value of getopt.
-TEMP=`getopt -a -o hs:d:D::nv -n "$progname" \
-      --long help,src-dir:,dest-dir:DEBUG::,no-action,purge,verbose,three-way,debconf-ok,state-dir: \
+TEMP=`getopt -a -o hs:d::D::nv -n "$progname" \
+      --long help,src-dir:,dest-dir:,debug::,DEBUG::,no-action,purge,verbose,three-way,debconf-ok,state-dir: \
              -- "$@"`
 
 if [ $? != 0 ] ; then
@@ -287,7 +295,7 @@ while true ; do
 	    opt_source_dir="$2";                       shift 2 ;;
 	--state-dir)
 	    opt_state_dir="$2";                        shift 2 ;;
-	-d|--debug)
+	-D|-d|--debug|--DEBUG)
             # d has an optional argument. As we are in quoted mode,
             # an empty parameter will be generated if its optional
             # argument is not found.
