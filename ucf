@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Fri Aug 13 20:52:43 2004
+# Last Modified On : Thu Mar 17 16:53:00 2005
 # Last Machine Used: glaurung.internal.golden-gryphon.com
-# Update Count     : 177
+# Update Count     : 178
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -52,7 +52,7 @@ if [ -z "$DEBCONF_ALREADY_RUNNING" ]; then
                 # Load out templates, just in case our template has
                 # not been loaded or the Debconf DB lost or corrupted
                 # since then.
-                debconf-loadtemplates ucf /var/lib/dpkg/info/ucf.templates
+                debconf-loadtemplate ucf /var/lib/dpkg/info/ucf.templates
 	fi
 fi
 export DEBCONF_ALREADY_RUNNING
