@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Sun Mar 14 11:10:29 2004
+# Last Modified On : Mon Apr 19 02:37:09 2004
 # Last Machine Used: glaurung.internal.golden-gryphon.com
-# Update Count     : 166
+# Update Count     : 168
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -740,7 +740,7 @@ EOPEND
 			echo -n >&2 "*** " $(basename "$dest_file") \
 			    " (Y/I/N/O/D/Z) [default=N] ?"
 		fi
-		read -e ANSWER
+  		read -e ANSWER </dev/tty
 	fi
 
 	case "$ANSWER" in
@@ -784,7 +784,7 @@ EOPEND
 			"$new_file" > $dest_file.dpkg-new || { \
 			
 			echo >&2
-		    	echo >&2 " Conflincts found! Please edit" \
+		    	echo >&2 " Conflicts found! Please edit" \
 			    "\`$dest_file' and sort them out manually."
 			echo >&2 " The file \`$dest_file.dpkg-old' is a" \
 			    "backup of your old configuration file."
