@@ -5,9 +5,9 @@
 ## Created On       : Tue Jul  9 15:45:40 1996
 ## Created On Node  : melkor.pilgrim.umass.edu
 ## Last Modified By : Manoj Srivastava
-## Last Modified On : Thu Aug  7 18:47:26 2003
+## Last Modified On : Wed Aug 13 11:21:08 2003
 ## Last Machine Used: glaurung.green-gryphon.com
-## Update Count     : 87
+## Update Count     : 88
 ## Status           : Unknown, Use with caution!
 ## HISTORY          :
 ## Description      :
@@ -132,7 +132,7 @@ stamp-binary:
 	$(install_file)     examples/postrm   $(DEBDOCDIR)/examples/
 	chmod -R u+w        $(TMPTOP)/usr/
 	dpkg-gencontrol -isp
-	chown -R root.root  $(TMPTOP)
+	chown -R root:root  $(TMPTOP)
 	chmod -R go=rX      $(TMPTOP)
 	dpkg --build        $(TMPTOP) ..
 

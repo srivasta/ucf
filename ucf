@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Thu Jul 31 11:55:19 2003
+# Last Modified On : Sun Aug 24 20:24:02 2003
 # Last Machine Used: glaurung.green-gryphon.com
-# Update Count     : 159
+# Update Count     : 160
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.24 $'
+pversion='$Revision: 1.25 $'
 
 ######################################################################
 ########                                                     #########
@@ -184,7 +184,7 @@ replace_md5sum () {
 	fi
     fi
     if [ "X$THREEWAY" != "X" ]; then
-	$action cp -f "$new_file" "$statedir/cache/$cached_file"
+	$action cp -f "$orig_new_file" "$statedir/cache/$cached_file"
     fi
 }
 

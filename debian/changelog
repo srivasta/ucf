@@ -1,3 +1,11 @@
+ucf (0.20) unstable; urgency=high
+
+  * Fixed usage of chown root.root in the rules files.
+  * The 3 way merge support was broekn; it kept track of the md5sum of the
+    wrong version. Thanks Nicolas Boullis for noticing this. closes: Bug#20706
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sun, 24 Aug 2003 20:26:06 -0500
+
 ucf (0.19) unstable; urgency=low
 
   * Added some examples to the doc directory. Added examples to man
