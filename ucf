@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Tue Feb 12 02:29:29 2002
+# Last Modified On : Tue Feb 12 03:57:42 2002
 # Last Machine Used: glaurung.green-gryphon.com
-# Update Count     : 96
+# Update Count     : 109
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.1 $'
+pversion='$Revision: 1.2 $'
 
 ######################################################################
 ########                                                     #########
@@ -94,19 +94,26 @@ replace_md5sum () {
     if [ -e "$statedir/hashfile" ]; then
 	$action cp -f "$statedir/hashfile"  "$statedir/hashfile.0" 
 	if [ "X$docmd" = "XYES" ]; then
+	    set +e
+	    if [ "X$VERBOSE" != "X" ]; then
+		echo "(grep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\";"
+		grep -v "[[:space:]]${dest_file}$"  "$statedir/hashfile";
+		md5sum "$dest_file"
+	    fi
 	    (grep -v "[[:space:]]${dest_file}$"  "$statedir/hashfile";
 		md5sum "$dest_file"
 	    ) > "$statedir/hashfile" 
+	    set -e
 	else
-	    echo "(grep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\""
-	    echo " md5sum \"$dest_file\" " 
-	    echo ") > \"${$statedir/hashfile}\""
+	    echo "(grep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\";"
+	    echo " md5sum \"$dest_file\"; " 
+	    echo ") > \"$statedir/hashfile\""
 	fi
     else
 	if [ "X$docmd" = "XYES" ]; then
 	    	md5sum "$dest_file" > "$statedir/hashfile" 
 	else
-	    echo " md5sum \"$dest_file\" > \"${$statedir/hashfile}\""
+	    echo " md5sum \"$dest_file\" > \"$statedir/hashfile\""
 	fi
     fi
 }
@@ -210,7 +217,7 @@ elif [ ! "x$UCF_FORCE_CONFFOLD" = "x" ]; then
 elif [ ! "x$conf_force_conffold" = "x" ]; then
     setq force_conffold "$conf_force_conffold" "Keep the old file"
 else
-    unset force_conffold 
+    force_conffold=''
 fi
 
 # Command line, env variable, config file, or default
@@ -221,7 +228,7 @@ elif [ ! "x$UCF_FORCE_CONFFNEW" = "x" ]; then
 elif [ ! "x$conf_force_conffnew" = "x" ]; then
     setq force_conffnew "$conf_force_conffnew" "Replace the old file"
 else
-    unset force_conffnew 
+    force_conffnew=''
 fi
 
 if [ "X$force_conffold" != "X" -a "X$force_conffnew" != "X" ]; then
@@ -233,7 +240,7 @@ fi
 old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
 
 #
-if [ -e "$statedir/hash" && ! -w "$statedir/hash" ]; then
+if [ -e "$statedir/hashfile" -a ! -w "$statedir/hashfile" ]; then
     echo >&2 "ucf: do not have write privilidge to the state data"
     if [ "X$docmd" = "XYES" ]; then
 	exit 1;
@@ -241,13 +248,18 @@ if [ -e "$statedir/hash" && ! -w "$statedir/hash" ]; then
 fi
 
 # test and see if this file exists in the database
-if [ -e "$statedir/hash" ]; then
-    lastsum=$(grep "[[:space:]]${dest_file}$" "$statedir/hash" | \
+if [ -e "$statedir/hashfile" ]; then
+    if [ "X$VERBOSE" != "X" ]; then
+	echo >&2 "The hash file exists"
+	echo grep "[[:space:]]${dest_file}$" "$statedir/hashfile"
+	grep "[[:space:]]${dest_file}$" "$statedir/hashfile" 
+    fi
+    lastsum=$(grep "[[:space:]]${dest_file}$" "$statedir/hashfile" | \
                    awk '{print $1;}' )
 fi
 
 
-if [ $DEBUG > 0 ]; then
+if [ $DEBUG -gt 0 ]; then
     cat <<EOF
 The new start file is      \`$new_file\'
 The destination is         \`$dest_file\'
@@ -319,6 +331,7 @@ if [ -e "$dest_file" ]; then
 		    echo >&2 "However, a default old md5sum exists, using it."
 		fi
 		lastsum=$(cat "${old_mdsum_dir}/default" | awk '{print $1;}')
+		do_replace_md5sum=1;
 	    fi
 #          At this point, we are almost certain that either the
 #          historical record of md5sums is not complete, or the user
@@ -342,6 +355,7 @@ if [ -e "$dest_file" ]; then
 		echo >&2 "Pretending that the installed file is old version."
 	    fi
 	    lastsum=$(md5sum "$dest_file" | awk '{print $1;}')
+	    do_replace_md5sum=1;
 	fi # the old md5sum file does not exist, and the historical
 	   # record failed
     fi # the old md5sum file does not exist (bug))
@@ -354,8 +368,6 @@ else  # "$dest_file" does not exist
 	    echo >&2 "Creating config file $dest_file with new version"
 	    replace_conf_file;
 	    exit 0;
-	else
-	    replace_md5sum;
 	fi	
     fi
 fi
@@ -368,7 +380,9 @@ if [ "$lastsum" = "$newsum" ]; then
     if [ "X$VERBOSE" != "X" ]; then
 	echo >&2 "md5sums match, nothing needs be done."
     fi
-    replace_md5sum;
+    if [ "X$do_replace_md5sum" != "X" ]; then
+	replace_md5sum;
+    fi
     exit 0;			# Hah. Match. We are done.
 fi
 #      a: If the md5sum of the dest file is the same as lastsum, replace the 
@@ -425,11 +439,15 @@ EOPRMT
 		bash
 		;;
 	    n|N|o|O)
-		replace_md5sum;
+		if [ -e "$dest_file" ]; then
+		    replace_md5sum;
+		fi
 		exit 0;
 		;;
 	    *)
-		replace_md5sum;
+		if [ -e "$dest_file" ]; then
+		    replace_md5sum;
+		fi
 		exit 0;
 	esac
     done
