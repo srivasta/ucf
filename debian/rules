@@ -5,9 +5,9 @@
 ## Created On       : Tue Jul  9 15:45:40 1996
 ## Created On Node  : melkor.pilgrim.umass.edu
 ## Last Modified By : Manoj Srivastava
-## Last Modified On : Sun Jul 13 15:47:04 2003
+## Last Modified On : Thu Aug  7 18:47:26 2003
 ## Last Machine Used: glaurung.green-gryphon.com
-## Update Count     : 85
+## Update Count     : 87
 ## Status           : Unknown, Use with caution!
 ## HISTORY          :
 ## Description      :
@@ -110,7 +110,7 @@ stamp-binary:
 	$(make_directory)   $(MAN1DIR)
 	$(make_directory)   $(MAN5DIR)
 	$(make_directory)   $(DEBLIBDIR)
-	$(make_directory)   $(DEBDOCDIR)
+	$(make_directory)   $(DEBDOCDIR)/examples
 	$(make_directory)   $(LINTIANDIR)
 	echo 	            "ucf: description-synopsis-might-not-be-phrased-properly" \
                                 >> $(LINTIANDIR)/$(package)
@@ -128,6 +128,8 @@ stamp-binary:
 	gzip -9frq          $(DEBDOCDIR)
 # make sure the copyright file is not compressed
 	$(install_file)     debian/copyright  $(DEBDOCDIR)/copyright
+	$(install_file)     examples/postinst $(DEBDOCDIR)/examples/
+	$(install_file)     examples/postrm   $(DEBDOCDIR)/examples/
 	chmod -R u+w        $(TMPTOP)/usr/
 	dpkg-gencontrol -isp
 	chown -R root.root  $(TMPTOP)

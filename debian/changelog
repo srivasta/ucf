@@ -1,3 +1,10 @@
+ucf (0.19) unstable; urgency=low
+
+  * Added some examples to the doc directory. Added examples to man
+    pages. Clarified man page. 
+
+ -- Manoj Srivastava <srivasta@debian.org>  Thu,  7 Aug 2003 18:48:35 -0500
+
 ucf (0.18) unstable; urgency=low
 
   * No longer save conffiler.dpkg-old unless conffile had been
