@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.15 $'
+pversion='$Revision: 1.16 $'
 
 ######################################################################
 ########                                                     #########
@@ -134,12 +134,14 @@ purge_md5sum () {
 
 replace_md5sum () {
     for i in $(/usr/bin/seq 6 -1 0); do
-	if [ "X$docmd" = "XYES" ]; then
-	    cp -f "${statedir}/hashfile.${i}" \
-		"${statedir}/hashfile.$(($i+1))"
-	else
-	    echo cp -f "${statedir}/hashfile.${i}" \
-		"${statedir}/hashfile.$(($i+1))"
+	if [ -e "${statedir}/hashfile.${i}" ]; then
+	    if [ "X$docmd" = "XYES" ]; then
+		cp -f "${statedir}/hashfile.${i}" \
+		    "${statedir}/hashfile.$(($i+1))"
+	    else
+		echo cp -f "${statedir}/hashfile.${i}" \
+		    "${statedir}/hashfile.$(($i+1))"
+	    fi
 	fi
     done
     if [ -e "$statedir/hashfile" ]; then
