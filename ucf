@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Sun Nov 10 21:29:01 2002
+# Last Modified On : Sun Nov 10 22:14:06 2002
 # Last Machine Used: glaurung.green-gryphon.com
-# Update Count     : 136
+# Update Count     : 138
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.10 $'
+pversion='$Revision: 1.11 $'
 
 ######################################################################
 ########                                                     #########
@@ -116,7 +116,7 @@ purge_md5sum () {
 	    echo ") | sort > \"$statedir/hashfile\""
 	fi
     fi
-    if [ -e "$statedir/cache/$cached_file" ]; then
+    if [ ! -z "$cached_file" -a -f "$statedir/cache/$cached_file" ]; then
 	$action rm -f "$statedir/cache/$cached_file"
     fi
 }
