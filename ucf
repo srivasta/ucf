@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Sun Nov 10 22:57:24 2002
+# Last Modified On : Fri May  2 21:46:02 2003
 # Last Machine Used: glaurung.green-gryphon.com
-# Update Count     : 151
+# Update Count     : 152
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.21 $'
+pversion='$Revision: 1.22 $'
 
 ######################################################################
 ########                                                     #########
@@ -81,6 +81,8 @@ Options:
                              diff3 option allowing the merging of maintainer
                              changes into a (potentially modified) local 
                              configuration file. )
+             --state-dir bar Set the state directory to bar instead of the
+                             default '/var/lib/ucf'. Used mostly for testing.
 Usage: $progname  -p  destination
      -p,     --purge         Remove any reference to destination from records
 
@@ -221,7 +223,7 @@ THREEWAY=
 # separate word. The quotes around `$@' are essential!
 # We need TEMP as the `eval set --' would nuke the return value of getopt.
 TEMP=`getopt -a -o hs:d:D::nv -n "$progname" \
-      --long help,src-dir:,dest-dir:DEBUG::,no-action,purge,verbose,three-way \
+      --long help,src-dir:,dest-dir:DEBUG::,no-action,purge,verbose,three-way,state-dir: \
              -- "$@"`
 
 if [ $? != 0 ] ; then
@@ -238,7 +240,9 @@ while true ; do
 	-n|--no-action) action='echo'; docmd='NO';      shift  ;;
 	-v|--verbose) VERBOSE=1;                        shift  ;;
 	-s|--src-dir)
-	    opt_source_dir="$2";                        shift 2 ;;
+	    opt_source_dir="$2";                       shift 2 ;;
+	--state-dir)
+	    opt_state_dir="$2";                        shift 2 ;;
 	-d|--debug)
             # d has an optional argument. As we are in quoted mode,
             # an empty parameter will be generated if its optional
@@ -300,6 +304,17 @@ else
 	setq source_dir /tmp
     fi
     
+fi
+
+# Command line, env variable, config file, or default
+if [ ! "x$opt_state_dir" = "x" ]; then
+    setq state_dir "$opt_state_dir" "The State directory"
+elif [ ! "x$UCF_STATE_DIR" = "x" ]; then
+    setq state_dir "$UCF_STATE_DIR" "The State directory"
+elif [ ! "x$conf_source_dir" = "x" ]; then
+    setq state_dir "$conf_state_dir" "The State directory"
+else
+    setq state_dir '/var/lib/ucf'  "The State directory"    
 fi
 
 # Command line, env variable, config file, or default
@@ -365,6 +380,21 @@ old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
 old_mdsum_file="$source_dir/"$(basename "${new_file}")".md5sum";
 cached_file=$(echo $dest_file | tr / :)
 orig_new_file="$new_file"	# Since sometimes we replace the newfile below
+
+# Determine the action for the current file. The default is to ask,
+# with non-replacement being the norm.
+# If the config dir exists
+#   if file in always overwrite, state +=1;
+#   fi
+#   if file in never overwrite, state +=2;
+#   fi
+#   if file in ask; state +=4
+#   fi
+#   if state == 0; then state = default
+#   if state >= 4; ask
+#   if state == 3;  ask
+#   if state == 2; exit
+#   if state == 1; then replace_conffile; exit
 
 if [ $DEBUG -gt 0 ]; then
     cat <<EOF
@@ -487,18 +517,13 @@ if [ -e "$dest_file" ]; then
 	if [ "X$lastsum" = "X" ]; then
 #      b: We do not have a historical list of md5sums, or none
 #         matched, and we still need to initialize the
-#         ${old_mdsum_prefix}.old file. We can pretend that the
-#         installed file is the same as the one present in the
-#         previous package; this means that if they have the same file
-#         as the file in the new package, no questions shall be asked;
-#         if not, they shall know that the maintainer file is not the
-#         same as the one they have, and we can't determine whther or
+#         ${old_mdsum_prefix}.old file. We can't determine whther or
 #         not they made any changes, so we err on the side of caution
 #         and ask'
 	    if [ "X$VERBOSE" != "X" ]; then
-		echo >&2 "Pretending that the installed file is old version."
+		echo >&2 "No match found, we shall ask."
 	    fi
-	    lastsum=$(md5sum "$dest_file" | awk '{print $1;}')
+	    lastsum=$(md5sum "NO MATCH" | awk '{print $1;}')
 	    do_replace_md5sum=1;
 	fi # the old md5sum file does not exist, and the historical
 	   # record failed
