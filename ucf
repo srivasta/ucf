@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Sun Nov 10 19:52:38 2002
+# Last Modified On : Sun Nov 10 21:29:01 2002
 # Last Machine Used: glaurung.green-gryphon.com
-# Update Count     : 135
+# Update Count     : 136
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.9 $'
+pversion='$Revision: 1.10 $'
 
 ######################################################################
 ########                                                     #########
@@ -550,7 +550,7 @@ EOPRMT
 		echo >&2 "Replacing config file $dest_file with new version"
 		replace_conf_file;
 		exit 0;
-		;;
+		;; 
 	    3|t|T) 
 		if [ -e "$statedir/cache/$cached_file" 
 			-a "X$THREEWAY" != "X" ]; then
@@ -563,8 +563,8 @@ EOPRMT
 		;;
 	    D|d)
 		diff -uBbw "$dest_file" "$new_file" | sensible-pager
-		;;
-	    M|m)
+		;; 
+	    M|m) 
 		echo >&2 "Merging changes into the new version new version"
 		if [ -e "$statedir/cache/$cached_file" 
 			-a "X$THREEWAY" != "X" ]; then
@@ -575,7 +575,7 @@ EOPRMT
 		    replace_conf_file;
 		else 
 		    replace_conf_file;
-		fi
+		fi;;
 	    Z|z)
 		bash
 		;;
