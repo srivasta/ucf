@@ -1,8 +1,9 @@
-ucf (0.06) unstable; urgency=low
+ucf (0.06) unstable; urgency=hihg
 
   * Added the ionformational script lcf and the associated man page.
+  * Fixed a major thinko in ucf that could potentially trash the hashfile
 
- -- Manoj Srivastava <srivasta@debian.org>  Tue, 26 Feb 2002 14:11:54 -0600
+ -- Manoj Srivastava <srivasta@debian.org>  Tue, 26 Feb 2002 14:30:59 -0600
 
 ucf (0.05) unstable; urgency=low
 

@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Mon Feb 25 11:45:42 2002
+# Last Modified On : Tue Feb 26 14:35:57 2002
 # Last Machine Used: glaurung.green-gryphon.com
-# Update Count     : 111
+# Update Count     : 115
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.6 $'
+pversion='$Revision: 1.7 $'
 
 ######################################################################
 ########                                                     #########
@@ -97,15 +97,16 @@ replace_md5sum () {
 	    set +e
 	    if [ "X$VERBOSE" != "X" ]; then
 		echo "(grep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\";"
-		(  grep -v "[[:space:]]${dest_file}$"  "$statedir/hashfile";
-		    md5sum "$dest_file"; ) | sort
+		grep -v "[[:space:]]${dest_file}$"  "$statedir/hashfile";
+		md5sum "$dest_file" ; 
 	    fi
-	    (grep -v "[[:space:]]${dest_file}$" "$statedir/hashfile"; 
-		md5sum "$dest_file";
-	    ) | sort > "$statedir/hashfile" 
+	    grep -v "[[:space:]]${dest_file}$" "$statedir/hashfile" > \
+		"$statedir/hashfile.tmp"; 
+	    md5sum "$dest_file" >> "$statedir/hashfile.tmp"; 
+	    mv -f "$statedir/hashfile.tmp"  "$statedir/hashfile" 
 	    set -e
 	else
-	    echo "(grep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\";"
+	    echo "(grep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\""
 	    echo " md5sum \"$dest_file\"; " 
 	    echo ") | sort > \"$statedir/hashfile\""
 	fi
