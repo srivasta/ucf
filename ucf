@@ -561,8 +561,10 @@ if [ -e "$dest_file" ]; then
 		    if [ "$oldsum" = "$destsum"  ]; then
 			if [ "X$force_conffold" = "X" ]; then
 #                           Bingo! replace, set the md5sum, and we are done 
-			    echo >&2 \
-				"Replacing config file $dest_file with new version"
+			    if [ "X$VERBOSE" != "X" ]; then
+				echo >&2 \
+				    "Replacing config file $dest_file with new version"
+			    fi
 			    replace_conf_file;
 			    exit 0;
 			else
@@ -577,8 +579,10 @@ if [ -e "$dest_file" ]; then
 		if [ "X$oldsum" != "X" ]; then
 #                    Bingo
 		    if [ "X$force_conffold" = "X" ]; then
-			echo >&2 \
-			    "Replacing config file $dest_file with new version"
+			if [ "X$VERBOSE" != "X" ]; then
+			    echo >&2 \
+				"Replacing config file $dest_file with new version"
+			fi
 			replace_conf_file;
 			exit 0;
 		    else
