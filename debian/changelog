@@ -1,3 +1,11 @@
+ucf (0.22) unstable; urgency=low
+
+  * .TT in the man page did not produce tt font. Use .I instead. 
+                                                              closes: Bug#213077
+  * se -> see. ofered -> offered                  closes: Bug#213079, Bug#213083
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sun, 28 Sep 2003 18:28:52 -0500
+
 ucf (0.21) unstable; urgency=low
 
   * the --state-dir option to ucf had no effect, since it set the wrong

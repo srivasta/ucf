@@ -33,10 +33,10 @@
 .\" Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 .\" 02111-1307, USA.
 .\"
-.\" $Id: ucf.1,v 1.9 2003/08/08 01:05:47 srivasta Exp $
+.\" $Id: ucf.1,v 1.10 2003/09/28 23:29:21 srivasta Exp $
 .TH UCF 1 "Feb 1 2002" "Debian" "Debian GNU/Linux manual"
 .SH NAME
-ucf \- Update Configuration File:  preserve user changes in config files
+ucf \- Update Configuration File:  preserve user changes in configuration files
 .SH SYNOPSIS
 .B ucf
 .RI [ options "] "
@@ -59,25 +59,25 @@ lives, and is potentially modified by the end user.
 .PP
 This script attempts to provide conffile like handling for files
 installed under 
-.TT /etc
+.I /etc
 not
 shipped in a 
 .B Debian 
 package, but handled by the postinst instead. 
 .B Debian
 policy states that files under 
-.TT /etc
+.I /etc
 which are configuration files 
 .B must
 preserve user changes, and this applies to files handled by maintainer
 scripts as well. Using 
 .B ucf, 
 one may ship a bunch of default configuration files somewhere in 
-.TT /usr 
+.I /usr 
 (
-.TT /usr/share/<pkg> 
+.I /usr/share/<pkg> 
 is a good location), and maintain files in
-.TT /etc,
+.I /etc,
 preserving user changes and in general offering the same facilities
 while upgrading that 
 .B dpkg 
@@ -116,7 +116,7 @@ Set the debug level to the (optional) level
 .B "-p,  --purge"
 Removes all vestiges of the file from the state hashfile. This is
 required to allow a package to be reinstalled after it is purged;
-since ootherwise, the real configuration file is removed, but it
+since otherwise, the real configuration file is removed, but it
 remains in the hash file; and on reinstall no action is taken, since
 the md5sum of the new file matches that in the hashfile.  In short,
 remember to use this option in the postrm for every configuration file
@@ -211,10 +211,10 @@ file to see whether it is the same as the
 .I <New file>
 If not, we ask the user whether they want us to replace the file.
 .PP
-An additional facility is also ofered: optionally, ucf can store one
+An additional facility is also offered: optionally, ucf can store one
 old version of the maintainers copy of the configuration file, and,
 on upgrade, calculate the changes made in the maintainers version of
-the configratrion file, and apply that patch to the local version of
+the configuration file, and apply that patch to the local version of
 the file (on user request, of course). There is also a preview
 facility where the user can inspect the results of such a merge,
 before asking the action to be taken.
@@ -227,59 +227,59 @@ destination file, while the variable
 if set silently retains the installed file.
 .SH FILES
 This script creates the file 
-.TT new_file.md5sum,
+.I new_file.md5sum,
 and it may copy the file (presumably shipped with the package)
 .I <New file>
 to its destination,
 .I <Destination>.
 .PP
-.TT /var/lib/ucf/hashfile,
+.I /var/lib/ucf/hashfile,
 and
-.TT /var/lib/ucf/hashfile.X,
+.I /var/lib/ucf/hashfile.X,
 where 
 .I X
 is a small integer, where previous versions of the hashfile are
 stored. 
 .PP
-.TT /etc/ucf.conf
+.I /etc/ucf.conf
 .SH EXAMPLES
 If the package
-.TT foo
+.I foo
 wants to use ucf to handle user interaction for configuration file
-.TT foo.conf,
+.I foo.conf,
 a version of which is provided in the package as 
-.TT /usr/share/foo/configuration,
+.I /usr/share/foo/configuration,
 a simple invocation of ucf in the post inst file is all that is
 needed:
 .PP
 .B ucf
-.TT /usr/share/foo/configuration
-.TT /etc/foo.conf
+.I /usr/share/foo/configuration
+.I /etc/foo.conf
 .PP 
-On purge, on should tell ucf to forget about the file (se detailed
+On purge, on should tell ucf to forget about the file (see detailed
 examples in /usr/share/doc/examples):
 .PP
 .B ucf
 .I --purge
-.TT /etc/foo.conf
+.I /etc/foo.conf
 .PP
 The motivation for this script was to provide conffile like handling
 for start files for emacs lisp packages (for example,
-.TT /etc/emacs21/site-start.d/50psgml-init.el
+.I /etc/emacs21/site-start.d/50psgml-init.el
 ) These start files are not
 shipped with the package, instead, they are installed during the
 post installation configuration phase by the script
-.TT /usr/lib/emacsen-common/emacs-package-install $package_name.
+.I /usr/lib/emacsen-common/emacs-package-install $package_name.
 .PP
 This script is meant to be invoked by the packages install script at
-.TT /usr/lib/emacsen-common/packages/install/$package_name 
+.I /usr/lib/emacsen-common/packages/install/$package_name 
 for each
 flavour of installed emacsen by calling it with the proper values of
 new file (
-.TT /usr/share/emacs/site-lisp/<pkg>/<pkg>-init.el
+.I /usr/share/emacs/site-lisp/<pkg>/<pkg>-init.el
 ), and dest file
 (
-.TT /etc/emacs21/site-start.d/50<pkg>-init.el
+.I /etc/emacs21/site-start.d/50<pkg>-init.el
 ), and it should do the rest.
 .SH "SEE ALSO"
 ucf.conf(5), diff3(1).
