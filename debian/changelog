@@ -1,3 +1,11 @@
+ucf (0.21) unstable; urgency=low
+
+  * the --state-dir option to ucf had no effect, since it set the wrong
+    internal variable.  Thanks to Colin Watson for noticing, and providing
+    a patch.                                                  closes: Bug#210788
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sat, 13 Sep 2003 16:13:09 -0500
+
 ucf (0.20) unstable; urgency=high
 
   * Fixed usage of chown root.root in the rules files.

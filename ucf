@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.25 $'
+pversion='$Revision: 1.26 $'
 
 ######################################################################
 ########                                                     #########
@@ -309,13 +309,13 @@ fi
 
 # Command line, env variable, config file, or default
 if [ ! "x$opt_state_dir" = "x" ]; then
-    setq state_dir "$opt_state_dir" "The State directory"
+    setq statedir "$opt_state_dir" "The State directory"
 elif [ ! "x$UCF_STATE_DIR" = "x" ]; then
-    setq state_dir "$UCF_STATE_DIR" "The State directory"
+    setq statedir "$UCF_STATE_DIR" "The State directory"
 elif [ ! "x$conf_source_dir" = "x" ]; then
-    setq state_dir "$conf_state_dir" "The State directory"
+    setq statedir "$conf_state_dir" "The State directory"
 else
-    setq state_dir '/var/lib/ucf'  "The State directory"    
+    setq statedir '/var/lib/ucf'  "The State directory"    
 fi
 
 # Command line, env variable, config file, or default
