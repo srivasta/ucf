@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Tue Apr 20 15:03:08 2004
+# Last Modified On : Mon Apr 26 16:14:19 2004
 # Last Machine Used: glaurung.internal.golden-gryphon.com
-# Update Count     : 173
+# Update Count     : 174
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -767,7 +767,13 @@ EOPEND
 		exit 0;
 		;;
 	    "$choice_diff"|D|d)
-		( diff -uBbw "$dest_file" "$new_file" | sensible-pager ) >/dev/tty </dev/tty
+		if [ -e "$dest_file" ]; then
+		    ( diff -uBbw "$dest_file" "$new_file" | \
+			sensible-pager ) </dev/tty >/dev/tty
+		else
+		    ( diff -uBbw /dev/null "$new_file" | \
+			sensible-pager ) </dev/tty >/dev/tty
+		fi
 		if [ "X$STOP" != "X" ]; then
 		    echo >&2 "Please hit enter to continue";
 		    read -e ANSWER </dev/tty
