@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Fri Mar 12 14:43:08 2004
+# Last Modified On : Sun Mar 14 11:10:29 2004
 # Last Machine Used: glaurung.internal.golden-gryphon.com
-# Update Count     : 165
+# Update Count     : 166
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -242,10 +242,10 @@ replace_conf_file () {
 	    #echo "Saving  ${real_file}.dpkg-old,  in case."
 	    echo "Not saving ${real_file}, since it was unmodified"
 	else
-	    $action cp -f "real_file" "${real_file}.dpkg-old"
+	    $action cp -f "${real_file}" "${real_file}.dpkg-old"
 	fi
     fi
-    $action cp -f "$new_file" "real_file"
+    $action cp -f "$new_file" "${real_file}"
     replace_md5sum;
 }
 
