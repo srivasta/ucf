@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Tue Feb 26 14:35:57 2002
+# Last Modified On : Sun Nov 10 19:52:38 2002
 # Last Machine Used: glaurung.green-gryphon.com
-# Update Count     : 115
+# Update Count     : 135
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.8 $'
+pversion='$Revision: 1.9 $'
 
 ######################################################################
 ########                                                     #########
@@ -78,11 +78,50 @@ Options:
      -n,     --no-action     Dry run. No action is actually taken.
      -v,     --verbose       Make the script verbose
 
+Usage: $progname  -p  destination
+     -p,     --purge         Remove any reference to destination from records
+
 By default, the directory the new_file lives in is assumed to be the src-dir,
 which is where we look for any historical md5sums.
 
 END
 }
+
+
+
+purge_md5sum () {
+    for i in $(/usr/bin/seq 6 -1 0); do
+	if [ -e "${statedir}/hashfile.${i}" ]; then
+	    $action cp -f "${statedir}/hashfile.${i}" \
+                          "${statedir}/hashfile.$(($i+1))"
+	fi
+    done
+    if [ -e "$statedir/hashfile" ]; then
+	$action cp -f "$statedir/hashfile"  "$statedir/hashfile.0" 
+	if [ "X$docmd" = "XYES" ]; then
+	    set +e
+	    if [ "X$VERBOSE" != "X" ]; then
+		echo "(grep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\";"
+		grep -v "[[:space:]]${dest_file}$"  "$statedir/hashfile" \
+		    || true;
+		md5sum "$dest_file" ; 
+	    fi
+	    grep -v "[[:space:]]${dest_file}$" "$statedir/hashfile" > \
+		"$statedir/hashfile.tmp" || true; 
+	    mv -f "$statedir/hashfile.tmp"  "$statedir/hashfile" 
+	    set -e
+	else
+	    echo "(grep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\""
+	    echo " md5sum \"$dest_file\"; " 
+	    echo ") | sort > \"$statedir/hashfile\""
+	fi
+    fi
+    if [ -e "$statedir/cache/$cached_file" ]; then
+	$action rm -f "$statedir/cache/$cached_file"
+    fi
+}
+
+
 
 replace_md5sum () {
     for i in $(/usr/bin/seq 6 -1 0); do
@@ -118,11 +157,14 @@ replace_md5sum () {
 	    echo " md5sum \"$dest_file\" > \"$statedir/hashfile\""
 	fi
     fi
+    if [ "X$THREEWAY" != "X" ]; then
+	$action cp -f "$new_file" "$statedir/cache/$cached_file"
+    fi
 }
 
 replace_conf_file () {
     if [ -e "$dest_file" ]; then
-	$action cp -f "$dest_file" ${dest_file}.dpkg-old
+	$action cp -f "$dest_file" "${dest_file}.dpkg-old"
     fi
     if [ -L "$dest_file" ]; then
 	rm -f "$dest_file"
@@ -145,13 +187,13 @@ action='withecho'
 DEBUG=0
 VERBOSE=''
 statedir='/var/lib/ucf';
-
+THREEWAY=
 
 # Note that we use `"$@"' to let each command-line parameter expand to a
 # separate word. The quotes around `$@' are essential!
 # We need TEMP as the `eval set --' would nuke the return value of getopt.
-TEMP=`getopt -o hs:d:D::nv -n "$progname" \
-             --long help,src-dir:,dest-dir:DEBUG::,no-action,verbose \
+TEMP=`getopt -a -o hs:d:D::nv -n "$progname" \
+      --long help,src-dir:,dest-dir:DEBUG::,no-action,purge,verbose,three-way \
              -- "$@"`
 
 if [ $? != 0 ] ; then
@@ -164,11 +206,11 @@ eval set -- "$TEMP"
 
 while true ; do
     case "$1" in
-	-h|--help) usageversion;                                exit 0 ;;
-	-n|--no-action) action='echo'; docmd='NO';              shift  ;;
-	-v|--verbose) VERBOSE=1;                                shift  ;;
+	-h|--help) usageversion;                        exit 0 ;;
+	-n|--no-action) action='echo'; docmd='NO';      shift  ;;
+	-v|--verbose) VERBOSE=1;                        shift  ;;
 	-s|--src-dir)
-	    opt_source_dir="$2";                                shift 2 ;;
+	    opt_source_dir="$2";                        shift 2 ;;
 	-d|--debug)
             # d has an optional argument. As we are in quoted mode,
             # an empty parameter will be generated if its optional
@@ -177,26 +219,39 @@ while true ; do
 		"") setq DEBUG 1    "The Debug value"; shift 2 ;;
 		*)  setq DEBUG "$2" "The Debug value"; shift 2 ;;
 	    esac ;;
-	--)  shift ;                                             break ;;
+        -p|--purge) PURGE=YES;                         shift   ;;
+       --three-way) THREEWAY=YES;                       shift   ;;
+	--)  shift ;                                   break   ;;
 	*) echo "Internal error!" ; exit 1 ;;
     esac
 done
 
-if [ $# != 2 ]; then
-    echo >&2 "*** ERROR: Need exactly two arguments, got $#";
-    echo >&2 ""
-    usageversion;
-    exit 0 ;
+
+if [ "X$PURGE" = "XYES" ]; then
+    if [ $# != 1 ]; then
+	echo >&2 "*** ERROR: Need exactly one argument when purging, got $#";
+	echo >&2 ""
+	usageversion;
+	exit 0 ;		
+    fi
+    setq dest_file "$1" "The Destination file";
+else
+    if [ $# != 2 ]; then
+	echo >&2 "*** ERROR: Need exactly two arguments, got $#";
+	echo >&2 ""
+	usageversion;
+	exit 0 ;
+    fi
+    setq new_file  "$1" "The new file";
+    setq dest_file "$2" "The Destination file";
+    if [ ! -e "$new_file" ]; then
+	echo >&2 "Error: The new file ${new_file} does not exist!";
+	exit 1;
+    fi
 fi
 
-setq new_file  "$1" "The new file";
-setq dest_file "$2" "The Destination file";
 
 
-if [ ! -e "$new_file" ]; then
-    echo >&2 "Error: The new file ${new_file} does not exist!";
-    exit 1;
-fi
 
 # Load site defaults and over rides.
 if [ -f /etc/ucf.conf ]; then
@@ -211,7 +266,12 @@ elif [ ! "x$UCF_SOURCE_DIR" = "x" ]; then
 elif [ ! "x$conf_source_dir" = "x" ]; then
     setq source_dir "$conf_source_dir" "The Source directory"
 else
-    setq source_dir $(dirname $new_file) "The Source directory"
+    if [ "X$new_file" != "X" ]; then
+	setq source_dir $(dirname $new_file) "The Source directory"
+    else
+	setq source_dir /tmp
+    fi
+    
 fi
 
 # Command line, env variable, config file, or default
@@ -242,15 +302,16 @@ if [ "X$force_conffold" != "X" -a "X$force_conffnew" != "X" ]; then
     exit 1;
 fi
 
-old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
-old_mdsum_file="$source_dir/"$(basename "${new_file}")".md5sum";
-
 #
 if [ -e "$statedir/hashfile" -a ! -w "$statedir/hashfile" ]; then
     echo >&2 "ucf: do not have write privilege to the state data"
     if [ "X$docmd" = "XYES" ]; then
 	exit 1;
     fi
+fi
+
+if [ ! -d $statedir/cache ]; then
+    $action mkdir -p $statedir/cache ;
 fi
 
 # test and see if this file exists in the database
@@ -264,12 +325,24 @@ if [ -e "$statedir/hashfile" ]; then
                    awk '{print $1;}' )
 fi
 
+if [ "X$PURGE" = "XYES" ]; then
+    if [ "X$VERBOSE" != "X" ]; then
+	echo >&2 "Preparing to purge ${dest_file}"
+    fi
+    purge_md5sum;
+    exit 0;
+fi
+
+old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
+old_mdsum_file="$source_dir/"$(basename "${new_file}")".md5sum";
+cached_file=$(echo $dest_file | tr / :)
 
 if [ $DEBUG -gt 0 ]; then
     cat <<EOF
 The new start file is      \`$new_file\'
 The destination is         \`$dest_file\'
 The history is kept under  \'$source_dir\'
+The file may be cached at \'$statedir/cache/$cached_file\'
 EOF
     if [ -s "$dest_file" ]; then
 	echo "The destination file exists, and has md5sum:"
@@ -308,7 +381,7 @@ newsum=$(md5sum "$new_file" | awk '{print $1}')
 #         does, We need to determine how to initialize the
 #         ${old_mdsum_prefix}.old file..               
 if [ -e "$dest_file" ]; then
-    destsum=$(cat "$dest_file"  | awk '{print $1}');
+    destsum=$(md5sum "$dest_file"  | awk '{print $1}');
     if [ "X$lastsum" = "X" ]; then
 #      a: If we have a directory containing historical md5sums of this
 #         file in question, we should look and see if the currently
@@ -462,6 +535,10 @@ Configuration file \`$dest_file'
     Y or I  : install the package maintainer's version
     N or O  : keep your currently-installed version
       D     : show the differences between the versions
+    3 or T  : show a thre way difference between current, older,
+              and new versions of the file
+      M     : Do a 3 way merge between current, older,
+              and new versions of the file [Very Experimental]
       Z     : start a new shell to examine the situation
  The default action is to keep your current version.
 EOPRMT
@@ -474,9 +551,31 @@ EOPRMT
 		replace_conf_file;
 		exit 0;
 		;;
+	    3|t|T) 
+		if [ -e "$statedir/cache/$cached_file" 
+			-a "X$THREEWAY" != "X" ]; then
+		    diff3 -L Current -L Older -L New \
+                           "$dest_file" "$statedir/cache/$cached_file" \
+                               "$new_file" | sensible-pager
+		else 
+		    diff -uBbw "$dest_file" "$new_file" | sensible-pager
+		fi
+		;;
 	    D|d)
 		diff -uBbw "$dest_file" "$new_file" | sensible-pager
 		;;
+	    M|m)
+		echo >&2 "Merging changes into the new version new version"
+		if [ -e "$statedir/cache/$cached_file" 
+			-a "X$THREEWAY" != "X" ]; then
+		    diff3 -L Current -L Older -L New -m -e \
+                           "$dest_file" "$statedir/cache/$cached_file" \
+                               "$new_file" > $dest_file.dpkg-new
+		    new_file="$dest_file.dpkg-new"
+		    replace_conf_file;
+		else 
+		    replace_conf_file;
+		fi
 	    Z|z)
 		bash
 		;;

@@ -1,3 +1,22 @@
+ucf (0.08) unstable; urgency=high
+
+  * Add a --purge option to ucf, to remove all hints about a configuration
+    file from the hashfile. This fixes what happened if a package was
+    purged, and reinstalled -- on purge the configuration file was
+    removed, but it was still in ucf's database. On reinstall, since the
+    upstream file had not changed, ucf did not copy it to the destination
+    -- even though the destination file no longer existed. This is a major
+    bugfix.                                                  closes: Bug#159015
+  * Fix use of md5sum files, and manpage typo, thanks to a patch from
+    Henrique de Moraes Holschuh <hmh@debian.org>.            closes: Bug#163229
+  * ucf now has a rudimentary, experimental, and undocumented diff3
+    capability. So, optionally, people can see a diff3 diff between the
+    current file, the old file, and the new upstream version. Also, they
+    can have the changes made in the upstream versions merged into the
+    current file. This can be dangerous.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sun, 10 Nov 2002 21:22:00 -0600
+
 ucf (0.07) unstable; urgency=low
 
   * Fix a few missing grep trigger set -e failures.
