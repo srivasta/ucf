@@ -5,9 +5,9 @@
 ## Created On       : Tue Jul  9 15:45:40 1996
 ## Created On Node  : melkor.pilgrim.umass.edu
 ## Last Modified By : Manoj Srivastava
-## Last Modified On : Fri Oct 10 12:39:00 2003
+## Last Modified On : Fri Oct 10 12:45:14 2003
 ## Last Machine Used: glaurung.green-gryphon.com
-## Update Count     : 89
+## Update Count     : 90
 ## Status           : Unknown, Use with caution!
 ## HISTORY          :
 ## Description      :
@@ -118,6 +118,7 @@ stamp-binary:
 	$(make_directory)   $(LINTIANDIR)
 	echo 	            "ucf: description-synopsis-might-not-be-phrased-properly" \
                                 >> $(LINTIANDIR)/$(package)
+	$(install_program)  debian/preinst   $(TMPTOP)/DEBIAN/preinst
 	$(install_program)  debian/postinst   $(TMPTOP)/DEBIAN/postinst
 	$(install_program)  debian/postrm     $(TMPTOP)/DEBIAN/postrm
 	$(install_file)     debian/conffiles  $(TMPTOP)/DEBIAN/conffiles
