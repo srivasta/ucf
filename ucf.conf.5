@@ -4,9 +4,9 @@
 .\" Created On       : Fri Feb  1 11:17:32 2002
 .\" Created On Node  : glaurung.green-gryphon.com
 .\" Last Modified By : Manoj Srivastava
-.\" Last Modified On : Tue Feb 12 02:54:16 2002
+.\" Last Modified On : Mon Feb 25 11:52:38 2002
 .\" Last Machine Used: glaurung.green-gryphon.com
-.\" Update Count     : 25
+.\" Update Count     : 27
 .\" Status           : Unknown, Use with caution!
 .\" HISTORY          : 
 .\" Description      : 
@@ -32,7 +32,7 @@
 .\" Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 .\" 02111-1307, USA. 
 .\"
-.\" $Id: ucf.conf.5,v 1.1 2002/02/12 09:04:09 srivasta Exp $
+.\" $Id: ucf.conf.5,v 1.2 2002/02/25 18:07:21 srivasta Exp $
 .\"
 .TH UCF.CONF 5 "Feb 12 2002" "Debian" "Debian GNU/Linux manual" 
 .SH NAME
@@ -82,13 +82,13 @@ information is printed). To enable debugging output, set the value to
  Verbosity: The default value is 0 is quiet. To change the default
  behavior, set the value to 1.
 .TP
-.B conf_forcefold
+.B conf_force_conffold
 Force the instaled file to be retained. The default is have this
 variable unset, which makes the script ask in case of doubt.  This can
 be over ridden by the environment variable
 .B UCF_FORCE_CONFFOLD
 .TP
-.B conf_forcefnew
+.B conf_force_conffnew
 Force the instaled file to be overridden. The default is have this
 variable unset, which makes the script ask in case of doubt.  This can
 be over ridden by the environment variable
@@ -97,7 +97,9 @@ be over ridden by the environment variable
 .B conf_source_dir
 This is the directory where the historical md5sums for a file are
 looked for.  Specifically, the historical md5sums are looked for in
-the subdirectory 
+either the file
+.I ${filename}.md5sum,
+or the subdirectory 
 .I ${filename}.md5sum.d/ 
 .SH Files
 System\-wide defaults are placed in 

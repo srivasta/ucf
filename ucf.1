@@ -4,9 +4,9 @@
 .\" Created On       : Fri Feb  1 11:17:32 2002
 .\" Created On Node  : glaurung.green-gryphon.com
 .\" Last Modified By : Manoj Srivastava
-.\" Last Modified On : Tue Feb 12 02:45:37 2002
+.\" Last Modified On : Mon Feb 25 11:51:53 2002
 .\" Last Machine Used: glaurung.green-gryphon.com
-.\" Update Count     : 21
+.\" Update Count     : 24
 .\" Status           : Unknown, Use with caution!
 .\" HISTORY          : 
 .\" Description      : 
@@ -33,7 +33,7 @@
 .\" Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 .\" 02111-1307, USA.
 .\"
-.\" $Id: ucf.1,v 1.1 2002/02/12 09:05:24 srivasta Exp $
+.\" $Id: ucf.1,v 1.2 2002/02/25 18:07:21 srivasta Exp $
 .TH UCF 1 "Feb 1 2002" "Debian" "Debian GNU/Linux manual"
 .SH NAME
 ucf \- Update Configuration File:  preserve user changes in config files
@@ -102,9 +102,9 @@ Make the script be very verbose about setting internal variables.
 .TP
 .B "-s foo, --src-dir  foo"
 Set the source directory (historical md5sums are expected to live in
-sub directories of this directory) to foo. By default, the directory
-the new_file lives in is assumed to be the source directory. Setting
-this option  settings  in  the  environment variable 
+files and sub directories of this directory) to foo. By default, the
+directory the new_file lives in is assumed to be the source
+directory. Setting this option settings in the environment variable
 .B UCF_SOURCE_DIR,
 and in the  configuration  file variable
 .B conf_source_dir.
@@ -137,32 +137,42 @@ shipped in a previous version of this package; and the maintainer can
 help by telling the script about the historical md5sums that published
 versions of this file contained. 
 .PP
-The way to do this is to create a directory, called
+The way to do this is to eiher create a file called
+.B <New file>.md5sum, 
+with one md5sum each line, (the file names you use are ignored, except
+for the entry named default), or create a directory, called
 .B <New file>.md5sum.d,
-which should contain any number of files, each containing a md5sum of
-a previous version of 
+which should contain any number of files, each containing a single
+line, namely, the md5sum of a previous version of
 .B <New file>. 
-The names of these files are not important, with one exception.  The
-author personally uses either package version numbers or release code
-names, like
+The names of these files are not important, with one exception: The
+file called default is treated specially.  For example, the author
+personally uses either package version numbers or release code names,
+like
 .I 7.6.3,
 or
 .I potato.
 If one of the historical md5sums match, we are almost certain that
 either the historical record of md5sums is not complete, or the user
-has changed the configuration file.  
-.PP
+has changed the configuration file.
+.SS "The default historical md5sum"
 The exception to the rule about names mentioned earlier is that if no
 md5sums match, and if the file
 .B <New file>.md5sum.d/default
-exists, it shall be used as the default md5sum of the 
+exists, or if there is a line corresponding to a 
+.I default
+file in 
+.B <New file>.md5sum,
+it shall be used as the default md5sum of the 
 .I previous
 version of the package assumed to have been installed on this machine.
 As you can see, unless there are limited number of previously released
 packages (like just one), the maintainer is also making an informed
 guess, but the option is provided to the maintainer.
 .PP
-If the directory 
+If the file
+.B <New file>.md5sum,
+or the directory
 .B <New file>.md5sum.d
 does not exist, or none of the md5sums match, we test the installed 
 .I <Destination>.

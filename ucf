@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Tue Feb 12 03:57:42 2002
+# Last Modified On : Mon Feb 25 11:45:42 2002
 # Last Machine Used: glaurung.green-gryphon.com
-# Update Count     : 109
+# Update Count     : 111
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.4 $'
+pversion='$Revision: 1.5 $'
 
 ######################################################################
 ########                                                     #########
@@ -241,6 +241,7 @@ if [ "X$force_conffold" != "X" -a "X$force_conffnew" != "X" ]; then
 fi
 
 old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
+old_mdsum_file="$source_dir/"$(basename "${new_file}")".md5sum";
 
 #
 if [ -e "$statedir/hashfile" -a ! -w "$statedir/hashfile" ]; then
@@ -286,6 +287,13 @@ EOF
     else 
 	echo "The new file does not exist."
     fi
+    if [ -d "$old_mdsum_dir" ]; then
+	echo "The historical md5sum dir $old_mdsum_dir exists"
+    elif [ -f "$old_mdsum_file" ]; then
+	echo "The histotical md5sum file $old_mdsum_file exists"
+    else
+	echo "Historical md5sums are not available"
+    fi
 fi
 newsum=$(md5sum "$new_file" | awk '{print $1}')
 
@@ -294,21 +302,38 @@ newsum=$(md5sum "$new_file" | awk '{print $1}')
 ########               Do the replacement                    #########
 ########                                                     #########
 ######################################################################
-# Step 1: If ${old_mdsum_prefix}.old does not exist, and dest file
+# Step 1: If we have no record of this file, and dest file
 #         does, We need to determine how to initialize the
 #         ${old_mdsum_prefix}.old file..               
 if [ -e "$dest_file" ]; then
+    destsum=$(cat "$dest_file"  | awk '{print $1}');
     if [ "X$lastsum" = "X" ]; then
 #      a: If we have a directory containing historical md5sums of this
 #         file in question, we should look and see if the currently
 #         installed file matches any of the old md5sums; in which case
 #         it can be silently replaced.
-	if [ -d "$old_mdsum_dir" ]; then
-	    for file in ${old_mdsum_dir}/*; do
-		oldsum=$(cat "$file"  | awk '{print $1}');
-		if [ "$oldsum" = "$newsum"  ]; then
+	if [ -d "$old_mdsum_dir" -o -f "$old_md5sum_file" ]; then
+	    if [ -d "$old_mdsum_dir"  ]; then
+		for file in ${old_mdsum_dir}/*; do
+		    oldsum=$(cat "$file"  | awk '{print $1}');
+		    if [ "$oldsum" = "$destsum"  ]; then
+			if [ "X$force_conffold" = "X" ]; then
+#                           Bingo! replace, set the md5sum, and we are done 
+			    echo >&2 \
+			    "Replacing config file $dest_file with new version"
+			    replace_conf_file;
+			    exit 0;
+			else
+			    replace_md5sum;
+			    exit 0;
+			fi
+		    fi
+		done
+	    elif [ -f "$old_md5sum_file" ]; then
+		oldsum=$(grep "^${destsum}" "$old_md5sum_file")
+		if [ "X$oldsum" != "X" ]; then
+#                    Bingo
 		    if [ "X$force_conffold" = "X" ]; then
-#                       Bingo! replace, set the md5sum, and we are done 
 			echo >&2 \
 			    "Replacing config file $dest_file with new version"
 			replace_conf_file;
@@ -318,7 +343,7 @@ if [ -e "$dest_file" ]; then
 			exit 0;
 		    fi
 		fi
-	    done
+	    fi
 #	   Well, nothing matched. We now check to see if the
 #	   maintainer has an opinion on how to set the ``md5sum of the
 #	   previously installed version'', since we have no way of
@@ -329,20 +354,32 @@ if [ -e "$dest_file" ]; then
 	    if [ "X$VERBOSE" != "X" ]; then
 		echo >&2 "Histotical md5sums did not match."
 	    fi
-	    if [ -e "${old_mdsum_dir}/default" ]; then
-		if [ "X$VERBOSE" != "X" ]; then
-		    echo >&2 "However, a default old md5sum exists, using it."
+	    if [ -d "$old_mdsum_dir"  ]; then
+		if [ -e "${old_mdsum_dir}/default" ]; then
+		    if [ "X$VERBOSE" != "X" ]; then
+			echo >&2 "However, a default entry exists, using it."
+		    fi
+		    lastsum=$(cat "${old_mdsum_dir}/default" | \
+			awk '{print $1;}')
+		    do_replace_md5sum=1;
 		fi
-		lastsum=$(cat "${old_mdsum_dir}/default" | awk '{print $1;}')
-		do_replace_md5sum=1;
+	    elif [ -f "$old_md5sum_file" ]; then
+		oldsum=$(grep "[[:space:]]default$" "$old_md5sum_file" | \
+		    awk '{print $1;}')
+		if [ "X$oldsum" != "X" ]; then
+#                    Bingo
+		    lastsum=$oldsum;
+		    do_replace_md5sum=1;
+		fi
 	    fi
-#          At this point, we are almost certain that either the
-#          historical record of md5sums is not complete, or the user
-#          has changed the configuration file. Rather than guessing
-#          and chosing one of the historical md5sums, we fall through
-#          to the solution used if there had been no historical
-#          md5sums directory.
 	fi
+
+#       At this point, we are almost certain that either the
+#       historical record of md5sums is not complete, or the user has
+#       changed the configuration file. Rather than guessing and
+#       chosing one of the historical md5sums, we fall through to the
+#       solution used if there had been no historical md5sums
+#       directory/file.
 	if [ "X$lastsum" = "X" ]; then
 #      b: We do not have a historical list of md5sums, or none
 #         matched, and we still need to initialize the

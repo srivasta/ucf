@@ -1,3 +1,14 @@
+ucf (0.05) unstable; urgency=low
+
+  * /etc/ucf.conf and ucf.conf(5) disagreed due to a typo in the man
+    page. Fixed.                                             closes: Bug#135691
+  * Added the ability for the developer to specify a single file with
+    historical md5sums, instead of having to ship a directory populated
+    with single line files for every configuration file in the
+    package. This is now beginning to get reasonably complex ;-)
+
+ -- Manoj Srivastava <srivasta@debian.org>  Mon, 25 Feb 2002 12:03:43 -0600
+
 ucf (0.04) unstable; urgency=high
 
   * Hmm. Failed to replace the configuration file if the old file was a
