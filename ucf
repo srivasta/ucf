@@ -673,12 +673,14 @@ EOPEND
 		if [ -e "$dest_file" ]; then
 		    replace_md5sum;
 		fi
+		cp -f "$new_file" $dest_file.dpkg-dist
 		exit 0;
 		;;
 	    *)
 		if [ -e "$dest_file" ]; then
 		    replace_md5sum;
 		fi
+                  cp -f "$new_file" $dest_file.dpkg-dist
 		exit 0;
 	esac
     done
