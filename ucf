@@ -200,7 +200,7 @@ purge_md5sum () {
 	    set -e
 	fi
     fi
-    echo "The cache file is $cached_file"
+    test -n "$VERBOSE" && echo "The cache file is $cached_file"
     if [ ! -z "$cached_file" -a -f "$statedir/cache/$cached_file" ]; then
 	$action rm -f "$statedir/cache/$cached_file"
     fi
