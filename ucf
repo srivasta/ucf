@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.17 $'
+pversion='$Revision: 1.18 $'
 
 ######################################################################
 ########                                                     #########
@@ -184,7 +184,11 @@ replace_md5sum () {
 }
 
 replace_conf_file () {
+    # Ultimately, we need to test for RETAIN_OLD here
     if [ -e "$dest_file" ]; then
+	if [ -z "$RETAIN_OLD" ]; then
+	    echo "Saving  ${dest_file}.dpkg-old,  in case."
+	fi
 	$action cp -f "$dest_file" "${dest_file}.dpkg-old"
     fi
     if [ -L "$dest_file" ]; then
@@ -570,11 +574,12 @@ EOPRMT
 	case "$ANSWER" in
 	    y|Y|I|i)
 		echo >&2 "Replacing config file $dest_file with new version"
+		RETAIN_OLD=YES
 		replace_conf_file;
 		exit 0;
 		;; 
 	    3|t|T) 
-		if [ -e "$statedir/cache/$cached_file" 
+		if [ -e "$statedir/cache/$cached_file" \
 			-a "X$THREEWAY" != "X" ]; then
 		    diff3 -L Current -L Older -L New \
                            "$dest_file" "$statedir/cache/$cached_file" \
@@ -594,6 +599,7 @@ EOPRMT
                            "$dest_file" "$statedir/cache/$cached_file" \
                                "$new_file" > $dest_file.dpkg-new
 		    new_file="$dest_file.dpkg-new"
+		    RETAIN_OLD=YES
 		    replace_conf_file;
 		else 
 		    replace_conf_file;

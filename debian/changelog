@@ -1,3 +1,9 @@
+ucf (0.13) unstable; urgency=medium
+
+  * A missing \ at the ned of the line caused a syntax error.closes: Bug#189514
+
+ -- Manoj Srivastava <srivasta@debian.org>  Fri, 18 Apr 2003 13:27:29 -0500
+
 ucf (0.12) unstable; urgency=low
 
   * Finally document the --thre-way option. This has been in the code for
