@@ -200,6 +200,7 @@ purge_md5sum () {
 	    set -e
 	fi
     fi
+    echo "The cache file is $cached_file"
     if [ ! -z "$cached_file" -a -f "$statedir/cache/$cached_file" ]; then
 	$action rm -f "$statedir/cache/$cached_file"
     fi
@@ -292,7 +293,7 @@ replace_conf_file () {
 # Long term variables#
 #
 docmd='YES'
-#action='withecho'
+action='withecho'
 action=
 DEBUG=0
 VERBOSE=''
@@ -477,14 +478,6 @@ if [ -e "$statedir/hashfile" ]; then
                    awk '{print $1;}' )
 fi
 
-if [ "X$PURGE" = "XYES" ]; then
-    if [ "X$VERBOSE" != "X" ]; then
-	echo >&2 "Preparing to purge ${dest_file}"
-    fi
-    purge_md5sum;
-    exit 0;
-fi
-
 old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
 
 
@@ -524,6 +517,9 @@ EOF
 	echo $lastsum
     else 
 	echo "The old md5sum does not exist."
+        if [ -d "$old_mdsum_dir" -o -f "$old_mdsum_file" ]; then
+            echo "However, there are historical md5sums around."
+        fi
     fi
     if [ -e "$new_file" ]; then
 	echo "The new file exists, and has md5sum:"
@@ -534,12 +530,21 @@ EOF
     if [ -d "$old_mdsum_dir" ]; then
 	echo "The historical md5sum dir $old_mdsum_dir exists"
     elif [ -f "$old_mdsum_file" ]; then
-	echo "The histotical md5sum file $old_mdsum_file exists"
+	echo "The historical md5sum file $old_mdsum_file exists"
     else
 	echo "Historical md5sums are not available"
     fi
 fi
 newsum=$(md5sum "$new_file" | awk '{print $1}')
+
+if [ "X$PURGE" = "XYES" ]; then
+    if [ "X$VERBOSE" != "X" ]; then
+	echo >&2 "Preparing to purge ${dest_file}"
+    fi
+    purge_md5sum;
+    exit 0;
+fi
+
 
 
 ######################################################################
@@ -648,7 +653,7 @@ else  # "$dest_file" does not exist
 # Step 2: If destfile does not exist, create it, set the file
 #         "${old_mdsum_prefix}.old" to the md5sum of the new file, and we
 #         are done
-    if [ "X$lastsum" = "X" ]; then
+    if [ "X$lastsum" = "X" ] && [ ! -d "$old_mdsum_dir" ] && [ ! -f "$old_mdsum_file"]; then
 	if [ "X$force_conffold" = "X" ]; then
 	    echo >&2 ""
 	    echo >&2 "Creating config file $dest_file with new version"
@@ -838,9 +843,8 @@ EOPEND
 		bash >/dev/tty </dev/tty || true
 		;;
 	    $choice_keep_current|n|N|o|O|'')
-		if [ -e "$dest_file" ]; then
-		    replace_md5sum;
-		fi
+		replace_md5sum;
+
 		cp -f "$orig_new_file" "$dest_file.dpkg-dist"
 		exit 0;
 		;;
