@@ -500,10 +500,12 @@ if [ -e /usr/share/debconf/confmodule ]; then
 fi
 	
 
-if [ "$DEBCONF_ALREADY_RUNNING" = 'YES' ]; then
+if [ -z "$DEBCONF_OK" ]; then
+    if [ "$DEBCONF_ALREADY_RUNNING" = 'YES' ]; then
 	DEBCONF_OK='NO'
-else
+    else
 	DEBCONF_OK='YES'
+    fi
 fi
 
 if [ "$DEBCONF_ALREADY_RUNNING" ] && [ "$DEBCONF_OK" = NO ]; then
