@@ -5,9 +5,9 @@
 ## Created On       : Tue Jul  9 15:45:40 1996
 ## Created On Node  : melkor.pilgrim.umass.edu
 ## Last Modified By : Manoj Srivastava
-## Last Modified On : Sun Nov 10 23:18:22 2002
+## Last Modified On : Sun Jul 13 15:47:04 2003
 ## Last Machine Used: glaurung.green-gryphon.com
-## Update Count     : 84
+## Update Count     : 85
 ## Status           : Unknown, Use with caution!
 ## HISTORY          :
 ## Description      :
@@ -111,9 +111,9 @@ stamp-binary:
 	$(make_directory)   $(MAN5DIR)
 	$(make_directory)   $(DEBLIBDIR)
 	$(make_directory)   $(DEBDOCDIR)
-#	$(make_directory)   $(LINTIANDIR)
-#	echo 	            "ucf: postinst-does-not-set-usr-doc-link" \
-#                                >> $(LINTIANDIR)/$(package)
+	$(make_directory)   $(LINTIANDIR)
+	echo 	            "ucf: description-synopsis-might-not-be-phrased-properly" \
+                                >> $(LINTIANDIR)/$(package)
 	$(install_program)  debian/postinst   $(TMPTOP)/DEBIAN/postinst
 	$(install_program)  debian/postrm     $(TMPTOP)/DEBIAN/postrm
 	$(install_file)     debian/conffiles  $(TMPTOP)/DEBIAN/conffiles

@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Fri May  2 21:46:02 2003
+# Last Modified On : Sun Jul 13 15:26:12 2003
 # Last Machine Used: glaurung.green-gryphon.com
-# Update Count     : 152
+# Update Count     : 158
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.22 $'
+pversion='$Revision: 1.23 $'
 
 ######################################################################
 ########                                                     #########
@@ -523,8 +523,7 @@ if [ -e "$dest_file" ]; then
 	    if [ "X$VERBOSE" != "X" ]; then
 		echo >&2 "No match found, we shall ask."
 	    fi
-	    lastsum=$(md5sum "NO MATCH" | awk '{print $1;}')
-	    do_replace_md5sum=1;
+	    lastsum='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
 	fi # the old md5sum file does not exist, and the historical
 	   # record failed
     fi # the old md5sum file does not exist (bug))
@@ -580,6 +579,17 @@ else
 	replace_md5sum;
 	exit 0;
     fi
+#      c: If the destination file is the same as the new maintianer provided one,
+#         we need do nothing.
+    if [ "$newsum" = "$destsum" ]; then
+	if [ "X$VERBOSE" != "X" ]; then
+	    echo >&2 "md5sums of the file in place matches, nothing needs be done."
+	fi
+	replace_md5sum;
+	exit 0;			# Hah. Match. We are done.
+    fi
+
+
     done='NO';
     while [ "X$done" = "XNO" ]; do
         cat >&2 <<EOPRMT
@@ -590,16 +600,27 @@ Configuration file \`$dest_file'
     Y or I  : install the package maintainer's version
     N or O  : keep your currently-installed version
       D     : show the differences between the versions
-    3 or T  : show a thre way difference between current, older,
+EOPRMT
+	if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then
+	    cat >&2 <<EOTD
+    3 or T  : show a three way difference between current, older,
               and new versions of the file
       M     : Do a 3 way merge between current, older,
               and new versions of the file [Very Experimental]
+EOTD
+	fi
+	cat >&2 <<EOPEND
       Z     : start a new shell to examine the situation
  The default action is to keep your current version.
-EOPRMT
-	
-	echo -n >&2 "*** " $(basename "$dest_file") \
+EOPEND
+	if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then
+	    echo -n >&2 "*** " $(basename "$dest_file") \
+		" (Y/I/N/O/D/3/T/M/Z) [default=N] ?"
+	else
+	    echo -n >&2 "*** " $(basename "$dest_file") \
 	    " (Y/I/N/O/D/Z) [default=N] ?"
+	fi
+	
 	read -e ANSWER;
 	case "$ANSWER" in
 	    y|Y|I|i)
@@ -607,6 +628,9 @@ EOPRMT
 		RETAIN_OLD=YES
 		replace_conf_file;
 		exit 0;
+		;; 
+	    D|d)
+		diff -uBbw "$dest_file" "$new_file" | sensible-pager
 		;; 
 	    3|t|T) 
 		if [ -e "$statedir/cache/$cached_file" \
@@ -618,9 +642,6 @@ EOPRMT
 		    diff -uBbw "$dest_file" "$new_file" | sensible-pager
 		fi
 		;;
-	    D|d)
-		diff -uBbw "$dest_file" "$new_file" | sensible-pager
-		;; 
 	    M|m) 
 		echo >&2 "Merging changes into the new version new version"
 		if [ -e "$statedir/cache/$cached_file" \

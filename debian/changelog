@@ -1,3 +1,14 @@
+ucf (0.17) unstable; urgency=low
+
+  * Fixed a typo.                                            closes: Bug#191833
+  * Fixed eiher -> either in the man page.                   closes: Bug#200048
+  * If the file that is already in place has the same md5sum as the new
+    file created by the maintainer, nothing needs be done.   closes: Bug#199233
+  * Fix prompting for actoin such that we offer choices for 3 way merging
+    or diffs where appropriate                               closes: Bug#199162
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sun, 13 Jul 2003 15:28:46 -0500
+
 ucf (0.16) unstable; urgency=high
 
   * A thinko in the logic for moving a old, locally modified configuration
