@@ -1,3 +1,11 @@
+ucf (0.04) unstable; urgency=low
+
+  * Hmm. Failed to replace the configuration file if the old file was a
+    symbolic link to the new file (happened for gnus users). Thanks go to
+    wsheets@sbcglobal.net for pointing this out.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Wed, 20 Feb 2002 20:21:42 -0600
+
 ucf (0.03) unstable; urgency=low
 
   * Fixed typo in the long description
