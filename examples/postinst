@@ -53,8 +53,8 @@ case "$1" in
     # Make our version of a program available
     : update-alternatives \
     :       --install /usr/bin/program program /usr/bin/alternative 50 \
-    :       --slave /usr/man/man1/program.1.gz program.1.gz \
-    :               /usr/man/man1/alternative.1.gz
+    :       --slave /usr/share/man/man1/program.1.gz program.1.gz \
+    :               /usr/share/man/man1/alternative.1.gz
 
     # Tell ucf that the file in /usr/share/foo is the latest
     # maintainer version, and let it handle how to manage the real
