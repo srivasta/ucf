@@ -1,0 +1,438 @@
+#!/bin/bash
+#                               -*- Mode: Sh -*-
+# updateConfFile.sh ---
+# Author           : Manoj Srivastava ( srivasta@glaurung.green-gryphon.com )
+# Created On       : Fri Feb  1 03:41:47 2002
+# Created On Node  : glaurung.green-gryphon.com
+# Last Modified By : Manoj Srivastava
+# Last Modified On : Tue Feb 12 02:29:29 2002
+# Last Machine Used: glaurung.green-gryphon.com
+# Update Count     : 96
+# Status           : Unknown, Use with caution!
+# HISTORY          :
+# Description      :
+#
+# This script attempts to provide conffile like handling for files not
+# shipped in a Debian package, but handled by the postinst. Using this
+# script, one may ship a bunch of default cofiguration files somewhere
+# in /usr (/usr/share/<pkg> is a good location), and maintain files in
+# /etc.
+#
+# The motivation for this script was to provide conffile like handling
+# for start files for emacs lisp packages (for example,
+# /etc/emacs21/site-stard.d/50psgml-init.el) These start files are not
+# shipped with the package, instead, they are installed during the
+# post installation configuration phase by the script
+# /usr/lib/emacsen-common/emacs-package-install $package_name.
+#
+# This script is meant to be invoked by the packages install script at
+# /usr/lib/emacsen-common/packages/install/$package_name for each
+# flavour of installed emacsen by calling it with the proper values of
+# new file (/usr/share/emacs/site-lisp/<pkg>/<pkg>-init.el), and dest file
+# (/etc/emacs21/site-stard.d/50<pkg>-init.el)), and it should do the rest.
+#
+
+
+# make sure we exit on error
+set -e
+
+# set the version and revision
+progname="`basename \"$0\"`"
+pversion='$Revision: 1.1 $'
+
+######################################################################
+########                                                     #########
+########              Utility functions                      #########
+########                                                     #########
+######################################################################
+setq() {
+    # Variable Value Doc_string
+    if [ "x$2" = "x" ]; then
+	echo >&2 "$progname: Unable to determine $3"
+	exit 1;
+    else
+	if [ ! "x$VERBOSE" = "x" ]; then
+	    echo "$progname: $3 is $2";
+	fi
+	eval "$1=\"\$2\"";
+    fi
+}
+
+withecho () {
+        echo " $@" >&2
+        "$@"
+}
+
+usageversion () {
+        cat >&2 <<END
+Debian GNU/Linux $progname $pversion.
+           Copyright (C) 2002 Manoj Srivastava.
+This is free software; see the GNU General Public Licence for copying
+conditions.  There is NO warranty.
+
+Usage: $progname  [options] new_file  destination
+Options:
+     -h,     --help          print this message
+     -s foo, --src-dir  foo  Set the src dir (historical md5sums live here)
+     -d [n], --debug    [n]  Set the Debug level to N
+     -n,     --no-action     Dry run. No action is actually taken.
+     -v,     --verbose       Make the script verbose
+
+By default, the directory the new_file lives in is assumed to be the src-dir,
+which is where we look for any historical md5sums.
+
+END
+}
+
+replace_md5sum () {
+    for i in $(/usr/bin/seq 6 -1 0); do
+	if [ -e "${statedir}/hashfile.${i}" ]; then
+	    $action cp -f "${statedir}/hashfile.${i}" \
+                          "${statedir}/hashfile.$(($i+1))"
+	fi
+    done
+    if [ -e "$statedir/hashfile" ]; then
+	$action cp -f "$statedir/hashfile"  "$statedir/hashfile.0" 
+	if [ "X$docmd" = "XYES" ]; then
+	    (grep -v "[[:space:]]${dest_file}$"  "$statedir/hashfile";
+		md5sum "$dest_file"
+	    ) > "$statedir/hashfile" 
+	else
+	    echo "(grep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\""
+	    echo " md5sum \"$dest_file\" " 
+	    echo ") > \"${$statedir/hashfile}\""
+	fi
+    else
+	if [ "X$docmd" = "XYES" ]; then
+	    	md5sum "$dest_file" > "$statedir/hashfile" 
+	else
+	    echo " md5sum \"$dest_file\" > \"${$statedir/hashfile}\""
+	fi
+    fi
+}
+
+replace_conf_file () {
+    if [ -e "$dest_file" ]; then
+	$action cp -f "$dest_file" ${dest_file}.dpkg-old
+    fi
+    $action cp -f "$new_file" "$dest_file"
+    replace_md5sum;
+}
+
+
+######################################################################
+########                                                     #########
+########              Command line args                      #########
+########                                                     #########
+######################################################################
+#
+# Long term variables#
+#
+docmd='YES'
+action='withecho'
+DEBUG=0
+VERBOSE=0
+statedir='/var/lib/ucf';
+
+
+# Note that we use `"$@"' to let each command-line parameter expand to a
+# separate word. The quotes around `$@' are essential!
+# We need TEMP as the `eval set --' would nuke the return value of getopt.
+TEMP=`getopt -o hs:d:D::nv -n "$progname" \
+             --long help,src-dir:,dest-dir:DEBUG::,no-action,verbose \
+             -- "$@"`
+
+if [ $? != 0 ] ; then
+    echo "Error handling options.Terminating..." >&2 ;
+    exit 1 ;
+fi
+
+# Note the quotes around `$TEMP': they are essential!
+eval set -- "$TEMP"
+
+while true ; do
+    case "$1" in
+	-h|--help) usageversion;                                exit 0 ;;
+	-n|--no-action) action='echo'; docmd='NO';              shift  ;;
+	-v|--verbose) VERBOSE=1;                                shift  ;;
+	-s|--src-dir)
+	    opt_source_dir="$2";                                shift 2 ;;
+	-d|--debug)
+            # d has an optional argument. As we are in quoted mode,
+            # an empty parameter will be generated if its optional
+            # argument is not found.
+	    case "$2" in
+		"") setq DEBUG 1    "The Debug value"; shift 2 ;;
+		*)  setq DEBUG "$2" "The Debug value"; shift 2 ;;
+	    esac ;;
+	--)  shift ;                                             break ;;
+	*) echo "Internal error!" ; exit 1 ;;
+    esac
+done
+
+if [ $# != 2 ]; then
+    echo >&2 "*** ERROR: Need exactly two arguments, got $#";
+    echo >&2 ""
+    usageversion;
+    exit 0 ;
+fi
+
+setq new_file  "$1" "The new file";
+setq dest_file "$2" "The Destination file";
+
+
+if [ ! -e "$new_file" ]; then
+    echo >&2 "Error: The new file ${new_file} does not exist!";
+    exit 1;
+fi
+
+# Load site defaults and over rides.
+if [ -f /etc/ucf.conf ]; then
+    . /etc/ucf.conf
+fi
+
+# Command line, env variable, config file, or default
+if [ ! "x$opt_source_dir" = "x" ]; then
+    setq source_dir "$opt_source_dir" "The Source directory"
+elif [ ! "x$UCF_SOURCE_DIR" = "x" ]; then
+    setq source_dir "$UCF_SOURCE_DIR" "The Source directory"
+elif [ ! "x$conf_source_dir" = "x" ]; then
+    setq source_dir "$conf_source_dir" "The Source directory"
+else
+    setq source_dir $(dirname $new_file) "The Source directory"
+fi
+
+# Command line, env variable, config file, or default
+if [ ! "x$opt_force_conffold" = "x" ]; then
+    setq force_conffold "$opt_force_conffold" "Keep the old file"
+elif [ ! "x$UCF_FORCE_CONFFOLD" = "x" ]; then
+    setq force_conffold "$UCF_FORCE_CONFFOLD" "Keep the old file"
+elif [ ! "x$conf_force_conffold" = "x" ]; then
+    setq force_conffold "$conf_force_conffold" "Keep the old file"
+else
+    unset force_conffold 
+fi
+
+# Command line, env variable, config file, or default
+if [ ! "x$opt_force_conffnew" = "x" ]; then
+    setq force_conffnew "$opt_force_conffnew" "Replace the old file"
+elif [ ! "x$UCF_FORCE_CONFFNEW" = "x" ]; then
+    setq force_conffnew "$UCF_FORCE_CONFFNEW" "Replace the old file"
+elif [ ! "x$conf_force_conffnew" = "x" ]; then
+    setq force_conffnew "$conf_force_conffnew" "Replace the old file"
+else
+    unset force_conffnew 
+fi
+
+if [ "X$force_conffold" != "X" -a "X$force_conffnew" != "X" ]; then
+    echo >&2 "Error: Only one of force_conffold and force_conffnew should";
+    echo >&2 "       be set";
+    exit 1;
+fi
+
+old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
+
+#
+if [ -e "$statedir/hash" && ! -w "$statedir/hash" ]; then
+    echo >&2 "ucf: do not have write privilidge to the state data"
+    if [ "X$docmd" = "XYES" ]; then
+	exit 1;
+    fi
+fi
+
+# test and see if this file exists in the database
+if [ -e "$statedir/hash" ]; then
+    lastsum=$(grep "[[:space:]]${dest_file}$" "$statedir/hash" | \
+                   awk '{print $1;}' )
+fi
+
+
+if [ $DEBUG > 0 ]; then
+    cat <<EOF
+The new start file is      \`$new_file\'
+The destination is         \`$dest_file\'
+The history is kept under  \'$source_dir\'
+EOF
+    if [ -s "$dest_file" ]; then
+	echo "The destination file exists, and has md5sum:"
+	md5sum "$dest_file"
+    else
+	echo "The destination file does not exist."
+    fi
+    if [ "X$lastsum" != "X" ]; then
+	echo "The old md5sum exists, and is:"
+	echo $lastsum
+    else 
+	echo "The old md5sum does not exist."
+    fi
+    if [ -e "$new_file" ]; then
+	echo "The new file exists, and has md5sum:"
+	md5sum "$new_file"
+    else 
+	echo "The new file does not exist."
+    fi
+fi
+newsum=$(md5sum "$new_file" | awk '{print $1}')
+
+######################################################################
+########                                                     #########
+########               Do the replacement                    #########
+########                                                     #########
+######################################################################
+# Step 1: If ${old_mdsum_prefix}.old does not exist, and dest file
+#         does, We need to determine how to initialize the
+#         ${old_mdsum_prefix}.old file..               
+if [ -e "$dest_file" ]; then
+    if [ "X$lastsum" = "X" ]; then
+#      a: If we have a directory containing historical md5sums of this
+#         file in question, we should look and see if the currently
+#         installed file matches any of the old md5sums; in which case
+#         it can be silently replaced.
+	if [ -d "$old_mdsum_dir" ]; then
+	    for file in ${old_mdsum_dir}/*; do
+		oldsum=$(cat "$file"  | awk '{print $1}');
+		if [ "$oldsum" = "$newsum"  ]; then
+		    if [ "X$force_conffold" = "X" ]; then
+#                       Bingo! replace, set the md5sum, and we are done 
+			echo >&2 \
+			    "Replacing config file $dest_file with new version"
+			replace_conf_file;
+			exit 0;
+		    else
+			replace_md5sum;
+			exit 0;
+		    fi
+		fi
+	    done
+#	   Well, nothing matched. We now check to see if the
+#	   maintainer has an opinion on how to set the ``md5sum of the
+#	   previously installed version'', since we have no way of
+#	   determining that automatically. Please note that unless
+#	   there are limited number of previously released packages
+#	   (like just one), the maintainer is also making a guess at
+#	   this point by supplying a historical md5sum default file. 
+	    if [ "X$VERBOSE" != "X" ]; then
+		echo >&2 "Histotical md5sums did not match."
+	    fi
+	    if [ -e "${old_mdsum_dir}/default" ]; then
+		if [ "X$VERBOSE" != "X" ]; then
+		    echo >&2 "However, a default old md5sum exists, using it."
+		fi
+		lastsum=$(cat "${old_mdsum_dir}/default" | awk '{print $1;}')
+	    fi
+#          At this point, we are almost certain that either the
+#          historical record of md5sums is not complete, or the user
+#          has changed the configuration file. Rather than guessing
+#          and chosing one of the historical md5sums, we fall through
+#          to the solution used if there had been no historical
+#          md5sums directory.
+	fi
+	if [ "X$lastsum" = "X" ]; then
+#      b: We do not have a historical list of md5sums, or none
+#         matched, and we still need to initialize the
+#         ${old_mdsum_prefix}.old file. We can pretend that the
+#         installed file is the same as the one present in the
+#         previous package; this means that if they have the same file
+#         as the file in the new package, no questions shall be asked;
+#         if not, they shall know that the maintainer file is not the
+#         same as the one they have, and we can't determine whther or
+#         not they made any changes, so we err on the side of caution
+#         and ask'
+	    if [ "X$VERBOSE" != "X" ]; then
+		echo >&2 "Pretending that the installed file is old version."
+	    fi
+	    lastsum=$(md5sum "$dest_file" | awk '{print $1;}')
+	fi # the old md5sum file does not exist, and the historical
+	   # record failed
+    fi # the old md5sum file does not exist (bug))
+else  # "$dest_file" does not exist
+# Step 2: If destfile does not exist, create it, set the file
+#         "${old_mdsum_prefix}.old" to the md5sum of the new file, and we
+#         are done
+    if [ "X$lastsum" = "X" ]; then
+	if [ "X$force_conffold" = "X" ]; then
+	    echo >&2 "Creating config file $dest_file with new version"
+	    replace_conf_file;
+	    exit 0;
+	else
+	    replace_md5sum;
+	fi	
+    fi
+fi
+
+# Here, the destfile exists.
+
+# step 3: If the old md5sum and the md5sum of the new file
+#         do not match, we need to take action.
+if [ "$lastsum" = "$newsum" ]; then
+    if [ "X$VERBOSE" != "X" ]; then
+	echo >&2 "md5sums match, nothing needs be done."
+    fi
+    replace_md5sum;
+    exit 0;			# Hah. Match. We are done.
+fi
+#      a: If the md5sum of the dest file is the same as lastsum, replace the 
+#         destfile, saying we are replacing old config files
+destsum=$(md5sum "$dest_file" | awk '{print $1}')
+if [ "$destsum" = "$lastsum" ]; then
+    if [ "X$force_conffold" = "X" ]; then
+	echo >&2 "Replacing config file $dest_file with new version"
+	replace_conf_file;
+	exit 0;
+    else
+	replace_md5sum;
+	exit 0;
+    fi
+else
+#      b: If the md5sum of the dest file differs from lastsum, we need to ask
+#         the user what action to take.
+    if [ "X$force_conffnew" != "X" ]; then
+	echo >&2 "Replacing config file $dest_file with new version"
+	echo >&2 "even though the files differ, since you asked for it"
+	replace_conf_file;
+	exit 0;
+    fi
+    if [ "X$force_conffold" != "X" ]; then
+	replace_md5sum;
+	exit 0;
+    fi
+    done='NO';
+    while [ "X$done" = "XNO" ]; do
+        cat >&2 <<EOPRMT
+Configuration file \`$dest_file'
+ ==> File on system created by you or by a script.
+ ==> File also in package provided by package maintainer.
+   What would you like to do about it ?  Your options are:
+    Y or I  : install the package maintainer's version
+    N or O  : keep your currently-installed version
+      D     : show the differences between the versions
+      Z     : start a new shell to examine the situation
+ The default action is to keep your current version.
+EOPRMT
+	echo -n >&2 "*** " $(basename "$dest_file") \
+                    " (Y/I/N/O/D/Z) [default=N] ?"
+	read -e ANSWER;
+	case "$ANSWER" in
+	    y|Y|I|i)
+		echo >&2 "Replacing config file $dest_file with new version"
+		replace_conf_file;
+		exit 0;
+		;;
+	    D|d)
+		diff -uBbw "$dest_file" "$new_file" | sensible-pager
+		;;
+	    Z|z)
+		bash
+		;;
+	    n|N|o|O)
+		replace_md5sum;
+		exit 0;
+		;;
+	    *)
+		replace_md5sum;
+		exit 0;
+	esac
+    done
+fi
+
+exit 0;

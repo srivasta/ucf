@@ -1,0 +1,206 @@
+.\"                             -*- Mode: Nroff -*- 
+.\" updateConfFile.1 --- 
+.\" Author           : Manoj Srivastava ( srivasta@green-gryphon.com ) 
+.\" Created On       : Fri Feb  1 11:17:32 2002
+.\" Created On Node  : glaurung.green-gryphon.com
+.\" Last Modified By : Manoj Srivastava
+.\" Last Modified On : Tue Feb 12 02:45:37 2002
+.\" Last Machine Used: glaurung.green-gryphon.com
+.\" Update Count     : 21
+.\" Status           : Unknown, Use with caution!
+.\" HISTORY          : 
+.\" Description      : 
+.\" 
+.\" Copyright (c) 2002 Manoj Srivastava <srivasta@debian.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+.\" 02111-1307, USA.
+.\"
+.\" $Id: ucf.1,v 1.1 2002/02/12 09:05:24 srivasta Exp $
+.TH UCF 1 "Feb 1 2002" "Debian" "Debian GNU/Linux manual"
+.SH NAME
+ucf \- Update Configuration File:  preserve user changes in config files
+.SH SYNOPSIS
+.B ucf
+.I [options]
+.I <New file>
+.I <Destination>
+.SH DESCRIPTION
+This script attempts to provide conffile like handling for files
+installed under 
+.I /etc
+not
+shipped in a 
+.B Debian 
+package, but handled by the postinst instead. 
+.B Debian
+policy states that files under 
+.I /etc
+which are configuration files 
+.B must
+preserve user changes, and this applies to files handled by maintainer
+scripts as well. Using 
+.B ucf, 
+one may ship a bunch of default configuration files somewhere in 
+.I /usr 
+(
+.I /usr/share/<pkg> 
+is a good location), and maintain files in
+.I /etc,
+preserving user changes and in general offering the same facilities
+while upgrading that 
+.B dpkg 
+normally provides for
+.I \*(lqconffiles\*(rq
+.PP
+Additionally, this script provides facilities for transitioning a file
+that had not been provided 
+.I conffile 
+like protection to come under this
+schema, and attempts to minimize questions asked at install
+time. Indeed, the transitioning facility is better than the one
+offered by 
+.B dpkg 
+while transitioning a file from a 
+.I non-conffile 
+to 
+.I conffile 
+status.
+.SH OPTIONS
+.TP
+.B "-h, --help"
+Print a short usage message
+.TP
+.B "-n, --no-action"
+Dry run. Print the actions that would be taken if the script is
+invoked, but take no action.
+.TP
+.B "-d [n], --debug [n]"
+Set the debug level to the (optional) level
+.I n 
+(n defaults to 1). This turns on copious debugging information.
+.TP
+.B "-v,  --verbose"
+Make the script be very verbose about setting internal variables.
+.TP
+.B "-s foo, --src-dir  foo"
+Set the source directory (historical md5sums are expected to live in
+sub directories of this directory) to foo. By default, the directory
+the new_file lives in is assumed to be the source directory. Setting
+this option  settings  in  the  environment variable 
+.B UCF_SOURCE_DIR,
+and in the  configuration  file variable
+.B conf_source_dir.
+.SH USAGE
+The motivation for this script was to provide conffile like handling
+for start files for emacs lisp packages (for example,
+.I /etc/emacs21/site-start.d/50psgml-init.el
+) These start files are not
+shipped with the package, instead, they are installed during the
+post installation configuration phase by the script
+.I /usr/lib/emacsen-common/emacs-package-install $package_name.
+.PP
+This script is meant to be invoked by the packages install script at
+.I /usr/lib/emacsen-common/packages/install/$package_name 
+for each
+flavour of installed emacsen by calling it with the proper values of
+new file (
+.I/usr/share/emacs/site-lisp/<pkg>/<pkg>-init.el
+), and dest file
+(
+.I /etc/emacs21/site-start.d/50<pkg>-init.el
+), and it should do the rest.
+.PP
+If a file maintained by maintainer scripts is being transitioned from an
+unprotected status to the protection afforded by the script, the
+maintainer can help ease the transition by reducing the questions that
+may be asked at installation time. Specifically, questions should not
+be asked if the file in question is an unmodified version that was one
+shipped in a previous version of this package; and the maintainer can
+help by telling the script about the historical md5sums that published
+versions of this file contained. 
+.PP
+The way to do this is to create a directory, called
+.B <New file>.md5sum.d,
+which should contain any number of files, each containing a md5sum of
+a previous version of 
+.B <New file>. 
+The names of these files are not important, with one exception.  The
+author personally uses either package version numbers or release code
+names, like
+.I 7.6.3,
+or
+.I potato.
+If one of the historical md5sums match, we are almost certain that
+either the historical record of md5sums is not complete, or the user
+has changed the configuration file.  
+.PP
+The exception to the rule about names mentioned earlier is that if no
+md5sums match, and if the file
+.B <New file>.md5sum.d/default
+exists, it shall be used as the default md5sum of the 
+.I previous
+version of the package assumed to have been installed on this machine.
+As you can see, unless there are limited number of previously released
+packages (like just one), the maintainer is also making an informed
+guess, but the option is provided to the maintainer.
+.PP
+If the directory 
+.B <New file>.md5sum.d
+does not exist, or none of the md5sums match, we test the installed 
+.I <Destination>.
+file to see whether it is the same as the 
+.I <New file>
+If not, we ask the user whether they want us to replace the file.
+.SH "ENVIRONMENT VARIABLES"
+The variable
+.B UCF_FORCE_CONFFNEW,
+if set, forces the new file to always overwrite the installed
+destination file, while the variable
+.B UCF_FORCE_CONFFOLD,
+if set silently retains the installed file.
+.SH FILES
+This script creates the file 
+.I new_file.md5sum,
+and it may copy the file (presumably shipped with the package)
+.I <New file>
+to its destination,
+.I <Destination>.
+.PP
+.I /var/lib/ucf/hashfile,
+and
+.I /var/lib/ucf/hashfile.X,
+where 
+.I X
+is a small integer, where previous versions of the hashfile are
+stored. 
+.PP
+.I /etc/ucf.conf
+.SH "SEE ALSO"
+ucf.conf(5).
+The
+.B Debian
+Emacs policy, shipped with the package
+.I emacsen-common.
+.SH BUGS
+There are no bugs.  Any resemblance thereof is delirium. Really.
+.SH AUTHOR
+This manual page was written Manoj Srivastava <srivasta@debian.org>,
+for the Debian GNU/Linux system.
