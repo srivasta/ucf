@@ -5,9 +5,9 @@
 ## Created On       : Tue Jul  9 15:45:40 1996
 ## Created On Node  : melkor.pilgrim.umass.edu
 ## Last Modified By : Manoj Srivastava
-## Last Modified On : Tue Feb 12 02:59:19 2002
+## Last Modified On : Tue Feb 12 03:07:12 2002
 ## Last Machine Used: glaurung.green-gryphon.com
-## Update Count     : 73
+## Update Count     : 74
 ## Status           : Unknown, Use with caution!
 ## HISTORY          :
 ## Description      :
@@ -116,7 +116,7 @@ stamp-binary:
                                 >> $(LINTIANDIR)/$(package)
 	$(install_program)  debian/postinst   $(TMPTOP)/DEBIAN/postinst
 	$(install_program)  debian/prerm      $(TMPTOP)/DEBIAN/prerm
-        $(install_file)     debian/conffiles  $(TMPTOP)/DEBIAN/conffiles
+	(install_file)     debian/conffiles  $(TMPTOP)/DEBIAN/conffiles
 	$(install_program)  ucf               $(BINDIR)
 	$(install_file)     ucf.1             $(MAN1DIR)
 	$(install_file)     ucf.conf.5        $(MAN5DIR)
