@@ -49,6 +49,10 @@ if [ -z "$DEBCONF_ALREADY_RUNNING" ]; then
 		DEBCONF_ALREADY_RUNNING='YES'
 	else
 		DEBCONF_ALREADY_RUNNING='NO'
+                # Load out templates, just in case our template has
+                # not been loaded or the Debconf DB lost or corrupted
+                # since then.
+                debconf-loadtemplates ucf /var/lib/dpkg/info/ucf.templates
 	fi
 fi
 export DEBCONF_ALREADY_RUNNING
