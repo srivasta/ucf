@@ -1,3 +1,10 @@
+ucf (0.2) unstable; urgency=low
+
+  * Fixed typo in long desc.
+  * Changed section to utils.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Tue, 12 Feb 2002 04:17:38 -0600
+
 ucf (0.01) unstable; urgency=low
 
   * New version of the package.  
