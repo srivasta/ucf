@@ -1,3 +1,9 @@
+ucf (0.06) unstable; urgency=low
+
+  * Added the ionformational script lcf and the associated man page.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Tue, 26 Feb 2002 14:11:54 -0600
+
 ucf (0.05) unstable; urgency=low
 
   * /etc/ucf.conf and ucf.conf(5) disagreed due to a typo in the man
