@@ -2,13 +2,13 @@ Source: ucf
 Section: utils
 Priority: optional
 Maintainer: Manoj Srivastava <srivasta@debian.org>
-Standards-Version: 3.5.7.1
+Standards-Version: 3.5.9.0
 
 Package: ucf
 Architecture: all
-Description: Update Configuration File - preserve user changes in config files
+Description: Update Configuration File: preserves user changes to config files.
  Debian policy states that configuration files must preserve user
- changes during package upgrade. The easy way to achieve this behavior
+ changes during package upgrade.  The easy way to achieve this behavior
  is to make the configuration file a `conffile', in which case dpkg
  handles the file specially during upgrades, prompting the user as
  needed.

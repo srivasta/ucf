@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.16 $'
+pversion='$Revision: 1.17 $'
 
 ######################################################################
 ########                                                     #########
@@ -77,7 +77,10 @@ Options:
      -d [n], --debug    [n]  Set the Debug level to N
      -n,     --no-action     Dry run. No action is actually taken.
      -v,     --verbose       Make the script verbose
-
+             --three-way     Register this file in the cache, and turn on the
+                             diff3 option allowing the merging of maintainer
+                             changes into a (potentially modified) local 
+                             configuration file. )
 Usage: $progname  -p  destination
      -p,     --purge         Remove any reference to destination from records
 

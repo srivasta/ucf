@@ -1,3 +1,10 @@
+ucf (0.12) unstable; urgency=low
+
+  * Finally document the --thre-way option. This has been in the code for
+    a while now, and seems to be working, but was not documented so far. 
+
+ -- Manoj Srivastava <srivasta@debian.org>  Fri, 18 Apr 2003 02:42:56 -0500
+
 ucf (0.11) unstable; urgency=low
 
   * Test for a old file before trying to copy it as backup. 
