@@ -1,3 +1,14 @@
+ucf (0.23) unstable; urgency=low
+
+  * Fix a corner case when ucf is reinstalled after being removed, but not
+    purged, for a while, in this case all the data is out of
+    date. Rotating the dataset would have ucf asking questions all over,
+    but that is better than silently ignoring files of packages that were
+    purged while ucf was removed, and are being reinstalled. Correct
+    behaviour trumps the user being asked questions again. closes: Bug#215077
+
+ -- Manoj Srivastava <srivasta@debian.org>  Fri, 10 Oct 2003 12:44:19 -0500
+
 ucf (0.22) unstable; urgency=low
 
   * .TT in the man page did not produce tt font. Use .I instead. 
