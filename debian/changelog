@@ -1,3 +1,14 @@
+ucf (0.18) unstable; urgency=low
+
+  * No longer save conffiler.dpkg-old unless conffile had been
+    modified. This should prevent the buildup of .dpkg-old cruft over
+    time.                                                    closes: Bug#189520
+  * Document the fact that --three-way first appeared in version 0.8 of
+    ucf, which was the first version to hit sarge. The woody version of
+    ucf shall not understand the --thre-way option.          closes: Bug#202431
+
+ -- Manoj Srivastava <srivasta@debian.org>  Thu, 31 Jul 2003 12:02:17 -0500
+
 ucf (0.17) unstable; urgency=low
 
   * Fixed a typo.                                            closes: Bug#191833
@@ -40,7 +51,7 @@ ucf (0.13) unstable; urgency=medium
 
 ucf (0.12) unstable; urgency=low
 
-  * Finally document the --thre-way option. This has been in the code for
+  * Finally document the --three-way option. This has been in the code for
     a while now, and seems to be working, but was not documented so far. 
 
  -- Manoj Srivastava <srivasta@debian.org>  Fri, 18 Apr 2003 02:42:56 -0500

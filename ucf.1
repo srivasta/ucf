@@ -4,9 +4,9 @@
 .\" Created On       : Fri Feb  1 11:17:32 2002
 .\" Created On Node  : glaurung.green-gryphon.com
 .\" Last Modified By : Manoj Srivastava
-.\" Last Modified On : Sun Nov 10 21:07:00 2002
+.\" Last Modified On : Thu Jul 31 12:00:54 2003
 .\" Last Machine Used: glaurung.green-gryphon.com
-.\" Update Count     : 29
+.\" Update Count     : 30
 .\" Status           : Unknown, Use with caution!
 .\" HISTORY          : 
 .\" Description      : 
@@ -33,7 +33,7 @@
 .\" Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 .\" 02111-1307, USA.
 .\"
-.\" $Id: ucf.1,v 1.5 2003/07/13 20:30:25 srivasta Exp $
+.\" $Id: ucf.1,v 1.6 2003/07/31 17:02:57 srivasta Exp $
 .TH UCF 1 "Feb 1 2002" "Debian" "Debian GNU/Linux manual"
 .SH NAME
 ucf \- Update Configuration File:  preserve user changes in config files
@@ -135,6 +135,12 @@ configuration file. This is accomplished by taking the configuration
 file and stashing it in a cache area during registration, and using
 diff3 during the install (the stashed file name is a munged version of
 the full path of the configuration file to avoid name space clashes).
+.I Note
+This option appeared in Version 0.8 of
+.B ucf,
+which was the first version released into unstable and ultimately
+.B Sarge.
+The version of ucf in woody does not contain this option.
 .SH USAGE
 The motivation for this script was to provide conffile like handling
 for start files for emacs lisp packages (for example,
