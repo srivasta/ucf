@@ -1,3 +1,10 @@
+ucf (0.1) unstable; urgency=low
+
+  * when the old md5sum is not found in the file, the return value of the
+    grep is non-zero and the program exits.              closes: Bug#216115
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sat, 18 Oct 2003 21:31:28 -0500
+
 ucf (0.24) unstable; urgency=low
 
   * Fix a series of typos that prevented old md5sums from working. Thanks

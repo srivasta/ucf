@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Sun Aug 24 20:24:02 2003
+# Last Modified On : Sat Oct 18 21:28:25 2003
 # Last Machine Used: glaurung.green-gryphon.com
-# Update Count     : 160
+# Update Count     : 161
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -465,7 +465,7 @@ if [ -e "$dest_file" ]; then
 		    fi
 		done
 	    elif [ -f "$old_mdsum_file" ]; then
-		oldsum=$(egrep "^${destsum}" "$old_mdsum_file")
+		oldsum=$(egrep "^${destsum}" "$old_mdsum_file" || true)
 		if [ "X$oldsum" != "X" ]; then
 #                    Bingo
 		    if [ "X$force_conffold" = "X" ]; then
