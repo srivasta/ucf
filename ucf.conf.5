@@ -4,9 +4,9 @@
 .\" Created On       : Fri Feb  1 11:17:32 2002
 .\" Created On Node  : glaurung.green-gryphon.com
 .\" Last Modified By : Manoj Srivastava
-.\" Last Modified On : Mon Feb 25 11:52:38 2002
-.\" Last Machine Used: glaurung.green-gryphon.com
-.\" Update Count     : 27
+.\" Last Modified On : Mon Apr 19 12:16:51 2004
+.\" Last Machine Used: glaurung.internal.golden-gryphon.com
+.\" Update Count     : 28
 .\" Status           : Unknown, Use with caution!
 .\" HISTORY          : 
 .\" Description      : 
@@ -101,6 +101,12 @@ either the file
 .I ${filename}.md5sum,
 or the subdirectory 
 .I ${filename}.md5sum.d/ 
+.TP
+.B conf_old_mdsum_file
+Force the historical md5sums to be read from this file, rather than
+defaulting to living in the source directory.  Setting this option
+settings in the environment variable
+.B UCF_OLD_MDSUM_FILE
 .SH Files
 System\-wide defaults are placed in 
 .I /etc/ucf.conf,

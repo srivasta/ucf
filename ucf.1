@@ -4,9 +4,9 @@
 .\" Created On       : Fri Feb  1 11:17:32 2002
 .\" Created On Node  : glaurung.green-gryphon.com
 .\" Last Modified By : Manoj Srivastava
-.\" Last Modified On : Thu Aug  7 20:05:25 2003
-.\" Last Machine Used: glaurung.green-gryphon.com
-.\" Update Count     : 39
+.\" Last Modified On : Mon Apr 19 12:15:30 2004
+.\" Last Machine Used: glaurung.internal.golden-gryphon.com
+.\" Update Count     : 40
 .\" Status           : Unknown, Use with caution!
 .\" HISTORY          : 
 .\" Description      : 
@@ -133,6 +133,14 @@ directory. Setting this option settings in the environment variable
 .B UCF_SOURCE_DIR,
 and in the  configuration  file variable
 .B conf_source_dir.
+.TP
+.B "--sum_file  foo"
+Force the historical md5sums to be read from this file, rather than
+defaulting to living in the source directory.  Setting this option
+settings in the environment variable
+.B UCF_OLD_MDSUM_FILE,
+and in the  configuration  file variable
+.B conf_old_mdsum_file.
 .TP
 .B "--three-way"
 This turns on the option, during installation, for the user to be

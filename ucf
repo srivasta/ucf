@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Mon Apr 19 02:37:09 2004
+# Last Modified On : Mon Apr 19 12:12:58 2004
 # Last Machine Used: glaurung.internal.golden-gryphon.com
-# Update Count     : 168
+# Update Count     : 172
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -82,6 +82,8 @@ Usage: $progname  [options] new_file  destination
 Options:
      -h,     --help          print this message
      -s foo, --src-dir  foo  Set the src dir (historical md5sums live here)
+             --sum-file bar  Force the historical md5sums to be read from
+                             this file.  Overrides any setting of --src-dir.
      -d [n], --debug    [n]  Set the Debug level to N
      -n,     --no-action     Dry run. No action is actually taken.
      -v,     --verbose       Make the script verbose
@@ -244,7 +246,7 @@ THREEWAY=
 # separate word. The quotes around `$@' are essential!
 # We need TEMP as the `eval set --' would nuke the return value of getopt.
 TEMP=`getopt -a -o hs:d::D::nv -n "$progname" \
-      --long help,src-dir:,dest-dir:,debug::,DEBUG::,no-action,purge,verbose,three-way,debconf-ok,state-dir: \
+      --long help,src-dir:,sum-file:,dest-dir:,debug::,DEBUG::,no-action,purge,verbose,three-way,debconf-ok,state-dir: \
              -- "$@"`
 
 if [ $? != 0 ] ; then
@@ -262,6 +264,8 @@ while true ; do
 	-v|--verbose) VERBOSE=1;                        shift  ;;
 	-s|--src-dir)
 	    opt_source_dir="$2";                       shift 2 ;;
+	--sum-file)
+	    opt_old_mdsum_file="$2";		  shift 2 ;;
 	--state-dir)
 	    opt_state_dir="$2";                        shift 2 ;;
 	-D|-d|--debug|--DEBUG)
@@ -348,7 +352,7 @@ if [ ! "x$opt_state_dir" = "x" ]; then
     setq statedir "$opt_state_dir" "The State directory"
 elif [ ! "x$UCF_STATE_DIR" = "x" ]; then
     setq statedir "$UCF_STATE_DIR" "The State directory"
-elif [ ! "x$conf_source_dir" = "x" ]; then
+elif [ ! "x$conf_state_dir" = "x" ]; then
     setq statedir "$conf_state_dir" "The State directory"
 else
     setq statedir '/var/lib/ucf'  "The State directory"    
@@ -375,6 +379,17 @@ elif [ ! "x$conf_force_conffnew" = "x" ]; then
 else
     force_conffnew=''
 fi
+
+if [ -n "$opt_old_mdsum_file" ]; then
+    setq old_mdsum_file "$opt_sum_file" "The md5sum is found here"
+elif [ ! "x$UCF_OLD_MDSUM_FILE" = "x" ]; then
+    setq old_mdsum_file "$UCF_OLD_MDSUM_FILE" "The md5sum is found here"
+elif [ ! "x$conf_old_mdsum_file" = "x" ]; then
+    setq old_mdsum_file "$conf_old_mdsum_file" "Replace the old file"
+else
+    old_mdsum_file="$source_dir/"$(basename "${new_file}")".md5sum";
+fi
+
 
 if [ "X$force_conffold" != "X" -a "X$force_conffnew" != "X" ]; then
     echo >&2 "Error: Only one of force_conffold and force_conffnew should";
@@ -414,7 +429,8 @@ if [ "X$PURGE" = "XYES" ]; then
 fi
 
 old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
-old_mdsum_file="$source_dir/"$(basename "${new_file}")".md5sum";
+
+
 cached_file=$(echo $dest_file | tr / :)
 orig_new_file="$new_file"	# Since sometimes we replace the newfile below
 
@@ -768,7 +784,14 @@ EOPEND
 			read -e ANSWER </dev/tty
 		    fi
 		else 
-		    ( diff -uBbw "$dest_file" "$new_file" | sensible-pager ) >/dev/tty >/dev/tty
+		    if [ -e "$dest_file" ]; then
+			( diff -uBbw "$dest_file" "$new_file" | \
+			    sensible-pager ) </dev/tty >/dev/tty
+		    else
+			( diff -uBbw /dev/null "$new_file" | \
+			    sensible-pager ) </dev/tty >/dev/tty
+		    fi
+
 		    if [ "X$STOP" != "X" ]; then
 			echo >&2 "Please hit enter to continue";
 			read -e ANSWER </dev/tty
