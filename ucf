@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Sun Nov 10 22:18:20 2002
+# Last Modified On : Sun Nov 10 22:32:08 2002
 # Last Machine Used: glaurung.green-gryphon.com
-# Update Count     : 139
+# Update Count     : 147
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -38,7 +38,7 @@ set -e
 
 # set the version and revision
 progname="`basename \"$0\"`"
-pversion='$Revision: 1.12 $'
+pversion='$Revision: 1.13 $'
 
 ######################################################################
 ########                                                     #########
@@ -102,23 +102,27 @@ purge_md5sum () {
 	fi
     done
     if [ -e "$statedir/hashfile" ]; then
-	$action cp -f "$statedir/hashfile"  "$statedir/hashfile.0" 
+	if [ "X$docmd" = "XYES" ]; then
+	    cp -f "$statedir/hashfile"  "$statedir/hashfile.0" 
+	else
+	    echo cp -f "$statedir/hashfile"  "$statedir/hashfile.0" 
+	fi
 	if [ "X$docmd" = "XYES" ]; then
 	    set +e
 	    if [ "X$VERBOSE" != "X" ]; then
-		echo "(grep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\";"
+		echo "grep -v [[:space:]]${dest_file}$ $statedir/hashfile"
 		grep -v "[[:space:]]${dest_file}$"  "$statedir/hashfile" \
 		    || true;
-		md5sum "$dest_file" ; 
 	    fi
+	    #echo "grep -v [[:space:]]${dest_file}$ $statedir/hashfile"
 	    grep -v "[[:space:]]${dest_file}$" "$statedir/hashfile" > \
 		"$statedir/hashfile.tmp" || true; 
-	    mv -f "$statedir/hashfile.tmp"  "$statedir/hashfile" 
+	    if [ "X$docmd" = "XYES" ]; then
+		mv -f "$statedir/hashfile.tmp"  "$statedir/hashfile" 
+	    else
+		echo mv -f "$statedir/hashfile.tmp"  "$statedir/hashfile"
+	    fi
 	    set -e
-	else
-	    echo "(grep -v \"[[:space:]]${dest_file}$\" \"$statedir/hashfile\""
-	    echo " md5sum \"$dest_file\"; " 
-	    echo ") | sort > \"$statedir/hashfile\""
 	fi
     fi
     if [ ! -z "$cached_file" -a -f "$statedir/cache/$cached_file" ]; then
@@ -130,9 +134,12 @@ purge_md5sum () {
 
 replace_md5sum () {
     for i in $(/usr/bin/seq 6 -1 0); do
-	if [ -e "${statedir}/hashfile.${i}" ]; then
-	    $action cp -f "${statedir}/hashfile.${i}" \
-                          "${statedir}/hashfile.$(($i+1))"
+	if [ "X$docmd" = "XYES" ]; then
+	    cp -f "${statedir}/hashfile.${i}" \
+		"${statedir}/hashfile.$(($i+1))"
+	else
+	    echo cp -f "${statedir}/hashfile.${i}" \
+		"${statedir}/hashfile.$(($i+1))"
 	fi
     done
     if [ -e "$statedir/hashfile" ]; then
