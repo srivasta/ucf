@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Fri Mar 18 12:27:19 2005
+# Last Modified On : Sat Jun 25 05:01:53 2005
 # Last Machine Used: glaurung.internal.golden-gryphon.com
-# Update Count     : 179
+# Update Count     : 181
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -460,6 +460,12 @@ if [ "X$force_conffold" != "X" -a "X$force_conffnew" != "X" ]; then
     echo >&2 "       be set";
     exit 1;
 fi
+
+# VERBOSE of 0 is supposed to be the same as not setting VERBOSE
+if [ "X$VERBOSE" = "X0" ]; then
+    VERBOSE=''
+fi
+
 
 #
 if [ -e "$statedir/hashfile" -a ! -w "$statedir/hashfile" ]; then

@@ -1,0 +1,10 @@
+2005-06-25  Manoj Srivastava  <srivasta@debian.org>
+
+	* ucf (safe_dest_file):
+		  srivasta@debian.org--etch/ucf--devel--0.1--base-0 Well,
+		  setting VERBOSE to 0 is the same as being quiet,
+		  according to the man page. Unfortunately, the code
+		  actually looked to see if VERBOSE was set (even if set
+		  to 0). Now, we unset  VERBOSE if the user had set it to
+		  0, making everyone happy. 
+
