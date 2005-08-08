@@ -250,6 +250,11 @@ if set, forces the new file to always overwrite the installed
 destination file, while the variable
 .B UCF_FORCE_CONFFOLD,
 if set silently retains the installed file.
+.B UCF_FORCE_CONFFMISS
+is only applicable when the installed destination file does not exist
+(perhaps due to user removal),and forces ucf to recreate the missing
+file (the default behaviour is to honor the users wishes and not
+recreate the locally deleted file).
 .SH FILES
 This script creates the file 
 .I new_file.md5sum,

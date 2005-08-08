@@ -1,3 +1,21 @@
+2005-08-08  Manoj Srivastava  <srivasta@debian.org>
+
+	* ucf: srivasta@debian.org--etch/ucf--devel--2.0--patch-1 Add code
+		  to determine the value of UCF_FORCE_CONFFMISS, looking
+		  at the command line, env variable, config file, or
+		  default (the default being unset). No command line
+		  option is currently available, but the underpinning are
+		  there. Replace the destination file, if missing, and iff
+		  the variable is set. 
+
+	* ucf.1: srivasta@debian.org--etch/ucf--devel--2.0--patch-1
+		  Document  UCF_FORCE_CONFFMISS. This environment variable
+		  is only  applicable when the installed destination file
+		  does not exist (perhaps due to user removal),and forces
+		  ucf to recreate the missing file (the default behaviour
+		  is to honor the users wishes and not recreate the
+		  locally deleted file).  
+
 2005-06-25  Manoj Srivastava  <srivasta@debian.org>
 
 	* ucf (safe_dest_file):

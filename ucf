@@ -444,6 +444,17 @@ else
     force_conffnew=''
 fi
 
+# Command line, env variable, config file, or default
+if [ ! "x$opt_force_conffmiss" = "x" ]; then
+    setq force_conffmiss "$opt_force_conffmiss" "Replace any missing files"
+elif [ ! "x$UCF_FORCE_CONFFMISS" = "x" ]; then
+    setq force_conffmiss "$UCF_FORCE_CONFFMISS" "Replace any missing files"
+elif [ ! "x$conf_force_conffmiss" = "x" ]; then
+    setq force_conffmiss "$conf_force_conffmiss" "Replace any missing files"
+else
+    force_conffmiss=''
+fi
+
 if [ -n "$opt_old_mdsum_file" ]; then
     setq old_mdsum_file "$opt_old_mdsum_file" "The md5sum is found here"
 elif [ ! "x$UCF_OLD_MDSUM_FILE" = "x" ]; then
@@ -676,17 +687,34 @@ else  # "$dest_file" does not exist
     elif [ "$lastsum" = "$newsum" ]; then
         # OK, new version of the file is the same as the last version
         # we saw. Since the user apparently has deleted the file,
-        # nothing needs be done
-        echo >&2 "Not replacing deleted config file $dest_file";
-    else
-        # OK. New upstream version. Even though the user has deleted
-        # this file, they should be asked now, unless specified
-        # otherwise.
-	if [ "X$force_conffold" = "X" ]; then
-            destsum='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+        # nothing needs be done, unless we have been told differently
+        if [ "X$force_conffmiss" != "X" ]; then
+            echo >&2 ""
+	    echo >&2 "Recreating deleted config file $dest_file with new version, as asked"
+	    replace_conf_file;
+	    exit 0;
         else
-            exit 0;
-	fi	
+            echo >&2 "Not replacing deleted config file $dest_file";
+        fi
+        
+    else
+        # OK. New upstream version. 
+        if [ "X$force_conffmiss" != "X" ]; then
+            # User has said to replace missing files, so we do so, no
+            # questions asked.
+            echo >&2 ""
+	    echo >&2 "Recreating deleted config file $dest_file with new version, as asked"
+	    replace_conf_file;
+	    exit 0;
+        else
+            # Even though the user has deleted this file, they should
+            # be asked now, unless specified otherwise.
+            if [ "X$force_conffold" = "X" ]; then
+                destsum='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            else
+                exit 0;
+	    fi	
+        fi        	
     fi
 fi
 
