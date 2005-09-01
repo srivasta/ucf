@@ -1,3 +1,9 @@
+2005-09-01  Manoj Srivastava  <srivasta@debian.org>
+
+	* examples/postrm:
+		  srivasta@debian.org--etch/ucf--devel--2.0--patch-2 only
+		  use ucf if it is available 
+
 2005-08-08  Manoj Srivastava  <srivasta@debian.org>
 
 	* ucf: srivasta@debian.org--etch/ucf--devel--2.0--patch-1 Add code

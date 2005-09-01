@@ -44,7 +44,9 @@ case "$1" in
     rm -f /etc/foo.conf
 
     # and finally clear it out from the ucf database
-    ucf --purge /etc/foo.conf
+    if which ucf >/dev/null; then
+        ucf --purge /etc/foo.conf
+    fi    
 
     # Remove symlinks from /etc/rc?.d
     : update-rc.d foo remove >/dev/null
