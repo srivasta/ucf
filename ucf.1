@@ -120,7 +120,8 @@ since otherwise, the real configuration file is removed, but it
 remains in the hash file; and on reinstall no action is taken, since
 the md5sum of the new file matches that in the hashfile.  In short,
 remember to use this option in the postrm for every configuration file
-managed by ucf when the package is being purged.
+managed by ucf when the package is being purged (assuming ucf itself
+exists).
 .TP
 .B "\-v, \-\-verbose"
 Make the script be very verbose about setting internal variables.
@@ -182,7 +183,8 @@ in the postinst on configure, and another single line in the postrm to
 tell 
 .B ucf 
 to forget about the configuration file on purge 
-(using the  \-\-purge option) is all that is needed.
+(using the  \-\-purge option) is all that is needed (assuming ucf is
+still on the system).
 .PP
 If a file maintained by maintainer scripts is being transitioned from an
 unprotected status to the protection afforded by the script, the
