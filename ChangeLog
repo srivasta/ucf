@@ -1,3 +1,11 @@
+2005-09-20  Manoj Srivastava  <srivasta@debian.org>
+
+	* ucf (newsum): srivasta@debian.org--etch/ucf--devel--2.0--patch-4
+		  Added support for side-by-side diffs, This is very
+		  similar to doing a standard diff, apart from calling
+		  sdiff instead (and change the option switches around as
+		  needed. 
+
 2005-09-01  Manoj Srivastava  <srivasta@debian.org>
 
 	* examples/postrm:

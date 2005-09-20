@@ -107,6 +107,7 @@ pversion='$Revision: 1.26 $'
 choice_install_new="install the package maintainer's version"
 choice_keep_current="keep your currently-installed version"
 choice_diff="show the differences between the versions"
+choice_sdiff="show a side-by-side difference between the versions"
 choice_diff_threeway="show a 3 way difference between available versions of the file"
 choice_merge_threeway="do a 3 way merge between available versions of the file [Very Experimental]"
 choice_shell="start a new shell to examine the situation"
@@ -802,6 +803,7 @@ Configuration file \`$dest_file'
     Y or I  : install the package maintainer's version
     N or O  : keep your currently-installed version
       D     : show the differences between the versions
+      S     : show the side-by-side differences between the versions
 EOPRMT
 		if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then
 			cat >&2 <<EOTD
@@ -838,6 +840,19 @@ EOPEND
 			sensible-pager ) </dev/tty >/dev/tty
 		else
 		    ( diff -uBbw /dev/null "$new_file" | \
+			sensible-pager ) </dev/tty >/dev/tty
+		fi
+		if [ "X$STOP" != "X" ]; then
+		    echo >&2 "Please hit enter to continue";
+		    read -e ANSWER </dev/tty
+		fi
+		;;
+	    "$choice_sdiff"|S|s)
+		if [ -e "$dest_file" ]; then
+		    ( sdiff -BbW "$dest_file" "$new_file" | \
+			sensible-pager ) </dev/tty >/dev/tty
+		else
+		    ( sdiff -BbW /dev/null "$new_file" | \
 			sensible-pager ) </dev/tty >/dev/tty
 		fi
 		if [ "X$STOP" != "X" ]; then
