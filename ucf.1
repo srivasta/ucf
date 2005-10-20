@@ -122,6 +122,9 @@ the md5sum of the new file matches that in the hashfile.  In short,
 remember to use this option in the postrm for every configuration file
 managed by ucf when the package is being purged (assuming ucf itself
 exists).
+.I Note:
+ucf does not actually touch the file on disk in this operation, so any
+file removals are still the responsibility of the calling package.
 .TP
 .B "\-v, \-\-verbose"
 Make the script be very verbose about setting internal variables.
