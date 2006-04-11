@@ -61,6 +61,7 @@ case "$1" in
     # confuguration file in /etc. This is how a static configuration
     # file can be handled:
     ucf /usr/share/foo/configuration /etc/foo.conf
+    ucfr foo /etc/foo.conf
 
     ### We could also do this on the fly. The following is from Tore
     ### Anderson:

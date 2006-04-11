@@ -4,9 +4,9 @@
 ## Created On       : Tue Nov 18 22:00:27 2003
 ## Created On Node  : glaurung.green-gryphon.com
 ## Last Modified By : Manoj Srivastava
-## Last Modified On : Tue Nov 18 22:43:32 2003
-## Last Machine Used: glaurung.green-gryphon.com
-## Update Count     : 2
+## Last Modified On : Tue Apr 11 14:47:00 2006
+## Last Machine Used: glaurung.internal.golden-gryphon.com
+## Update Count     : 4
 ## Status           : Unknown, Use with caution!
 ## HISTORY          : 
 ## Description      : 
@@ -32,6 +32,7 @@ all build: check
 
 check:
 	bash -n ucf
+	bash -n ucfr
 	bash -n debian/preinst
 	bash -n debian/postinst
 	bash -n debian/postrm
@@ -46,6 +47,9 @@ install:
 	$(install_program)  ucf               $(BINDIR)
 	$(install_file)     ucf.1             $(MAN1DIR)
 	gzip -9fq           $(MAN1DIR)/ucf.1
+	$(install_program)  ucfr              $(BINDIR)
+	$(install_file)     ucfr.1            $(MAN1DIR)
+	gzip -9fq           $(MAN1DIR)/ucfr.1
 	$(install_program)  lcf               $(BINDIR)
 	$(install_file)     lcf.1             $(MAN1DIR)
 	gzip -9fq           $(MAN1DIR)/lcf.1

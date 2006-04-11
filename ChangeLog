@@ -1,5 +1,20 @@
 2006-04-11  Manoj Srivastava  <srivasta@debian.org>
 
+	* ucf.1: srivasta@debian.org--etch/ucf--devel--2.0--patch-8 Added
+		  documentation for the --state-dir option. 
+
+	* ucfr.1: Documentation for the new command ucfr
+
+	* ucfr: New file. Associates, and disassociates, a package name
+		  with configuration files.
+
+	* Makefile (check):
+		  srivasta@debian.org--etch/ucf--devel--2.0--patch-8 Added
+		  a check for ucfr 
+		  (install):
+			  srivasta@debian.org--etch/ucf--devel--2.0--patch-8
+			  Install ucfr and manual page as well 
+
 	* ucf (NEW_SUFFIX):
 		  srivasta@debian.org--etch/ucf--devel--2.0--patch-7 Added
 		  new variables to hold the suffix we use todenote the

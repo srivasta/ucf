@@ -4,9 +4,9 @@
 .\" Created On       : Fri Feb  1 11:17:32 2002
 .\" Created On Node  : glaurung.green-gryphon.com
 .\" Last Modified By : Manoj Srivastava
-.\" Last Modified On : Mon May  2 01:19:10 2005
+.\" Last Modified On : Tue Apr 11 14:46:06 2006
 .\" Last Machine Used: glaurung.internal.golden-gryphon.com
-.\" Update Count     : 51
+.\" Update Count     : 53
 .\" Status           : Unknown, Use with caution!
 .\" HISTORY          : 
 .\" Description      : 
@@ -180,6 +180,11 @@ anything of the sort -- and thus it is safe to use debconf even when
 the script discovers that debconf is running.  Packages that call ucf
 with this option should take care to depend on version 0.28 or higher
 of ucf (the first to support use this option).
+.TP
+.B "\-\-state\-dir /path/to/dir"
+Set the state directory to /path/to/dir instead of the default
+.I /var/lib/ucf. 
+Used mostly for testing.
 .SH USAGE
 The most common case usage is pretty simple: a single line invocation
 in the postinst on configure, and another single line in the postrm to

@@ -47,6 +47,9 @@ case "$1" in
     if which ucf >/dev/null; then
         ucf --purge /etc/foo.conf
     fi    
+    if which ucfr >/dev/null; then
+        ucfr --purge foo /etc/foo.conf
+    fi    
 
     # Remove symlinks from /etc/rc?.d
     : update-rc.d foo remove >/dev/null
