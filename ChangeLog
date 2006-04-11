@@ -1,3 +1,11 @@
+2006-04-11  Manoj Srivastava  <srivasta@debian.org>
+
+	* ucf (NEW_SUFFIX):
+		  srivasta@debian.org--etch/ucf--devel--2.0--patch-7 Added
+		  new variables to hold the suffix we use todenote the
+		  {maintainers, old, new} versions of a file. Used to be
+		  dpkg-{dist,old,new}, now it is ucf-{dist,old,new}.
+
 2005-09-20  Manoj Srivastava  <srivasta@debian.org>
 
 	* ucf (newsum): srivasta@debian.org--etch/ucf--devel--2.0--patch-4

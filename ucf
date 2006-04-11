@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Sat Jun 25 05:01:53 2005
+# Last Modified On : Tue Apr 11 10:46:41 2006
 # Last Machine Used: glaurung.internal.golden-gryphon.com
-# Update Count     : 181
+# Update Count     : 185
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -272,7 +272,7 @@ replace_md5sum () {
     if [ "X$THREEWAY" != "X" ]; then
 	$action cp -f "$orig_new_file" "$statedir/cache/$cached_file"
     fi
-    # cp -f "$orig_new_file" "$dest_file.dpkg-dist"
+    # cp -f "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
 }
 
 replace_conf_file () {
@@ -289,12 +289,12 @@ replace_conf_file () {
     fi
     if [ -e "$real_file" ]; then
 	if [ -z "$RETAIN_OLD" ]; then
-	    #echo "Saving  ${real_file}.dpkg-old,  in case."
+	    #echo "Saving  ${real_file}.${OLD_SUFFIX},  in case."
 	    if [ "x$VERBOSE" != "x" ]; then
 		echo >&2 "Not saving ${real_file}, since it was unmodified"
 	    fi
 	else
-	    $action cp -f "${real_file}" "${real_file}.dpkg-old"
+	    $action cp -f "${real_file}" "${real_file}.${OLD_SUFFIX}"
 	fi
     fi
     $action cp -f "$new_file" "${real_file}"
@@ -317,6 +317,10 @@ DEBUG=0
 VERBOSE=''
 statedir='/var/lib/ucf';
 THREEWAY=
+
+DIST_SUFFIX="ucf-dist"
+NEW_SUFFIX="ucf-new"
+OLD_SUFFIX="ucf-old"
 
 # Note that we use `"$@"' to let each command-line parameter expand to a
 # separate word. The quotes around `$@' are essential!
@@ -621,7 +625,7 @@ if [ -e "$dest_file" ]; then
 			    exit 0;
 			else
 			    replace_md5sum;
-			    cp -f "$orig_new_file" "$dest_file.dpkg-dist"
+			    cp -f "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
 			    exit 0;
 			fi
 		    fi
@@ -639,7 +643,7 @@ if [ -e "$dest_file" ]; then
 			exit 0;
 		    else
 			replace_md5sum;
-			cp -f "$orig_new_file" "$dest_file.dpkg-dist"
+			cp -f "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
 			exit 0;
 		    fi
 		fi
@@ -760,7 +764,7 @@ if [ "$destsum" = "$lastsum" ]; then
 	exit 0;
     else
 	replace_md5sum;
-	cp -f "$orig_new_file" "$dest_file.dpkg-dist"
+	cp -f "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
 	exit 0;
     fi
 else
@@ -774,7 +778,7 @@ else
     fi
     if [ "X$force_conffold" != "X" ]; then
 	replace_md5sum;
-	cp -f "$orig_new_file" "$dest_file.dpkg-dist"
+	cp -f "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
 	exit 0;
     fi
 #      c: If the destination file is the same as the new maintianer provided one,
@@ -916,22 +920,22 @@ EOPEND
 		    -a "X$THREEWAY" != "X" ]; then
 		    diff3 -L Current -L Older -L New -m \
 			"$dest_file" "$statedir/cache/$cached_file" \
-			"$new_file" > $dest_file.dpkg-new || { \
+			"$new_file" > $dest_file.${NEW_SUFFIX} || { \
 			
 			echo >&2
 		    	echo >&2 " Conflicts found! Please edit" \
 			    "\`$dest_file' and sort them out manually."
-			echo >&2 " The file \`$dest_file.dpkg-old' is a" \
+			echo >&2 " The file \`$dest_file.${OLD_SUFFIX}' is a" \
 			    "backup of your old configuration file."
 			echo >&2
 		    }
-		    new_file="$dest_file.dpkg-new"
+		    new_file="$dest_file.${NEW_SUFFIX}"
 		    RETAIN_OLD=YES
 		    replace_conf_file;
 		else 
 		    replace_conf_file;
 		fi
-                rm -f "$dest_file.dpkg-new" # don't need this around no mo'
+                rm -f "$dest_file.${NEW_SUFFIX}" # don't need this around no mo'
                 exit 0
 		;;
 	    "$choice_shell"|Z|z)
@@ -940,7 +944,7 @@ EOPEND
 	    $choice_keep_current|n|N|o|O|'')
 		replace_md5sum;
 
-		cp -f "$orig_new_file" "$dest_file.dpkg-dist"
+		cp -f "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
 		exit 0;
 		;;
 	    *)
