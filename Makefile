@@ -4,9 +4,9 @@
 ## Created On       : Tue Nov 18 22:00:27 2003
 ## Created On Node  : glaurung.green-gryphon.com
 ## Last Modified By : Manoj Srivastava
-## Last Modified On : Tue Apr 11 14:47:00 2006
+## Last Modified On : Sun Apr 16 16:32:23 2006
 ## Last Machine Used: glaurung.internal.golden-gryphon.com
-## Update Count     : 4
+## Update Count     : 6
 ## Status           : Unknown, Use with caution!
 ## HISTORY          : 
 ## Description      : 
@@ -31,11 +31,12 @@ make_directory  := /usr/bin/install -p -d -o root -g root -m 755
 all build: check
 
 check:
-	bash -n ucf
-	bash -n ucfr
-	bash -n debian/preinst
-	bash -n debian/postinst
-	bash -n debian/postrm
+	bash -n  ucf
+	bash -n  ucfr
+	perl -wc ucfq
+	bash -n  debian/preinst
+	bash -n  debian/postinst
+	bash -n  debian/postrm
 
 install:
 	$(make_directory)   $(BINDIR)
@@ -50,6 +51,9 @@ install:
 	$(install_program)  ucfr              $(BINDIR)
 	$(install_file)     ucfr.1            $(MAN1DIR)
 	gzip -9fq           $(MAN1DIR)/ucfr.1
+	$(install_program)  ucfq              $(BINDIR)
+	$(install_file)     ucfq.1            $(MAN1DIR)
+	gzip -9fq           $(MAN1DIR)/ucfq.1
 	$(install_program)  lcf               $(BINDIR)
 	$(install_file)     lcf.1             $(MAN1DIR)
 	gzip -9fq           $(MAN1DIR)/lcf.1
