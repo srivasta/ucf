@@ -394,7 +394,7 @@ else
 	exit 1;
     fi
 fi
-safe_dest_file=$(echo $dest_file | sed -e 's,+,\\+,')
+safe_dest_file=$(echo $dest_file | perl -nle 'print "\Q$_\E\n"')
 
 
 
