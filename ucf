@@ -5,9 +5,9 @@
 # Created On       : Fri Feb  1 03:41:47 2002
 # Created On Node  : glaurung.green-gryphon.com
 # Last Modified By : Manoj Srivastava
-# Last Modified On : Tue Apr 11 10:46:41 2006
+# Last Modified On : Tue Jun  6 09:48:22 2006
 # Last Machine Used: glaurung.internal.golden-gryphon.com
-# Update Count     : 185
+# Update Count     : 186
 # Status           : Unknown, Use with caution!
 # HISTORY          :
 # Description      :
@@ -414,7 +414,7 @@ else
     if [ "X$new_file" != "X" ]; then
 	setq source_dir $(dirname "$new_file") "The Source directory"
     else
-	setq source_dir /tmp
+	setq source_dir /tmp "The Source directory"
     fi
     
 fi
