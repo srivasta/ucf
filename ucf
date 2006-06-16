@@ -280,7 +280,7 @@ replace_conf_file () {
     # or we have been ask to register
     real_file="$dest_file"
     if [ -L "$dest_file" ]; then
-	real_file="$(readlink -nf $dest_file)"
+	real_file="$(readlink -nf $dest_file || :)"
 	if [ "x$real_file" = "x" ]; then
 	    echo >&2 "$dest_file is a broken symlink!"
 	    $action rm -f "$dest_file";
@@ -419,15 +419,20 @@ else
     
 fi
 
-if [ "X$PAGER" != "X" -a type ] && type -a -p $PAGER >& /dev/null ; then
+if [ "X$PAGER" != "X" ] && type -a -p $PAGER >& /dev/null ; then
     my_pager=$(type -a -p $PAGER);
-elif [ -s /usr/bin/pager ]; then
-    my_pager=$(type -a -p $(readlink /etc/alternatives/pager))
+elif [ -s /usr/bin/pager ] && 
+     [ "X$(readlink -e /usr/bin/pager || :)" != "X" ]; then
+    my_pager=/usr/bin/pager
+elif [ -x /usr/bin/sensible-pager ]; then
+    my_pager=/usr/bin/sensible-pager
 elif [ -x /bin/more ]; then
     my_pager=/bin/more
 else
     my_pager=
 fi
+
+
 
 if [ "X$my_pager" = "X" ]; then
     STOP=YES

@@ -1,3 +1,13 @@
+2006-06-16  Manoj Srivastava  <srivasta@debian.org>
+
+	* ucf (safe_dest_file):
+		  srivasta@debian.org--etch/ucf--devel--2.0--patch-12
+		  Improve the handling of finding a sensible pager.  This
+		  now handles a messed up /etc/alternatives/paper
+		  setting. Also included sensible pager as an
+		  alternative, and fall back to /bin/more if
+		  needed.  Also, allow for readlink failures.
+
 2006-04-11  Manoj Srivastava  <srivasta@debian.org>
 
 	* ucf.1: srivasta@debian.org--etch/ucf--devel--2.0--patch-8 Added
