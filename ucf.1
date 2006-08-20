@@ -99,6 +99,20 @@ to
 status. The second form in the SYNOPSIS above is for purging
 information about the configuration file when the package is purged;
 and is critical for allowing smooth reinstallations.
+.PP
+During the course of operations, when working with configuration files,
+.B ucf
+optionally creates copies of versions of the configuration file in
+question. For example, a file with the suffix
+.I "ucf-old"
+holds the old version of a configuration file replaced by 
+.B ucf.
+Also, copies of the configuration file witht he suffixes
+.I "ucf-new"
+and
+.I "ucf-dist"
+may be created; and the maintainer scripts should consider purging
+copies of the configuration file with these extensions during purge.
 .SH OPTIONS
 .TP
 .B "\-h, \-\-help"

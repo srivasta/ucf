@@ -1,3 +1,10 @@
+2006-08-20  Manoj Srivastava  <srivasta@debian.org>
+
+	* ucf.1: srivasta@debian.org--etch/ucf--devel--2.0--patch-14
+		  Document various extensions optionally used by ucf to
+		  store copies of versions of configuration files ucf is
+		  working with. 
+
 2006-06-16  Manoj Srivastava  <srivasta@debian.org>
 
 	* ucf (safe_dest_file):
