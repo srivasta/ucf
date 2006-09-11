@@ -1,3 +1,8 @@
+2006-09-11  Manoj Srivastava  <srivasta@debian.org>
+
+	* ucf.1 (needed):
+		  srivasta@debian.org--etch/ucf--devel--2.0--patch-15 Typo fix.
+
 2006-08-20  Manoj Srivastava  <srivasta@debian.org>
 
 	* ucf.1: srivasta@debian.org--etch/ucf--devel--2.0--patch-14
