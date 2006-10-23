@@ -46,7 +46,7 @@ $main::AuthorMail  = "srivasta\@debian.org";
     (
      Optdesc  => 
      {
-      'help|h'         => sub {print Ucf->Usage();     exit 0;},
+      'help|h'         => sub {print ucf->Usage();     exit 0;},
       'with-colons|w!' => sub {$::ConfOpts{"Colons"}= "$_[1]";},
       'state-dir=s'    => sub {$::ConfOpts{"StateDir"}= "$_[1]";},
       'debug|d'        => sub {$::ConfOpts{"DEBUG"}+= "$_[1]";},
