@@ -379,7 +379,8 @@ if [ "X$PURGE" = "XYES" ]; then
 	usageversion;
 	exit 0 ;		
     fi
-    setq dest_file "$1" "The Destination file";
+    temp_dest_file=$1;
+    setq dest_file "$(readlink -q -m $temp_dest_file)" "The Destination file";
 else
     if [ $# != 2 ]; then
 	echo >&2 "*** ERROR: Need exactly two arguments, got $#";
@@ -387,13 +388,18 @@ else
 	usageversion;
 	exit 0 ;
     fi
-    setq new_file  "$1" "The new file";
-    setq dest_file "$2" "The Destination file";
-    if [ ! -e "$new_file" ]; then
-	echo >&2 "Error: The new file ${new_file} does not exist!";
+    temp_new_file=$1;
+    temp_dest_file=$2;
+
+    if [ ! -e "$temp_new_file" ]; then
+	echo >&2 "Error: The new file ${temp_new_file} does not exist!";
 	exit 1;
     fi
+    setq new_file  "$(readlink -q -m $temp_new_file)"  "The new file";
+    setq dest_file "$(readlink -q -m $temp_dest_file)" "The Destination file";
 fi
+
+
 safe_dest_file=$(echo $dest_file | perl -nle 'print "\Q$_\E\n"')
 
 

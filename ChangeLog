@@ -1,5 +1,11 @@
 2006-10-23  Manoj Srivastava  <srivasta@debian.org>
 
+	* ucf (TEMP): srivasta@debian.org--etch/ucf--devel--2.0--patch-17
+		  Use readlink to canonicalize the path names presented to
+		  ucf. This ensures that we keep track of information
+		  about the correct file in ucf, even if it is referred to
+		  differently (like, multiple ///s, or a/../a/) 
+
 	* ucfq: srivasta@debian.org--etch/ucf--devel--2.0--patch-16 The
 		  package name is ucf, not Ucf. Fixes the usage help
 		  output. 
