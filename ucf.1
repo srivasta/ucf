@@ -208,6 +208,16 @@ to forget about the configuration file on purge
 (using the  \-\-purge option) is all that is needed (assuming ucf is
 still on the system).
 .PP
+It is recommended that you also register any file being managed by
+.B ucf
+with the ucf registry; this associates the configuration file with the
+packagr it belongs to. This is done with a simple call to
+.B ucfr.
+Users may then query the association between a configuration file and
+the package using the tool
+.B ucfq.
+Please see the appropriate manual pages for details.
+.PP
 If a file maintained by maintainer scripts is being transitioned from an
 unprotected status to the protection afforded by the script, the
 maintainer can help ease the transition by reducing the questions that
@@ -336,7 +346,7 @@ new file (
 .I /etc/emacs21/site\-start.d/50<pkg\-init.el
 ), and it should do the rest.
 .SH "SEE ALSO"
-ucf.conf(5), diff3(1).
+ucf.conf(5), ucfr(1), ucfq(1), and diff3(1).
 The
 .B Debian
 Emacs policy, shipped with the package
