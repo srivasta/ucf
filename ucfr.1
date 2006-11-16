@@ -46,7 +46,7 @@ ucfr \- Update Configuration File Registry:  associate packages with configurati
 .SH DESCRIPTION
 Where 
 .I Package
-is the package associated with the cofiguration file (and, in some
+is the package associated with the configuration file (and, in some
 sense, its owner), and 
 .I Path to configuration file
 is the location (usually under /etc) where the configuration file
@@ -59,7 +59,7 @@ provides conffiles for configuration files and not shipped in a
 .B Debian 
 package, but handled by the postinst by
 .I ucf
-instead. This script is idempotent, asociating a package to a file
+instead. This script is idempotent, associating a package to a file
 multiple times is not an error.  It is normally an error to try to
 associate a file which is already associated with another package, but
 this can be over ridden by using the 
@@ -88,7 +88,7 @@ package, an error happens, unless the option
 is also given. In that case, the any associations for the
 configuration file are removed from the registry, whether or not the
 package name matches. This action is idempotent, asking for an
-association to be purged mutiple times does not result in an error,
+association to be purged multiple times does not result in an error,
 since attempting to remove an non-existent association is silently
 ignored unless the
 .I \-\-verbose
@@ -131,7 +131,7 @@ If the package
 .I foo
 wants to use ucfr to associate itself with a configuration file
 .I foo.conf,
-a simple invocation of ucfr in the post inst file is all that is
+a simple invocation of ucfr in the postinst file is all that is
 needed:
 .PP
 .B ucfr
