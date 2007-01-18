@@ -926,7 +926,7 @@ EOPEND
 		fi
 		;;
 	    "$choice_merge_threeway"|M|m)
-		echo >&2 "Merging changes into the new version new version"
+		echo >&2 "Merging changes into the new version"
 		if [ -e "$statedir/cache/$cached_file" \
 		    -a "X$THREEWAY" != "X" ]; then
 		    diff3 -L Current -L Older -L New -m \
