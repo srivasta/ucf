@@ -269,6 +269,10 @@ sub process {
     $this->{pkg_list}->element($_, $package);
   }
   for (keys %{$this->{configs}}) {
+    warn "Need a fully qualified path name for config file \"$_\"\n"
+      unless m,^/,g;
+    # Don't die for etch
+    exit 0 unless m,^/,g;
     my $file = conffile->new('Name' => "$_");
     $this->{file_list}->element($_, $file);
   }

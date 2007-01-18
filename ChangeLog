@@ -1,5 +1,26 @@
 2007-01-18  Manoj Srivastava  <srivasta@debian.org>
 
+	* ucfr.1: srivasta@debian.org--etch/ucf--devel--2.0--versionfix-1
+		  Emphasize that the full path to the configuration file
+		  is expected.  
+
+	* ucfq.1: srivasta@debian.org--etch/ucf--devel--2.0--versionfix-1
+		  Ditto. 
+
+	* ucfr (safe_conf_file):
+		  srivasta@debian.org--etch/ucf--devel--2.0--versionfix-1
+		  Issue a diagnostic, and exit gracefully if the
+		  registration request has not provided a full path to the
+		  configuration file. For lenny, the graceful exit shall
+		  be changed into die with a error message. 
+
+	* ucfq (process):
+		  srivasta@debian.org--etch/ucf--devel--2.0--versionfix-1
+		  Issue a diagnostic, and exit gracefully if the query has
+		  not provided a full path to the configuration file. For
+		  lenny, the  graceful exit shall be changed into die with
+		  a error message. 
+
 	* ucf: srivasta@debian.org--etch/ucf--devel--2.0--patch-20 Typo
 		  fix. 
 
