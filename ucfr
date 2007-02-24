@@ -49,13 +49,13 @@ withecho () {
 
 purge_from_registry () {
     if [ ! -e "$statedir/registry" ]; then
-        echo >&2 "ucfr: Internal error: $statedir/registry does not exist";
+        echo >&2 "$progname: Internal error: $statedir/registry does not exist";
         exit 6;
     fi
 
     if [ $count -eq 0 ]; then
         if [ "X$VERBOSE" != "X" ]; then
-            echo >&2 "ucfr: Association already purged. No changes.";
+            echo >&2 "$progname: Association already purged. No changes.";
         fi
         exit 0;
     fi
@@ -104,7 +104,7 @@ purge_from_registry () {
 
 replace_in_registry () {
     if [ ! -e "$statedir/registry" ]; then
-        echo >&2 "ucfr: Internal error: $statedir/registry does not exist";
+        echo >&2 "$progname: Internal error: $statedir/registry does not exist";
         exit 6;
     fi
     if [ $count -eq 1 ]; then
@@ -113,13 +113,13 @@ replace_in_registry () {
         
         if [ "$pkg" != "$old_pkg" ]; then
             if [ "X$FORCE" = "X" ]; then
-                echo >&2 "ucfr: Attempt from package $pkg  to take ${conf_file} away from package $old_pkg";
+                echo >&2 "$progname: Attempt from package $pkg  to take ${conf_file} away from package $old_pkg";
                 echo >&2 "ucfr: Aborting.";
                 exit 4;
             fi
         else
             if [ "X$VERBOSE" != "X" ]; then
-                echo >&2 "ucfr: Association already recorded. No changes.";
+                echo >&2 "$progname: Association already recorded. No changes.";
             fi
             exit 0;
         fi
@@ -234,7 +234,7 @@ while true ; do
 	    esac ;;
         -p|--purge) PURGE=YES;                         shift   ;;
 	--)  shift ;                                   break   ;;
-	*) echo >&2 "Internal error!" ; exit 1 ;;
+	*) echo >&2 "$progname: Internal error!" ; exit 1 ;;
     esac
 done
 # Need to run as root, or else the 
@@ -248,7 +248,7 @@ if test $(id -u) != 0; then
 fi
 
 if [ $# != 2 ]; then
-    echo >&2 "ucfr: *** ERROR: Need exactly two arguments, got $#";
+    echo >&2 "$progname: *** ERROR: Need exactly two arguments, got $#";
     echo >&2 ""
     usageversion;
     exit 0 ;
@@ -265,7 +265,7 @@ case $safe_conf_file in
         :echo fine
         ;;
     *)
-        echo >&2 "Need a fully qualified path for the file \"$safe_conf_file\""
+        echo >&2 "$progname: Need a fully qualified path for the file \"$safe_conf_file\""
         # Don't exit with an error for etch'
         exit 0;
 esac
@@ -293,7 +293,7 @@ fi
 
 #
 if [ -e "$statedir/registry" -a ! -w "$statedir/registry" ]; then
-    echo >&2 "ucfr: do not have write privilege to the registry data"
+    echo >&2 "$progname: do not have write privilege to the registry data"
     if [ "X$docmd" = "XYES" ]; then
 	exit 1;
     fi
@@ -310,14 +310,14 @@ fi
 
 
 if [ "X$VERBOSE" != "X" ]; then
-    echo >&2 "ucfr: The registry exists"
+    echo >&2 "$progname: The registry exists"
 fi
 
 # sanity check
 count=$(egrep --count "[[:space:]]${safe_conf_file}$" "$statedir/registry") || true
 
 if [ "$count" -ge 2 ]; then
-    echo >&2 "ucfr: Corrupt registry: Duplicate entries for ${conf_file}";
+    echo >&2 "$progname: Corrupt registry: Duplicate entries for ${conf_file}";
     egrep "[[:space:]]${safe_conf_file}$" "$statedir/registry";
     exit $count;
 fi
