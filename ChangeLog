@@ -1,5 +1,8 @@
 2007-02-24  Manoj Srivastava  <srivasta@debian.org>
 
+	* ucf.1: srivasta@debian.org--etch/ucf--devel--2.0--versionfix-3
+		  Add documentation clarifying the primary use for ucf. 
+
 	* ucfr (safe_conf_file):
 		  srivasta@debian.org--etch/ucf--devel--2.0--versionfix-2
 		  Add $progname: prefix to all error messages. 
