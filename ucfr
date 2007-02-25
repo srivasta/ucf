@@ -262,7 +262,7 @@ safe_conf_file=$(echo $conf_file | sed -e 's,+,\\+,')
 
 case $safe_conf_file in
     /*)
-        :echo fine
+        : echo fine
         ;;
     *)
         echo >&2 "$progname: Need a fully qualified path for the file \"$safe_conf_file\""
