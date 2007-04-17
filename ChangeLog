@@ -1,3 +1,13 @@
+2007-04-17  Manoj Srivastava  <srivasta@debian.org>
+
+	* ucf.1: srivasta@debian.org--lenny/ucf--devel--2.0--base-0
+		  Document that ucf now tries to preserve owner/permission
+		  bits for the file.
+
+	* ucf: srivasta@debian.org--lenny/ucf--devel--2.0--base-0 As far
+		  as possible, preserve file attributes like ownership and
+		  permission by using cp -pf instead of just cp -f.
+
 2007-02-25  Manoj Srivastava  <srivasta@debian.org>
 
 	* ucfr (safe_conf_file):

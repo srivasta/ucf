@@ -186,19 +186,19 @@ purge_md5sum () {
     for i in $(/usr/bin/seq 6 -1 0); do
 	if [ -e "${statedir}/hashfile.${i}" ]; then
 	    if [ "X$docmd" = "XYES" ]; then
-		cp -f "${statedir}/hashfile.${i}" \
+		cp -pf "${statedir}/hashfile.${i}" \
 		    "${statedir}/hashfile.$(($i+1))"
 	    else 
-		echo cp -f "${statedir}/hashfile.${i}" \
+		echo cp -pf "${statedir}/hashfile.${i}" \
                           "${statedir}/hashfile.$(($i+1))"
 	    fi 
 	fi 
     done
     if [ -e "$statedir/hashfile" ]; then
 	if [ "X$docmd" = "XYES" ]; then
-	    cp -f "$statedir/hashfile"  "$statedir/hashfile.0" 
+	    cp -pf "$statedir/hashfile"  "$statedir/hashfile.0" 
 	else
-	    echo cp -f "$statedir/hashfile"  "$statedir/hashfile.0" 
+	    echo cp -pf "$statedir/hashfile"  "$statedir/hashfile.0" 
 	fi
 	if [ "X$docmd" = "XYES" ]; then
 	    set +e
@@ -228,19 +228,19 @@ replace_md5sum () {
     for i in $(/usr/bin/seq 6 -1 0); do
 	if [ -e "${statedir}/hashfile.${i}" ]; then
 	    if [ "X$docmd" = "XYES" ]; then
-		cp -f "${statedir}/hashfile.${i}" \
+		cp -pf "${statedir}/hashfile.${i}" \
 		    "${statedir}/hashfile.$(($i+1))"
 	    else
-		echo cp -f "${statedir}/hashfile.${i}" \
+		echo cp -pf "${statedir}/hashfile.${i}" \
 		    "${statedir}/hashfile.$(($i+1))"
 	    fi
 	fi
     done
     if [ -e "$statedir/hashfile" ]; then
 	if [ "X$docmd" = "XYES" ]; then
-	    cp -f "$statedir/hashfile"  "$statedir/hashfile.0" 
+	    cp -pf "$statedir/hashfile"  "$statedir/hashfile.0" 
 	else
-	    echo cp -f "$statedir/hashfile"  "$statedir/hashfile.0" 
+	    echo cp -pf "$statedir/hashfile"  "$statedir/hashfile.0" 
 	fi
 	if [ "X$docmd" = "XYES" ]; then
 	    set +e
@@ -270,9 +270,9 @@ replace_md5sum () {
 	fi
     fi
     if [ "X$THREEWAY" != "X" ]; then
-	$action cp -f "$orig_new_file" "$statedir/cache/$cached_file"
+	$action cp -pf "$orig_new_file" "$statedir/cache/$cached_file"
     fi
-    # cp -f "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
+    # cp -pf "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
 }
 
 replace_conf_file () {
@@ -294,10 +294,10 @@ replace_conf_file () {
 		echo >&2 "Not saving ${real_file}, since it was unmodified"
 	    fi
 	else
-	    $action cp -f "${real_file}" "${real_file}.${OLD_SUFFIX}"
+	    $action cp -pf "${real_file}" "${real_file}.${OLD_SUFFIX}"
 	fi
     fi
-    $action cp -f "$new_file" "${real_file}"
+    $action cp -pf "$new_file" "${real_file}"
     replace_md5sum;
 }
 
@@ -636,7 +636,7 @@ if [ -e "$dest_file" ]; then
 			    exit 0;
 			else
 			    replace_md5sum;
-			    cp -f "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
+			    cp -pf "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
 			    exit 0;
 			fi
 		    fi
@@ -654,7 +654,7 @@ if [ -e "$dest_file" ]; then
 			exit 0;
 		    else
 			replace_md5sum;
-			cp -f "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
+			cp -pf "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
 			exit 0;
 		    fi
 		fi
@@ -775,7 +775,7 @@ if [ "$destsum" = "$lastsum" ]; then
 	exit 0;
     else
 	replace_md5sum;
-	cp -f "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
+	cp -pf "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
 	exit 0;
     fi
 else
@@ -789,7 +789,7 @@ else
     fi
     if [ "X$force_conffold" != "X" ]; then
 	replace_md5sum;
-	cp -f "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
+	cp -pf "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
 	exit 0;
     fi
 #      c: If the destination file is the same as the new maintianer provided one,
@@ -955,7 +955,7 @@ EOPEND
 	    $choice_keep_current|n|N|o|O|'')
 		replace_md5sum;
 
-		cp -f "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
+		cp -pf "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
 		exit 0;
 		;;
 	    *)
