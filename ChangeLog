@@ -1,3 +1,15 @@
+2007-05-05  Manoj Srivastava  <srivasta@debian.org>
+
+	* ucf (show_diff):
+		  srivasta@debian.org--lenny/ucf--devel--2.0--patch-1
+		  Users using a Graphical frontend are surprised when the
+		  display apparently just blocks when they ask to see a
+		  diff (or 3-way diff) of the configuration file being
+		  handled, when actually the diff is  displayed on the
+		  terminal window ucf was run on. Until the debconf-escape
+		  utility and the escape CAPB support, db_subst ran into
+		  newline and line length issues. Patch from Michael Vogt.
+
 2007-04-17  Manoj Srivastava  <srivasta@debian.org>
 
 	* ucf.1: srivasta@debian.org--lenny/ucf--devel--2.0--base-0

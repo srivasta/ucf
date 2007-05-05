@@ -57,6 +57,27 @@ setq() {
     fi
 }
 
+# Use debconf to show the differences
+show_diff() {
+    if [ -z "$1" ]; then
+	echo >&2 "need a diff as argument"
+	exit 1;
+    fi
+    DIFF="$1"
+    if [ "$DEBCONF_OK" = "YES" ] && [ "$DEBIAN_HAS_FRONTEND" ]; then
+	templ=ucf/show_diff
+	db_capb escape
+	db_reset $templ
+	db_subst $templ DIFF "$(printf %s "$DIFF" | debconf-escape -e)"
+	db_input critical $templ || true
+	db_go
+	db_get $templ
+	db_capb
+    else
+	echo "$DIFF" | sensible-pager
+    fi
+}
+
 withecho () {
         echo " $@" >&2
         "$@"
@@ -870,59 +891,40 @@ EOPEND
 		;;
 	    "$choice_diff"|D|d)
 		if [ -e "$dest_file" ]; then
-		    ( diff -uBbw "$dest_file" "$new_file" | \
-			sensible-pager ) </dev/tty >/dev/tty
+		    DIFF="$(diff -uBbw "$dest_file" "$new_file")" || true
 		else
-		    ( diff -uBbw /dev/null "$new_file" | \
-			sensible-pager ) </dev/tty >/dev/tty
+		    DIFF="$(diff -uBbw /dev/null "$new_file")" || true
 		fi
-		if [ "X$STOP" != "X" ]; then
-		    echo >&2 "Please hit enter to continue";
-		    read -e ANSWER </dev/tty
-		fi
+		show_diff "$DIFF"
 		;;
 	    "$choice_sdiff"|S|s)
 		if [ -e "$dest_file" ]; then
-		    ( sdiff -BbW "$dest_file" "$new_file" | \
-			sensible-pager ) </dev/tty >/dev/tty
+		    DIFF="$( sdiff -BbW "$dest_file" "$new_file")"  || true
 		else
-		    ( sdiff -BbW /dev/null "$new_file" | \
-			sensible-pager ) </dev/tty >/dev/tty
+		    DIFF="$(sdiff -BbW /dev/null "$new_file")"  || true
 		fi
-		if [ "X$STOP" != "X" ]; then
-		    echo >&2 "Please hit enter to continue";
-		    read -e ANSWER </dev/tty
-		fi
+		show_diff "$DIFF"
 		;;
 	    "$choice_diff_threeway"|3|t|T)
 		if [ -e "$statedir/cache/$cached_file" \
 		    -a "X$THREEWAY" != "X" ]; then
                     if [ -e "$dest_file" ]; then
-		        ( diff3 -L Current -L Older -L New -A \
+		        DIFF="$(diff3 -L Current -L Older -L New -A \
 			    "$dest_file" "$statedir/cache/$cached_file" \
-			    "$new_file" | sensible-pager ) >/dev/tty </dev/tty
+			    "$new_file")"  || true
                     else
-                        ( diff3 -L Current -L Older -L New -A \
+                        DIFF="$(diff3 -L Current -L Older -L New -A \
 			    /dev/null "$statedir/cache/$cached_file" \
-			    "$new_file" | sensible-pager ) >/dev/tty </dev/tty
+			    "$new_file")"  || true
                     fi
-		    if [ "X$STOP" != "X" ]; then
-			echo >&2 "Please hit enter to continue";
-			read -e ANSWER </dev/tty
-		    fi
+		    show_diff "$DIFF"
 		else 
 		    if [ -e "$dest_file" ]; then
-			( diff -uBbw "$dest_file" "$new_file" | \
-			    sensible-pager ) </dev/tty >/dev/tty
+			DIFF="$(diff -uBbw "$dest_file" "$new_file")"  || true
 		    else
-			( diff -uBbw /dev/null "$new_file" | \
-			    sensible-pager ) </dev/tty >/dev/tty
+			DIFF="$(diff -uBbw /dev/null "$new_file")"  || true
 		    fi
-
-		    if [ "X$STOP" != "X" ]; then
-			echo >&2 "Please hit enter to continue";
-			read -e ANSWER </dev/tty
-		    fi
+		    show_diff "$DIFF"
 		fi
 		;;
 	    "$choice_merge_threeway"|M|m)
