@@ -1,3 +1,9 @@
+2007-09-19  Manoj Srivastava  <srivasta@debian.org>
+
+	* ucf (choice_keep_current):
+		  srivasta@debian.org--lenny/ucf--devel--3.0--base-0
+		  Change the name to fit the changed template
+
 2007-05-05  Manoj Srivastava  <srivasta@debian.org>
 
 	* ucf (show_diff):
