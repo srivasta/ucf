@@ -192,17 +192,6 @@ END
 fi
 
 
-# These are strings that must match the untranslated choices
-# of the debconf question.
-choice_install_new="install the package maintainer's version"
-choice_keep_current="keep the local version currently installed"
-choice_diff="show the differences between the versions"
-choice_sdiff="show a side-by-side difference between the versions"
-choice_diff_threeway="show a 3 way difference between available versions of the file"
-choice_merge_threeway="do a 3 way merge between available versions (experimental)"
-choice_shell="start a new shell to examine the situation"
-
-
 purge_md5sum () {
     for i in $(/usr/bin/seq 6 -1 0); do
 	if [ -e "${statedir}/hashfile.${i}" ]; then
@@ -883,13 +872,13 @@ EOPEND
 	fi
 
 	case "$ANSWER" in
-	    "$choice_install_new"|y|Y|I|i)
+	    install_new|y|Y|I|i)
 		echo >&2 "Replacing config file $dest_file with new version"
 		RETAIN_OLD=YES
 		replace_conf_file;
 		exit 0;
 		;;
-	    "$choice_diff"|D|d)
+	    diff|D|d)
 		if [ -e "$dest_file" ]; then
 		    DIFF="$(diff -uBbw "$dest_file" "$new_file")" || true
 		else
@@ -897,7 +886,7 @@ EOPEND
 		fi
 		show_diff "$DIFF"
 		;;
-	    "$choice_sdiff"|S|s)
+	    sdiff|S|s)
 		if [ -e "$dest_file" ]; then
 		    DIFF="$( sdiff -BbW "$dest_file" "$new_file")"  || true
 		else
@@ -905,7 +894,7 @@ EOPEND
 		fi
 		show_diff "$DIFF"
 		;;
-	    "$choice_diff_threeway"|3|t|T)
+	    diff_threeway|3|t|T)
 		if [ -e "$statedir/cache/$cached_file" \
 		    -a "X$THREEWAY" != "X" ]; then
                     if [ -e "$dest_file" ]; then
@@ -927,7 +916,7 @@ EOPEND
 		    show_diff "$DIFF"
 		fi
 		;;
-	    "$choice_merge_threeway"|M|m)
+	    merge_threeway|M|m)
 		echo >&2 "Merging changes into the new version"
 		if [ -e "$statedir/cache/$cached_file" \
 		    -a "X$THREEWAY" != "X" ]; then
@@ -951,10 +940,10 @@ EOPEND
                 rm -f "$dest_file.${NEW_SUFFIX}" # don't need this around no mo'
                 exit 0
 		;;
-	    "$choice_shell"|Z|z)
+	    shell|Z|z)
 		bash >/dev/tty </dev/tty || true
 		;;
-	    $choice_keep_current|n|N|o|O|'')
+	    keep_current|n|N|o|O|'')
 		replace_md5sum;
 
 		cp -pf "$orig_new_file" "$dest_file.${DIST_SUFFIX}"

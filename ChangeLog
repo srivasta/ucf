@@ -1,3 +1,15 @@
+2007-11-30  Manoj Srivastava  <srivasta@debian.org>
+
+	* ucf (newsum):
+		  srivasta@debian.org--lenny/ucf--devel--3.0--patch-1 For
+		  "keep current" and "threeway merge", ucf expects answers
+		  from debconf which differ from what is specified in the
+		  template master. Frans Pop suggested using the Choices-C
+		  feature of debconf, which is relatively new, but defines
+		  a fixed alias for each option which Debconf will then
+		  use in db_get and db_set operations -- so no more
+		  matching the template in the code.
+
 2007-09-19  Manoj Srivastava  <srivasta@debian.org>
 
 	* ucf (choice_keep_current):
