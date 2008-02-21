@@ -270,9 +270,9 @@ sub process {
   }
   for (keys %{$this->{configs}}) {
     warn "Need a fully qualified path name for config file \"$_\"\n"
-      unless m,^/,g;
+      unless m,^/,;
     # Don't die for etch
-    exit 0 unless m,^/,g;
+    exit 0 unless m,^/,;
     my $file = conffile->new('Name' => "$_");
     $this->{file_list}->element($_, $file);
   }

@@ -1,3 +1,14 @@
+2008-02-21  Manoj Srivastava  <srivasta@debian.org>
+
+	* ucfq (process):
+		  srivasta@debian.org--lenny/ucf--devel--3.0--patch-2 Niko
+		  Tyni says ucfq /path/to/file never gives any output. It
+		  looks like the problem is that ^/ is matched twice with
+		  the global option (m//g) on the filename in
+		  ucf::process(), so the second one fails looking for the
+		  next match.  I don't see the need for global match here,
+		  and removing the /g fixesthis for me.
+
 2007-11-30  Manoj Srivastava  <srivasta@debian.org>
 
 	* ucf (newsum):
