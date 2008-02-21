@@ -284,7 +284,7 @@ sub process {
         my $ret = conffile->new('Name' => "$file");
         $this->{file_list}->element($file, $ret);
       }
-      $this->{file_list}->element($file)->{Package} = $package;
+      $this->{file_list}->element($file)->conffile_package($package);
     }
   }
 # Step 4: for all configuration files, determine package (unless
@@ -293,11 +293,9 @@ sub process {
 # Step 6: For each existing file, see if it has been changed
 
   for my $file ($this->{file_list}->list) {
-    $this->{file_list}->element($file)->{Hash} = 
-      $this->{hashfile_proxy}->hash($file);
-    if (! defined $this->{file_list}->element($file)->{Package}) {
-      $this->{file_list}->element($file)->{Package} = 
-        $this->{registry_proxy}->find_pkg($file);
+    $this->{file_list}->element($file)->conffile_hash($file, $this->{hashfile_proxy}->hash($file));
+    if (! defined $this->{file_list}->element($file)->conffile_package) {
+      $this->{file_list}->element($file)->conffile_package($this->{registry_proxy}->find_pkg($file));
     }
   }
 }
@@ -328,7 +326,7 @@ sub report {
   my $this      = shift;
   for my $file (sort $this->{file_list}->list) {
     ($out_pkg, $out_file, $there, $mod) =
-      $this->{file_list}->element($file)->report;
+      $this->{file_list}->element($file)->conffile_report;
     if ($this->{Con_Ref}->{Colons}) {
       print "$out_file:$out_pkg:$there:$mod\n";
     }
@@ -412,7 +410,7 @@ sub list_files {
 }
 
 
-=head2 list_files
+=head2 find_pkg
 
 This routine queries the registry for the package associated with the
 given file.  Takes the path of the configuration file as a required
@@ -472,7 +470,7 @@ sub new {
 }
 
 
-=head2 list_files
+=head2 hash
 
 This routine queries the database for the hash associated with the
 developers version of the given file.  Takes the path of the
@@ -532,7 +530,7 @@ sub new {
 }
 
 
-=head2 package
+=head2 conffile_package
 
 This routine is the accessor method of the internal attribute that
 holds package name associated with the file.  If an optional C<value>
@@ -540,13 +538,10 @@ is present, updates the value of the attribute.
 
 =cut
 
-sub package {
+sub conffile_package {
   my $this      = shift;
-  my $name      = shift;
   my $value     = shift;
 
-  die "Missing required parameter Name"
-    unless $name;
   if ($value ) {
     $this->{Package} = $value;
   }
@@ -558,14 +553,14 @@ sub package {
   }
 }
 
-=head2 file_exists
+=head2 conffile_exists
 
 This routine is the accessor method of the internal attribute that
 holds the information whether the file exists on disk or not.
 
 =cut
 
-sub file_exists {
+sub conffile_exists {
   my $this      = shift;
   my $name      = shift;
   my $value     = shift;
@@ -580,7 +575,7 @@ sub file_exists {
   }
 }
 
-=head2 modified
+=head2 conffile_modified
 
 This routine is the accessor method of the internal attribute that
 holds the information whether the file exists on disk or not.  If an
@@ -588,7 +583,7 @@ optional C<value> is present, updates the value of the attribute.
 
 =cut
 
-sub modified {
+sub conffile_modified {
   my $this      = shift;
   my $name      = shift;
   my $value     = shift;
@@ -606,7 +601,7 @@ sub modified {
   }
 }
 
-=head2 hash
+=head2 conffile_hash
 
 This routine is the accessor method of the internal attribute that
 holds the hash for the developers version of the file.  If an optional
@@ -615,7 +610,7 @@ notes whether or not the file is modified from the developers version.
 
 =cut
 
-sub hash {
+sub conffile_hash {
   my $this      = shift;
   my $name      = shift;
   my $value     = shift;
@@ -634,6 +629,9 @@ sub hash {
           if ("$hash" ne "$value") {
             $this->{Modified} = 'Yes';
           }
+          else {
+            $this->{Modified} = 'No';
+          }
         }
         close NEWHASH;
       }
@@ -650,7 +648,7 @@ sub hash {
   }
 }
 
-sub report {
+sub conffile_report {
   my $this      = shift;
   return $this->{Package} ? $this->{Package} : "",
     $this->{Name}, $this->{Exists} ? $this->{Exists} : "",

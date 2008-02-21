@@ -8,6 +8,10 @@
 		  ucf::process(), so the second one fails looking for the
 		  next match.  I don't see the need for global match here,
 		  and removing the /g fixesthis for me.
+	  (report): srivasta@debian.org--lenny/ucf--devel--3.0--patch-2
+		  Major changes to ensure that the modified column
+		  actually contains a valid value. This whole script needs
+		  a rewrite.
 
 2007-11-30  Manoj Srivastava  <srivasta@debian.org>
 

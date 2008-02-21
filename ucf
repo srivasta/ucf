@@ -107,6 +107,9 @@ Options:
                              default '/var/lib/ucf'. Used mostly for testing.
              --debconf-ok    Indicate that it is ok for uct to use an already
                              running debconf instance for prompting.
+             --debconf-template bar
+                             Specify an alternate, caller-provided debconf
+                             template to use for prompting.
 Usage: $progname  -p  destination
      -p,     --purge         Remove any reference to destination from records
 
@@ -130,16 +133,6 @@ if [ -z "$DEBCONF_ALREADY_RUNNING" ]; then
 	DEBCONF_ALREADY_RUNNING='YES'
     else
 	DEBCONF_ALREADY_RUNNING='NO'
-        # Load out templates, just in case our template has
-        # not been loaded or the Debconf DB lost or corrupted
-        # since then.
-        if test $(id -u) = 0; then
-            if which debconf-loadtemplate >/dev/null 2>&1; then
-                debconf-loadtemplate ucf /var/lib/dpkg/info/ucf.templates
-            fi
-        else
-            echo >&2 "$progname: Not loading ucf templates, since we are not running as root."
-	fi
     fi
 fi
 
@@ -149,6 +142,11 @@ export DEBCONF_ALREADY_RUNNING
 if [ -e /usr/share/debconf/confmodule ]; then
     if test $(id -u) = 0; then
 	. /usr/share/debconf/confmodule
+
+	# Load our templates, just in case our template has
+	# not been loaded or the Debconf DB lost or corrupted
+	# since then.
+	db_x_loadtemplatefile /var/lib/dpkg/info/ucf.templates ucf
     else
         echo >&2 "$progname: Not loading confmodule, since we are not running as root."
     fi
@@ -336,7 +334,7 @@ OLD_SUFFIX="ucf-old"
 # separate word. The quotes around `$@' are essential!
 # We need TEMP as the `eval set --' would nuke the return value of getopt.
 TEMP=`getopt -a -o hs:d::D::nv -n "$progname" \
-      --long help,src-dir:,sum-file:,dest-dir:,debug::,DEBUG::,no-action,purge,verbose,three-way,debconf-ok,state-dir: \
+      --long help,src-dir:,sum-file:,dest-dir:,debug::,DEBUG::,no-action,purge,verbose,three-way,debconf-ok,debconf-template:,state-dir: \
              -- "$@"`
 
 if [ $? != 0 ] ; then
@@ -358,6 +356,8 @@ while true ; do
 	    opt_old_mdsum_file="$2";		  shift 2 ;;
 	--state-dir)
 	    opt_state_dir="$2";                        shift 2 ;;
+	--debconf-template)
+	    override_template="$2";                    shift 2 ;;
 	-D|-d|--debug|--DEBUG)
             # d has an optional argument. As we are in quoted mode,
             # an empty parameter will be generated if its optional
@@ -822,6 +822,13 @@ else
 		else
 			templ=ucf/changeprompt
 		fi
+		if [ "X$override_template" != "X" ]; then
+			choices="$(db_metaget $templ Choices-C)"
+			choices2="$(db_metaget $override_template Choices-C)"
+			if [ "$choices" = "$choices2" ]; then
+				templ=$override_template
+			fi
+		fi
 		db_fset $templ seen false
 		db_reset $templ
 		db_subst $templ FILE "$dest_file"
@@ -922,18 +929,22 @@ EOPEND
 		    -a "X$THREEWAY" != "X" ]; then
 		    diff3 -L Current -L Older -L New -m \
 			"$dest_file" "$statedir/cache/$cached_file" \
-			"$new_file" > $dest_file.${NEW_SUFFIX} || { \
-			
-			echo >&2
-		    	echo >&2 " Conflicts found! Please edit" \
-			    "\`$dest_file' and sort them out manually."
-			echo >&2 " The file \`$dest_file.${OLD_SUFFIX}' is a" \
-			    "backup of your old configuration file."
-			echo >&2
-		    }
-		    new_file="$dest_file.${NEW_SUFFIX}"
-		    RETAIN_OLD=YES
-		    replace_conf_file;
+			"$new_file" > $dest_file.${NEW_SUFFIX} 
+                    case "$?" in
+                        0)
+		            new_file="$dest_file.${NEW_SUFFIX}"
+		            RETAIN_OLD=YES
+		            replace_conf_file;
+                            ;;
+                        *)
+			    echo >&2
+		    	    echo >&2 " Conflicts found! Please edit" \
+			        "\`$dest_file' and sort them out manually."
+			    echo >&2 " The file \`$dest_file.${NEW_SUFFIX}' has a" \
+			        "record of the failed merge of the configuration file."
+			    echo >&2
+                            exit 3                            
+                    esac
 		else 
 		    replace_conf_file;
 		fi

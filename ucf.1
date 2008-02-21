@@ -203,6 +203,17 @@ the script discovers that debconf is running.  Packages that call ucf
 with this option should take care to depend on version 0.28 or higher
 of ucf (the first to support use this option).
 .TP
+.B "\-\-debconf\-template  foo"
+Instruct ucf to use the named multiselect debconf template instead of
+the normal ucf-provided debconf template.  The caller is responsible for
+ensuring that the named template exists and has a list of choices
+matching those for the default ucf template, and should set
+Choices\-C: ${CHOICES} to ensure the returned values match those from
+the default template.  Note that the choices must be different according
+to whether the
+.B \-\-three\-way
+option is also set.
+.TP
 .B "\-\-state\-dir /path/to/dir"
 Set the state directory to /path/to/dir instead of the default
 .I /var/lib/ucf. 
