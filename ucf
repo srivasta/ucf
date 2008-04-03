@@ -927,10 +927,11 @@ EOPEND
 		echo >&2 "Merging changes into the new version"
 		if [ -e "$statedir/cache/$cached_file" \
 		    -a "X$THREEWAY" != "X" ]; then
+		    ret=0
 		    diff3 -L Current -L Older -L New -m \
 			"$dest_file" "$statedir/cache/$cached_file" \
-			"$new_file" > $dest_file.${NEW_SUFFIX} 
-                    case "$?" in
+			"$new_file" > $dest_file.${NEW_SUFFIX} || ret=$?
+                    case "$ret" in
                         0)
 		            new_file="$dest_file.${NEW_SUFFIX}"
 		            RETAIN_OLD=YES
