@@ -370,40 +370,6 @@ The
 .B Debian
 Emacs policy, shipped with the package
 .I emacsen\-common.
-.SH BUGS
-Well, shortcomings, really. If the debconf database has been removed,
-or corrupted, debconf does not automatically install 
-.B ucf
-templates, since usually the calling pattern is such that 
-.B ucf
-is called from the maintainer script of another package. If the other
-package has already invoked debconf, then 
-.B ucf
-uses the existing front end, which has already loaded the debconf
-database, installing the templates of that calling package. The 
-.B ucf
-templates are not loaded automatically, since the front-end script has
-no idea that they should be, it just heuristically loads the templates
-of the package whose maintainer scripts are being run. In this
-scenario,
-.B ucf
-cannot load its templates, since the front-end script shall override
-the database when it exits, and there is no way to tell the front-end
-script to now load 
-.B ucf
-templates on the fly. In this case, since the DB was corrupt, debconf
-can not find
-.B ucf 
-templates. In case no debconf front-end is running, though, 
-.B ucf
-tries hard to load its own templates, as long as the package
-.I debconf-utils
-is installed. The only reliable way to reload 
-.B ucf
-templates is to call
-.RS 
-.I dpkg-reconfigure ucf
-.RE
 .SH AUTHOR
 This manual page was written Manoj Srivastava <srivasta@debian.org>,
 for the Debian GNU/Linux system.
