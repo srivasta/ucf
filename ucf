@@ -62,7 +62,7 @@ show_diff() {
     if [ -z "$1" ]; then
 	DIFF="There are no non-white space differences in the files."
     else
-        if  [ 99999 -lt $(echo $l | wc -c | awk '{print $1; }') ]; then
+        if  [ 99999 -lt $(echo $1 | wc -c | awk '{print $1; }') ]; then
             DIFF="The differences between the files are too large to display."
         else
             DIFF="$1"
