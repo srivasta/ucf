@@ -60,10 +60,14 @@ setq() {
 # Use debconf to show the differences
 show_diff() {
     if [ -z "$1" ]; then
-	echo >&2 "need a diff as argument"
-	exit 1;
+	DIFF="There are no non-white space differences in the files."
+    else
+        if  [ 99999 -lt $(echo $l | wc -c | awk '{print $1; }') ]; then
+            DIFF="The differences between the files are too large to display."
+        else
+            DIFF="$1"
+        fi
     fi
-    DIFF="$1"
     if [ "$DEBCONF_OK" = "YES" ] && [ "$DEBIAN_HAS_FRONTEND" ]; then
 	templ=ucf/show_diff
 	db_capb escape
