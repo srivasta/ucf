@@ -71,11 +71,14 @@ show_diff() {
     if [ "$DEBCONF_OK" = "YES" ] && [ "$DEBIAN_HAS_FRONTEND" ]; then
 	templ=ucf/show_diff
 	db_capb escape
-	db_reset $templ
 	db_subst $templ DIFF "$(printf %s "$DIFF" | debconf-escape -e)"
 	db_input critical $templ || true
-	db_go
+	db_go || true
 	db_get $templ
+	# may contain sensitive information, so clear
+	# immediatly after use so it is never written
+	# to disk
+	db_reset $templ 
 	db_capb
     else
 	echo "$DIFF" | sensible-pager
