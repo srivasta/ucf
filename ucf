@@ -154,6 +154,7 @@ if [ -z "$DEBCONF_OK" ]; then
 fi
 
 # Time to start nagging the packages that call ucf without debconf-ok
+# since it forces ucf to not use debconf.
 if [ "$DEBCONF_ALREADY_RUNNING" ] && [ "$DEBCONF_OK" = NO ]; then
 	# Commented out for now, uncomment after a while to begin nagging
 	# maintainers to fix their scripts.
