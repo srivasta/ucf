@@ -145,8 +145,33 @@ fi
 
 export DEBCONF_ALREADY_RUNNING
 
-# Start up debconf or at least get the db_* commands available.
-if [ -e /usr/share/debconf/confmodule ]; then
+if [ -z "$DEBCONF_OK" ]; then
+    if [ "$DEBCONF_ALREADY_RUNNING" = 'YES' ]; then
+	DEBCONF_OK='NO'
+    else
+	DEBCONF_OK='YES'
+    fi
+fi
+
+# Time to start nagging the packages that call ucf without debconf-ok
+if [ "$DEBCONF_ALREADY_RUNNING" ] && [ "$DEBCONF_OK" = NO ]; then
+	# Commented out for now, uncomment after a while to begin nagging
+	# maintainers to fix their scripts.
+	cat \
+<<END
+*** WARNING: ucf was run from a maintainer script that uses debconf, but
+             the script did not pass --debconf-ok to ucf. The maintainer
+             script should be fixed to not stop debconf before calling ucf,
+             and pass it this parameter. For now, ucf will revert to using
+             old-style, non-debconf prompting. Ugh!
+
+             Please inform the package maintainer about this problem.
+END
+fi
+
+# Start up debconf or at least get the db_* commands available, but
+# only if it is OK to use debconf.
+if [ "$DEBCONF_OK" = "YES" ] && [ -e /usr/share/debconf/confmodule ]; then
     if test $(id -u) = 0; then
 	. /usr/share/debconf/confmodule
 
@@ -172,29 +197,6 @@ if [ -e /usr/share/debconf/confmodule ]; then
     fi
 fi
 	
-
-if [ -z "$DEBCONF_OK" ]; then
-    if [ "$DEBCONF_ALREADY_RUNNING" = 'YES' ]; then
-	DEBCONF_OK='NO'
-    else
-	DEBCONF_OK='YES'
-    fi
-fi
-
-if [ "$DEBCONF_ALREADY_RUNNING" ] && [ "$DEBCONF_OK" = NO ]; then
-	# Commented out for now, uncomment after a while to begin nagging
-	# maintainers to fix their scripts.
-	#cat \
-<<END
-*** WARNING: ucf was run from a maintainer script that uses debconf, but
-             the script did not pass --debconf-ok to ucf. The maintainer
-             script should be fixed to not stop debconf before calling ucf,
-             and pass it this parameter. For now, ucf will revert to using
-             old-style, non-debconf prompting. Ugh!
-
-             Please inform the package maintainer about this problem.
-END
-fi
 
 
 purge_md5sum () {
