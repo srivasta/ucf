@@ -129,77 +129,9 @@ END
 
 ######################################################################
 ########                                                     #########
-########                  DebConf stuff                      #########
+########        file and hash save/restore functions         #########
 ########                                                     #########
 ######################################################################
-
-# Is debconf already running? Kinda tricky, because it will be after the
-# confmodule is sourced, so only test before that.
-if [ -z "$DEBCONF_ALREADY_RUNNING" ]; then
-    if [ "$DEBIAN_HAS_FRONTEND" ]; then
-	DEBCONF_ALREADY_RUNNING='YES'
-    else
-	DEBCONF_ALREADY_RUNNING='NO'
-    fi
-fi
-
-export DEBCONF_ALREADY_RUNNING
-
-if [ -z "$DEBCONF_OK" ]; then
-    if [ "$DEBCONF_ALREADY_RUNNING" = 'YES' ]; then
-	DEBCONF_OK='NO'
-    else
-	DEBCONF_OK='YES'
-    fi
-fi
-
-# Time to start nagging the packages that call ucf without debconf-ok
-# since it forces ucf to not use debconf.
-if [ "$DEBCONF_ALREADY_RUNNING" ] && [ "$DEBCONF_OK" = NO ]; then
-	# Commented out for now, uncomment after a while to begin nagging
-	# maintainers to fix their scripts.
-	cat \
-<<END
-*** WARNING: ucf was run from a maintainer script that uses debconf, but
-             the script did not pass --debconf-ok to ucf. The maintainer
-             script should be fixed to not stop debconf before calling ucf,
-             and pass it this parameter. For now, ucf will revert to using
-             old-style, non-debconf prompting. Ugh!
-
-             Please inform the package maintainer about this problem.
-END
-fi
-
-# Start up debconf or at least get the db_* commands available, but
-# only if it is OK to use debconf.
-if [ "$DEBCONF_OK" = "YES" ] && [ -e /usr/share/debconf/confmodule ]; then
-    if test $(id -u) = 0; then
-	. /usr/share/debconf/confmodule
-
-	# Load our templates, just in case our template has
-	# not been loaded or the Debconf DB lost or corrupted
-	# since then.
-	db_x_loadtemplatefile /var/lib/dpkg/info/ucf.templates ucf
-    else
-        echo >&2 "$progname: Not loading confmodule, since we are not running as root."
-    fi
-    # Only set the title if debconf was not already running.
-    # If it was running, then we do not want to clobber the
-    # title used for configuring the whole package with debconf.
-    if [ "$DEBCONF_ALREADY_RUNNING" = 'NO' ]; then
-	if ! db_settitle ucf/title 2>/dev/null; then
-      	    # Older debconf that does not support that command.
-            if test $(id -u) = 0; then
-		db_title "Modified configuration file"
-            else
-                echo >&2 "$progname: Not changing title, since we are not running as root."
-            fi
-	fi
-    fi
-fi
-	
-
-
 purge_md5sum () {
     for i in $(/usr/bin/seq 6 -1 0); do
 	if [ -e "${statedir}/hashfile.${i}" ]; then
@@ -320,6 +252,79 @@ replace_conf_file () {
 }
 
 
+
+######################################################################
+########                                                     #########
+########                  DebConf stuff                      #########
+########                                                     #########
+######################################################################
+
+# Is debconf already running? Kinda tricky, because it will be after the
+# confmodule is sourced, so only test before that.
+if [ -z "$DEBCONF_ALREADY_RUNNING" ]; then
+    if [ "$DEBIAN_HAS_FRONTEND" ]; then
+	DEBCONF_ALREADY_RUNNING='YES'
+    else
+	DEBCONF_ALREADY_RUNNING='NO'
+    fi
+fi
+
+export DEBCONF_ALREADY_RUNNING
+
+if [ -z "$DEBCONF_OK" ]; then
+    if [ "$DEBCONF_ALREADY_RUNNING" = 'YES' ]; then
+	DEBCONF_OK='NO'
+    else
+	DEBCONF_OK='YES'
+    fi
+fi
+
+# Time to start nagging the users who call ucf without debconf-ok
+if [ "$DEBCONF_ALREADY_RUNNING" ] && [ "$DEBCONF_OK" = NO ]; then
+	# Commented out for now, uncomment after a while to begin nagging
+	# maintainers to fix their scripts.
+	cat \
+<<END
+*** WARNING: ucf was run from a maintainer script that uses debconf, but
+             the script did not pass --debconf-ok to ucf. The maintainer
+             script should be fixed to not stop debconf before calling ucf,
+             and pass it this parameter. For now, ucf will revert to using
+             old-style, non-debconf prompting. Ugh!
+
+             Please inform the package maintainer about this problem.
+END
+fi
+
+# Start up debconf or at least get the db_* commands available, but
+# only if it is OK to use debconf.
+if [ "$DEBCONF_OK" = "YES" ] && [ -e /usr/share/debconf/confmodule ]; then
+    if test $(id -u) = 0; then
+	. /usr/share/debconf/confmodule
+
+	# Load our templates, just in case our template has
+	# not been loaded or the Debconf DB lost or corrupted
+	# since then.
+	db_x_loadtemplatefile /var/lib/dpkg/info/ucf.templates ucf
+    else
+        echo >&2 "$progname: Not loading confmodule, since we are not running as root."
+    fi
+    # Only set the title if debconf was not already running.
+    # If it was running, then we do not want to clobber the
+    # title used for configuring the whole package with debconf.
+    if [ "$DEBCONF_ALREADY_RUNNING" = 'NO' ]; then
+	if ! db_settitle ucf/title 2>/dev/null; then
+      	    # Older debconf that does not support that command.
+            if test $(id -u) = 0; then
+		db_title "Modified configuration file"
+            else
+                echo >&2 "$progname: Not changing title, since we are not running as root."
+            fi
+	fi
+    fi
+fi
+	
+
+
 ######################################################################
 ########                                                     #########
 ########              Command line args                      #########
@@ -383,6 +388,11 @@ while true ; do
 	*) echo >&2 "Internal error!" ; exit 1 ;;
     esac
 done
+######################################################################
+########                                                     #########
+########              Sanity checking                        #########
+########                                                     #########
+######################################################################
 # Need to run as root, or else the 
 if test $(id -u) != 0; then
     if [ "$docmd" = "YES" ]; then
@@ -424,6 +434,11 @@ safe_dest_file=$(echo $dest_file | perl -nle 'print "\Q$_\E\n"')
 
 
 
+######################################################################
+########                                                     #########
+########              Set Default Values                     #########
+########                                                     #########
+######################################################################
 # Load site defaults and over rides.
 if [ -f /etc/ucf.conf ]; then
     . /etc/ucf.conf
@@ -521,6 +536,11 @@ else
 fi
 
 
+######################################################################
+########                                                     #########
+########               More Sanity checking                  #########
+########                                                     #########
+######################################################################
 if [ "X$force_conffold" != "X" -a "X$force_conffnew" != "X" ]; then
     echo >&2 "Error: Only one of force_conffold and force_conffnew should";
     echo >&2 "       be set";
@@ -562,20 +582,11 @@ old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
 cached_file=$(echo $dest_file | tr / :)
 orig_new_file="$new_file"	# Since sometimes we replace the newfile below
 
-# Determine the action for the current file. The default is to ask,
-# with non-replacement being the norm.
-# If the config dir exists
-#   if file in always overwrite, state +=1;
-#   fi
-#   if file in never overwrite, state +=2;
-#   fi
-#   if file in ask; state +=4
-#   fi
-#   if state == 0; then state = default
-#   if state >= 4; ask
-#   if state == 3;  ask
-#   if state == 2; exit
-#   if state == 1; then replace_conffile; exit
+######################################################################
+########                                                     #########
+########                  Debugging dump                     #########
+########                                                     #########
+######################################################################
 
 if [ $DEBUG -gt 0 ]; then
     cat <<EOF
@@ -614,6 +625,26 @@ EOF
     fi
 fi
 
+######################################################################
+########                                                     #########
+########                Start Processing                     #########
+########                                                     #########
+######################################################################
+
+# Determine the action for the current file. The default is to ask,
+# with non-replacement being the norm.
+# If the config dir exists
+#   if file in always overwrite, state +=1;
+#   fi
+#   if file in never overwrite, state +=2;
+#   fi
+#   if file in ask; state +=4
+#   fi
+#   if state == 0; then state = default
+#   if state >= 4; ask
+#   if state == 3;  ask
+#   if state == 2; exit
+#   if state == 1; then replace_conffile; exit
 
 if [ "X$PURGE" = "XYES" ]; then
     if [ "X$VERBOSE" != "X" ]; then
@@ -624,7 +655,6 @@ if [ "X$PURGE" = "XYES" ]; then
 fi
 
 newsum=$(md5sum "$new_file" | awk '{print $1}')
-
 
 ######################################################################
 ########                                                     #########
