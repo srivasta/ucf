@@ -506,11 +506,7 @@ if [ -e "$statedir/hashfile" ]; then
 fi
 
 old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
-
-
 cached_file=$(echo $dest_file | tr / :)
-orig_new_file="$new_file"	# Since sometimes we replace the newfile below
-
 ######################################################################
 ########                                                     #########
 ########                  Debugging dump                     #########
@@ -553,6 +549,22 @@ EOF
 	echo "Historical md5sums are not available"
     fi
 fi
+
+######################################################################
+########                                                     #########
+########        Short circuit if we are purging              #########
+########                                                     #########
+######################################################################
+
+if [ "X$PURGE" = "XYES" ]; then
+    if [ "X$VERBOSE" != "X" ]; then
+	echo >&2 "Preparing to purge ${dest_file}"
+    fi
+    purge_md5sum;
+    exit 0;
+fi
+
+
 
 ######################################################################
 ########                                                     #########
@@ -633,6 +645,9 @@ fi
 ########                                                     #########
 ######################################################################
 
+orig_new_file="$new_file"	# Since sometimes we replace the newfile below
+newsum=$(md5sum "$new_file" | awk '{print $1}')
+
 # Determine the action for the current file. The default is to ask,
 # with non-replacement being the norm.
 # If the config dir exists
@@ -647,16 +662,6 @@ fi
 #   if state == 3;  ask
 #   if state == 2; exit
 #   if state == 1; then replace_conffile; exit
-
-if [ "X$PURGE" = "XYES" ]; then
-    if [ "X$VERBOSE" != "X" ]; then
-	echo >&2 "Preparing to purge ${dest_file}"
-    fi
-    purge_md5sum;
-    exit 0;
-fi
-
-newsum=$(md5sum "$new_file" | awk '{print $1}')
 
 ######################################################################
 ########                                                     #########
