@@ -78,6 +78,7 @@ show_diff() {
 	# may contain sensitive information, so clear
 	# immediatly after use so it is never written
 	# to disk
+	db_subst $templ DIFF ""
 	db_reset $templ 
 	db_capb
     else
