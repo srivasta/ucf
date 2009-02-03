@@ -389,8 +389,8 @@ else
     
 fi
 
-if [ "X$PAGER" != "X" ] && type -a -p $PAGER >& /dev/null ; then
-    my_pager=$(type -a -p $PAGER);
+if [ "X$PAGER" != "X" ] && which $PAGER >/dev/null 2>&1 ; then
+    my_pager=$(which $PAGER);
 elif [ -s /usr/bin/pager ] && 
      [ "X$(readlink -e /usr/bin/pager || :)" != "X" ]; then
     my_pager=/usr/bin/pager
