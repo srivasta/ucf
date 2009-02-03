@@ -72,6 +72,7 @@ show_diff() {
 	templ=ucf/show_diff
 	db_capb escape
 	db_subst $templ DIFF "$(printf %s "$DIFF" | debconf-escape -e)"
+	db_fset $templ seen false
 	db_input critical $templ || true
 	db_go || true
 	db_get $templ
