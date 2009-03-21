@@ -253,6 +253,10 @@ replace_conf_file () {
     replace_md5sum;
 }
 
+# Escape single quotes in the arguments passed in
+quote_single() {
+    echo "$1" | sed -e "s,','\\\\'',g"
+}
 
 
 
@@ -275,6 +279,12 @@ THREEWAY=
 DIST_SUFFIX="ucf-dist"
 NEW_SUFFIX="ucf-new"
 OLD_SUFFIX="ucf-old"
+
+# save up the cmdline with proper quoting/escaping
+for arg in "$@"; do
+    saved="${saved:+$saved }'$(quote_single "$arg")'"
+done
+
 
 # Note that we use `"$@"' to let each command-line parameter expand to a
 # separate word. The quotes around `$@' are essential!
@@ -319,6 +329,10 @@ while true ; do
 	*) echo >&2 "Internal error!" ; exit 1 ;;
     esac
 done
+
+# now we can restore $@
+eval set -- "$saved"
+
 ######################################################################
 ########                                                     #########
 ########              Sanity checking                        #########
