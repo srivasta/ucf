@@ -221,7 +221,8 @@ replace_md5sum () {
 		"\"$statedir/hashfile\""
 	fi
     fi
-    if [ "X$THREEWAY" != "X" ]; then
+    file_size=$(stat -c '%s' "$orig_new_file")
+    if [ "X$THREEWAY" != "X" ] || [ $file_size -lt 25600 ]; then
 	$action cp -pf "$orig_new_file" "$statedir/cache/$cached_file"
     fi
     # cp -pf "$orig_new_file" "$dest_file.${DIST_SUFFIX}"
@@ -880,7 +881,7 @@ else
     while [ "X$done" = "XNO" ]; do
 	if [ "$DEBCONF_OK" = "YES" ] && [ "$DEBIAN_HAS_FRONTEND" ]; then
 		# Use debconf to prompt.
-		if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then
+		if [ -e "$statedir/cache/$cached_file" ]; then
 			templ=ucf/changeprompt_threeway
 		else
 			templ=ucf/changeprompt
