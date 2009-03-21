@@ -908,37 +908,41 @@ else
 		db_get $templ
 		ANSWER="$RET"
 	else
-		# Prompt without using debconf.
-		cat >&2 <<EOPRMT
-Configuration file \`$dest_file'
- ==> File on system created by you or by a script.
- ==> File also in package provided by package maintainer.
-   What would you like to do about it ?  Your options are:
-    Y or I  : install the package maintainer's version
-    N or O  : keep your currently-installed version
-      D     : show the differences between the versions
-      S     : show the side-by-side differences between the versions
-EOPRMT
-		if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then
-			cat >&2 <<EOTD
-    3 or T  : show a three way difference between current, older,
-              and new versions of the file
-      M     : Do a 3 way merge between current, older,
-              and new versions of the file [Very Experimental]
-EOTD
-		fi
-		cat >&2 <<EOPEND
-      Z     : start a new shell to examine the situation
- The default action is to keep your current version.
-EOPEND
-		if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then
-			echo -n >&2 "*** " $(basename "$dest_file") \
-			    " (Y/I/N/O/D/3/T/M/Z) [default=N] ?"
-		else
-			echo -n >&2 "*** " $(basename "$dest_file") \
-			    " (Y/I/N/O/D/Z) [default=N] ?"
-		fi
-  		read -e ANSWER </dev/tty
+            echo >&2 "Need debconf to interact"
+            exit 2
+########################################################################################
+# 		# Prompt without using debconf.                                        #
+# 		cat >&2 <<EOPRMT                                                       #
+# Configuration file \`$dest_file'                                                     #
+#  ==> File on system created by you or by a script.                                   #
+#  ==> File also in package provided by package maintainer.                            #
+#    What would you like to do about it ?  Your options are:                           #
+#     Y or I  : install the package maintainer's version                               #
+#     N or O  : keep your currently-installed version                                  #
+#       D     : show the differences between the versions                              #
+#       S     : show the side-by-side differences between the versions                 #
+# EOPRMT                                                                               #
+# 		if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then  #
+# 			cat >&2 <<EOTD                                                 #
+#     3 or T  : show a three way difference between current, older,                    #
+#               and new versions of the file                                           #
+#       M     : Do a 3 way merge between current, older,                               #
+#               and new versions of the file [Very Experimental]                       #
+# EOTD                                                                                 #
+# 		fi                                                                     #
+# 		cat >&2 <<EOPEND                                                       #
+#       Z     : start a new shell to examine the situation                             #
+#  The default action is to keep your current version.                                 #
+# EOPEND                                                                               #
+# 		if [ "X$THREEWAY" != "X" -a -e "$statedir/cache/$cached_file" ]; then  #
+# 			echo -n >&2 "*** " $(basename "$dest_file") \                  #
+# 			    " (Y/I/N/O/D/3/T/M/Z) [default=N] ?"                       #
+# 		else                                                                   #
+# 			echo -n >&2 "*** " $(basename "$dest_file") \                  #
+# 			    " (Y/I/N/O/D/Z) [default=N] ?"                             #
+# 		fi                                                                     #
+#   		read -e ANSWER </dev/tty                                               #
+########################################################################################
 	fi
 
 	case "$ANSWER" in
@@ -1016,7 +1020,14 @@ EOPEND
                 exit 0
 		;;
 	    shell|Z|z)
-		bash >/dev/tty </dev/tty || true
+                if tty -s; then
+		    bash >/dev/tty </dev/tty || true
+                elif [ -n "$DISPLAY" ]; then
+                    x-terminal-emulator || true
+                else
+                    # Don't know what to do
+                    echo >&2 "No terminal, and no DISPLAY set, can't fork shell."
+                fi
 		;;
 	    keep_current|n|N|o|O|'')
 		replace_md5sum;
