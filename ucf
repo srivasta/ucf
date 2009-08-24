@@ -1028,6 +1028,7 @@ else
                 else
                     # Don't know what to do
                     echo >&2 "No terminal, and no DISPLAY set, can't fork shell."
+                    sleep 3;
                 fi
 		;;
 	    keep_current|n|N|o|O|'')
