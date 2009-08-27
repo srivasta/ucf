@@ -280,7 +280,7 @@ THREEWAY=
 DIST_SUFFIX="ucf-dist"
 NEW_SUFFIX="ucf-new"
 OLD_SUFFIX="ucf-old"
-
+ERR_SUFFIX="merge-error"
 # save up the cmdline with proper quoting/escaping
 for arg in "$@"; do
     saved="${saved:+$saved }'$(quote_single "$arg")'"
@@ -1003,22 +1003,23 @@ else
                         0)
 		            new_file="$dest_file.${NEW_SUFFIX}"
 		            RETAIN_OLD=YES
-		            replace_conf_file;
+		            replace_conf_file
+			    rm -f "$dest_file.${NEW_SUFFIX}" # don't need this around no mo'
+			    exit 0
                             ;;
                         *)
-			    echo >&2
-		    	    echo >&2 " Conflicts found! Please edit" \
-			        "\`$dest_file' and sort them out manually."
-			    echo >&2 " The file \`$dest_file.${NEW_SUFFIX}' has a" \
-			        "record of the failed merge of the configuration file."
-			    echo >&2
-                            exit 3                            
+			    mv $dest_file.${NEW_SUFFIX} $dest_file.${ERR_SUFFIX} 
+			    db_subst ucf/conflicts_found dest_file "$dest_file"
+			    db_subst ucf/conflicts_found ERR_SUFFIX "${ERR_SUFFIX}"
+			    db_input critical ucf/conflicts_found || true
+			    db_go || true
+			    ;;
                     esac
 		else 
-		    replace_conf_file;
+		    replace_conf_file
+		    rm -f "$dest_file.${NEW_SUFFIX}" # don't need this around no mo'
+		    exit 0
 		fi
-                rm -f "$dest_file.${NEW_SUFFIX}" # don't need this around no mo'
-                exit 0
 		;;
 	    shell|Z|z)
                 if tty -s; then
