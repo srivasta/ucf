@@ -163,26 +163,19 @@
 .rm #[ #] #H #V #F C
 .\" ========================================================================
 .\"
-.IX Title "UCFQ 1"
 .TH UCFQ 1 "2006-04-16" "perl v5.8.8" "User Contributed Perl Documentation"
 .SH NAME
 ucfq \- query the ucf database
 .SH "SYNOPSIS"
-.IX Header "SYNOPSIS"
 .Vb 1
 \& usage: ucfq [options] (/path/to/file|package)[/path/to/file|package  ...]
 .Ve
 .SH "OPTIONS"
-.IX Header "OPTIONS"
 .IP "\fB\-\-help\fR \fBh\fR Print out a usage message." 3
-.IX Item "--help h Print out a usage message."
 .PD 0
 .IP "\fB\-\-debug\fR \fB\-d\fR Turn on debugging mode." 3
-.IX Item "--debug -d Turn on debugging mode."
 .IP "\fB\-\-verbose\fR \fB\-v\fR Make the script more verbose.." 3
-.IX Item "--verbose -v Make the script more verbose.."
 .IP "\fB\-\-with\-colons\fR \fB\-w\fR" 3
-.IX Item "--with-colons -w"
 .RS 3
 .PD
 .RS 2
@@ -195,7 +188,6 @@ dividers, headers, or footer.
 .RS 3
 .RE
 .IP "\fB\-\-state\-dr\fR dir" 3
-.IX Item "--state-dr dir"
 .RS 3
 .RS 2
 Set the state directory to \f(CW\*(C`/path/to/dir\*(C'\fR instead of the default
@@ -205,7 +197,6 @@ Set the state directory to \f(CW\*(C`/path/to/dir\*(C'\fR instead of the default
 .RS 3
 .RE
 .SH "DESCRIPTION"
-.IX Header "DESCRIPTION"
 This script takes a set of arguments, each of which is a package name
 (and thus does not contain a /) or a full path to a configuration
 file, and outputs the associated package, if any, if the file exists
@@ -219,16 +210,12 @@ still exist on the system, and whether these files have been locally
 modified by the user \*(-- assuming that the package registered all the
 configuration files with \fBucf\fR using \f(CW\*(C`ucfr\*(C'\fR.
 .SH "CAVEATS"
-.IX Header "CAVEATS"
 This is very inchoate, at the moment, and needs testing.
 .SH "BUGS"
-.IX Header "BUGS"
 None Known so far.
 .SH "AUTHOR"
-.IX Header "AUTHOR"
 Manoj Srivastava <srivasta\e@debian.org>
 .SH "COPYRIGHT AND LICENSE"
-.IX Header "COPYRIGHT AND LICENSE"
 This script is a part of the Ucf package, and is 
 .PP
 Copyright (c) 2006 Manoj Srivastava <srivasta\e@debian.org>
