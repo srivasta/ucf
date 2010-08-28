@@ -1,13 +1,14 @@
 # translation of ucf_1.18_templates.po to italian
-# Copyright Luca Bruno <luca.br@uno.it>, 2005.
+# Copyright Luca Bruno <lucab@debian.org>, 2005-2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: ucf_1.18_templates\n"
 "Report-Msgid-Bugs-To: ucf@packages.debian.org\n"
 "POT-Creation-Date: 2009-10-13 08:14-0500\n"
 "PO-Revision-Date: 2007-09-19 01:10-0500\n"
-"Last-Translator: Luca Bruno <luca.br@uno.it>\n"
+"Last-Translator: Luca Bruno <lucab@debian.org>\n"
 "Language-Team:  Italian <tp@lists.linux.it>\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,25 +52,22 @@ msgstr "mostrare le differenze tra le versioni"
 #. Type: select
 #. Choices
 #: ../templates:3001 ../templates:4001
-#, fuzzy
 msgid "show a side-by-side difference between the versions"
-msgstr "mostrare le differenze tra le versioni"
+msgstr "mostrare affiancate le differenze tra le versioni"
 
 #. Type: select
 #. Choices
 #. Translators, please keep translations *short* (less than 65 columns)
 #: ../templates:3001
 msgid "show a 3-way difference between available versions"
-msgstr "Mostrare le differenze tra 3 versioni del file disponibili"
+msgstr "mostrare le differenze tra le 3 versioni del file disponibili"
 
 #. Type: select
 #. Choices
 #. Translators, please keep translations *short* (less than 65 columns)
 #: ../templates:3001
 msgid "do a 3-way merge between available versions (experimental)"
-msgstr ""
-"Integrare le differenze tra 3 versioni del file disponibili [Molto "
-"sperimentale]"
+msgstr "integrare le differenze tra le 3 versioni (sperimentale)"
 
 #. Type: select
 #. Choices
@@ -85,9 +83,8 @@ msgstr "eseguire una nuova shell per esaminare la situazione"
 #. Type: select
 #. Description
 #: ../templates:3002 ../templates:4002
-#, fuzzy
 msgid "What do you want to do about modified configuration file ${BASENAME}?"
-msgstr "Cosa si vuol fare di ${BASENAME}?"
+msgstr "Cosa si vuol fare del file di configurazione modificato ${BASENAME}?"
 
 #. Type: select
 #. Description
@@ -105,13 +102,13 @@ msgstr ""
 #. Description
 #: ../templates:5001
 msgid "Line by line differences between versions"
-msgstr "mostrare le differenze tra le versioni"
+msgstr "Differenze riga per riga tra le versioni"
 
 #. Type: error
 #. Description
 #: ../templates:6001
 msgid "Conflicts found in three-way merge"
-msgstr ""
+msgstr "Conflitto nell'integrazione delle 3 versioni"
 
 #. Type: error
 #. Description
@@ -120,6 +117,8 @@ msgid ""
 "Conflicts found during three-way merge! Please edit `${dest_file}' and sort "
 "them out manually."
 msgstr ""
+"Si sono verificati conflitti nell'integrazione delle 3 versioni! Modificare "
+"il file «${dest_file}» e risolvere manualmente la situazione."
 
 #. Type: error
 #. Description
@@ -128,8 +127,5 @@ msgid ""
 "The file `${dest_file}.${ERR_SUFFIX}' has a record of the failed merge of "
 "the configuration file."
 msgstr ""
-
-#, fuzzy
-#~| msgid "What would you like to do about ${BASENAME}?"
-#~ msgid "What do you want to do about modified configration file ${BASENAME}?"
-#~ msgstr "Cosa si vuol fare di ${BASENAME}?"
+"Il file «${dest_file}.${ERR_SUFFIX}» contiene il resoconto della tentata "
+"integrazione del file di configurazione."

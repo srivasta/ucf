@@ -1,27 +1,31 @@
-# SOME DESCRIPTIVE TITLE.
-# This file is distributed under the same license as the PACKAGE package.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
-#
+# Danish translation ucf.
+# This file is distributed under the same license as the ucf package.
+# Copyright (C) 2010 ucf & nedenst√•ende overs√¶ttere.
 # Claus Hindsgaul <claus_h@image.dk>, 2005.
 # Claus Hindsgaul <claus.hindsgaul@gmail.com>, 2007.
+# Joe Hansen <joedalton2@yahoo.dk>, 2010.
+#
+# configuration file -> ops√¶tningsfil (normalt konfigurationsfil, men tidligere 
+#                                     havde ops√¶tningsfil s√• har beholdt den).
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: ucf debconf template\n"
 "Report-Msgid-Bugs-To: ucf@packages.debian.org\n"
 "POT-Creation-Date: 2009-10-13 08:14-0500\n"
-"PO-Revision-Date: 2007-09-19 01:09-0500\n"
-"Last-Translator: Claus Hindsgaul <claus.hindsgaul@gmail.com>\n"
-"Language-Team: Danish\n"
+"PO-Revision-Date: 2010-07-07 17:34+0000\n"
+"Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
+"Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
+"Language: da\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
 
 #. Type: title
 #. Description
 #: ../templates:2001
 msgid "Modified configuration file"
-msgstr "∆ndret opsÊtningsfil"
+msgstr "√Ündret ops√¶tningsfil"
 
 #. Type: select
 #. Choices
@@ -30,7 +34,7 @@ msgstr "∆ndret opsÊtningsfil"
 #. Choices
 #: ../templates:3001 ../templates:4001
 msgid "install the package maintainer's version"
-msgstr "installÈr pakkevedligeholderens udgave"
+msgstr "install√©r pakkevedligeholderens udgave"
 
 #. Type: select
 #. Choices
@@ -64,7 +68,7 @@ msgstr "vis forskellene mellem versionerne overfor hinanden"
 #. Translators, please keep translations *short* (less than 65 columns)
 #: ../templates:3001
 msgid "show a 3-way difference between available versions"
-msgstr "vis 3-vejs forskelle mellem de tilgÊngelige udgaver af filen"
+msgstr "vis 3-vejs forskelle mellem de tilg√¶ngelige udgaver af filen"
 
 #. Type: select
 #. Choices
@@ -72,8 +76,7 @@ msgstr "vis 3-vejs forskelle mellem de tilgÊngelige udgaver af filen"
 #: ../templates:3001
 msgid "do a 3-way merge between available versions (experimental)"
 msgstr ""
-"udf¯r en 3-vejs fletning mellem de tilgÊngelige udgaver af filen [Meget "
-"eksperimentelt]"
+"udf√∏r en 3-vejs fletning mellem tilg√¶ngelige versioner (eksperimentelt)"
 
 #. Type: select
 #. Choices
@@ -82,16 +85,15 @@ msgstr ""
 #. Choices
 #: ../templates:3001 ../templates:4001
 msgid "start a new shell to examine the situation"
-msgstr "start en ny skal for at unders¯ge situationen"
+msgstr "start en ny skal for at unders√∏ge situationen"
 
 #. Type: select
 #. Description
 #. Type: select
 #. Description
 #: ../templates:3002 ../templates:4002
-#, fuzzy
 msgid "What do you want to do about modified configuration file ${BASENAME}?"
-msgstr "Hvad vil du g¯re med ${BASENAME}?"
+msgstr "Hvad vil du g√∏re med √¶ndret ops√¶tningsfil ${BASENAME}?"
 
 #. Type: select
 #. Description
@@ -102,8 +104,8 @@ msgid ""
 "A new version of configuration file ${FILE} is available, but the version "
 "installed currently has been locally modified."
 msgstr ""
-"Der er kommet en ny version af opsÊtningsfilen ${FILE}, men din version er "
-"blevet Êndret lokalt."
+"Der er kommet en ny version af ops√¶tningsfilen ${FILE}, men din version er "
+"blevet √¶ndret lokalt."
 
 #. Type: note
 #. Description
@@ -115,7 +117,7 @@ msgstr "vis forskellene mellem udgaverne"
 #. Description
 #: ../templates:6001
 msgid "Conflicts found in three-way merge"
-msgstr ""
+msgstr "Konflikter fundet i trevejssammenf√∏jning"
 
 #. Type: error
 #. Description
@@ -124,6 +126,8 @@ msgid ""
 "Conflicts found during three-way merge! Please edit `${dest_file}' and sort "
 "them out manually."
 msgstr ""
+"Konflikter fundet under trevejssammenf√∏jning! Rediger venligst `"
+"${dest_file}' og ret dem manuelt."
 
 #. Type: error
 #. Description
@@ -132,14 +136,5 @@ msgid ""
 "The file `${dest_file}.${ERR_SUFFIX}' has a record of the failed merge of "
 "the configuration file."
 msgstr ""
-
-#, fuzzy
-#~| msgid "What would you like to do about ${BASENAME}?"
-#~ msgid "What do you want to do about modified configration file ${BASENAME}?"
-#~ msgstr "Hvad vil du g¯re med ${BASENAME}?"
-
-#~ msgid "The differences"
-#~ msgstr "Forskellene"
-
-#~ msgid "${DIFF}"
-#~ msgstr "${DIFF}"
+"Filen `${dest_file}.${ERR_SUFFIX}' har en post over den mislykkede "
+"sammenf√∏jning af ops√¶tningsfilen."

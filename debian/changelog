@@ -1,3 +1,15 @@
+ucf (3.0025+nmu1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix pending l10n issues. Debconf translations:
+    - Italian (Luca Bruno).  Closes: #559554
+    - Catalan (Jordi Mallach).  Closes: #588304
+    - Danish (Joe Hansen).  Closes: #588369
+    - Portuguese (Américo Monteiro).  Closes: #588980
+    - Spanish (Javier Fernandez-Sanguino).  Closes: #592174
+
+ -- Christian Perrier <bubulle@debian.org>  Sat, 28 Aug 2010 08:55:44 +0200
+
 ucf (3.0025) unstable; urgency=low
 
   * [ucf 39603a0] Added russian translation.
