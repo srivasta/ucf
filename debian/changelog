@@ -1,3 +1,12 @@
+ucf (3.0025+nmu2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix pending l10n issues. Debconf translations:
+    - Brazilian Portuguese (Flamarion Jorge).  Closes: #594786
+    - Dutch; (Jeroen Schot).  Closes: #622789
+
+ -- Christian Perrier <bubulle@debian.org>  Fri, 15 Apr 2011 08:27:12 +0200
+
 ucf (3.0025+nmu1) unstable; urgency=low
 
   * Non-maintainer upload.
