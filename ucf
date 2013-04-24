@@ -83,7 +83,11 @@ show_diff() {
 	db_reset $templ
 	db_capb
     else
-	echo "$DIFF" | sensible-pager
+        if [ -z $my_pager ]; then
+	    echo "$DIFF" | sensible-pager
+        else
+	    echo "$DIFF" | $my_pager
+        fi
     fi
 }
 
