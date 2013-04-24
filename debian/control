@@ -4,13 +4,13 @@ VCS-Browser: http://git.debian.org/?p=users/srivasta/debian/ucf.git
 Section: utils
 Priority: standard
 Maintainer: Manoj Srivastava <srivasta@debian.org>
-Build-Depends-Indep: po-debconf, gettext
-Standards-Version: 3.8.3.0
+Build-Depends-Indep: po-debconf, gettext, debhelper (>= 9.0.0)
+Standards-Version: 3.9.4.0
 
 Package: ucf
 Architecture: all
-Depends: debconf (>= 1.5.19), coreutils (>= 5.91)
-Description: Update Configuration File: preserve user changes to config files.
+Depends: debconf (>= 1.5.19), coreutils (>= 5.91), ${misc:Depends}
+Description: Update Configuration File(s): preserve user changes to config files
  Debian policy mandates that user changes to configuration files must be 
  preserved during package upgrades. The easy way to achieve this behavior
  is to make the configuration file a 'conffile', in which case dpkg
