@@ -118,7 +118,7 @@ Options:
                              configuration file. )
              --state-dir bar Set the state directory to bar instead of the
                              default '/var/lib/ucf'. Used mostly for testing.
-             --debconf-ok    Indicate that it is ok for uct to use an already
+             --debconf-ok    Indicate that it is ok for ucf to use an already
                              running debconf instance for prompting.
              --debconf-template bar
                              Specify an alternate, caller-provided debconf
