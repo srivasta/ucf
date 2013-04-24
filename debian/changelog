@@ -1,8 +1,23 @@
 ucf (3.0026) experimental; urgency=low
 
   * Acknowledge NMUs. Thanks, bubulle.
+  * Bug fix: "starting a new shell fails from console", thanks to EmaRsk
+    (Closes: #574266). The fix was provided by Aaron Hope <asbestos@xemed.com>
+  * Bug fix: "$PAGER ignored", thanks to David Fries (Closes: #596452).
+  * Bug fix: "ucf fails when VERBOSE is set to 1 in /etc/ucf.conf", thanks
+    to Aljoscha Lautenbach (Closes: #577127). The same bug was also
+    repprted as  "--verbose option changes return code", thanks to Frank
+    Küster (Closes: #631231).
+  * Bug fix: "Small typo in ucf help", thanks to Tomasz Muras
+    (Closes: #577582).
+  * Bug fix: "ucfr exits successfully despite syntax error", thanks to
+    Sven Joachim (Closes: #573455).
+  * Bug fix: "ucfr should collapse duplicate slashes in paths", thanks to
+    Olivier Berger (Closes: #638187).
+  * Bug fix: "should be tagged Multi-Arch: foreign", thanks to
+    hriase1@post-ist-da.de (Closes: #670711).
 
- -- Manoj Srivastava <srivasta@debian.org>  Wed, 24 Apr 2013 00:18:52 -0700
+ -- Manoj Srivastava <srivasta@debian.org>  Wed, 24 Apr 2013 03:10:05 -0700
 
 ucf (3.0025+nmu3) unstable; urgency=low
 
