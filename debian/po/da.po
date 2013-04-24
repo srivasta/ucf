@@ -1,0 +1,145 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+#
+# Claus Hindsgaul <claus_h@image.dk>, 2005.
+# Claus Hindsgaul <claus.hindsgaul@gmail.com>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: ucf debconf template\n"
+"Report-Msgid-Bugs-To: ucf@packages.debian.org\n"
+"POT-Creation-Date: 2009-10-13 08:14-0500\n"
+"PO-Revision-Date: 2007-09-19 01:09-0500\n"
+"Last-Translator: Claus Hindsgaul <claus.hindsgaul@gmail.com>\n"
+"Language-Team: Danish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Type: title
+#. Description
+#: ../templates:2001
+msgid "Modified configuration file"
+msgstr "Ændret opsætningsfil"
+
+#. Type: select
+#. Choices
+#. Translators, please keep translations *short* (less than 65 columns)
+#. Type: select
+#. Choices
+#: ../templates:3001 ../templates:4001
+msgid "install the package maintainer's version"
+msgstr "installér pakkevedligeholderens udgave"
+
+#. Type: select
+#. Choices
+#. Translators, please keep translations *short* (less than 65 columns)
+#. Type: select
+#. Choices
+#: ../templates:3001 ../templates:4001
+msgid "keep the local version currently installed"
+msgstr "bevar din aktuelt-installerede udgave"
+
+#. Type: select
+#. Choices
+#. Translators, please keep translations *short* (less than 65 columns)
+#. Type: select
+#. Choices
+#: ../templates:3001 ../templates:4001
+msgid "show the differences between the versions"
+msgstr "vis forskellene mellem udgaverne"
+
+#. Type: select
+#. Choices
+#. Translators, please keep translations *short* (less than 65 columns)
+#. Type: select
+#. Choices
+#: ../templates:3001 ../templates:4001
+msgid "show a side-by-side difference between the versions"
+msgstr "vis forskellene mellem versionerne overfor hinanden"
+
+#. Type: select
+#. Choices
+#. Translators, please keep translations *short* (less than 65 columns)
+#: ../templates:3001
+msgid "show a 3-way difference between available versions"
+msgstr "vis 3-vejs forskelle mellem de tilgængelige udgaver af filen"
+
+#. Type: select
+#. Choices
+#. Translators, please keep translations *short* (less than 65 columns)
+#: ../templates:3001
+msgid "do a 3-way merge between available versions (experimental)"
+msgstr ""
+"udfør en 3-vejs fletning mellem de tilgængelige udgaver af filen [Meget "
+"eksperimentelt]"
+
+#. Type: select
+#. Choices
+#. Translators, please keep translations *short* (less than 65 columns)
+#. Type: select
+#. Choices
+#: ../templates:3001 ../templates:4001
+msgid "start a new shell to examine the situation"
+msgstr "start en ny skal for at undersøge situationen"
+
+#. Type: select
+#. Description
+#. Type: select
+#. Description
+#: ../templates:3002 ../templates:4002
+#, fuzzy
+msgid "What do you want to do about modified configuration file ${BASENAME}?"
+msgstr "Hvad vil du gøre med ${BASENAME}?"
+
+#. Type: select
+#. Description
+#. Type: select
+#. Description
+#: ../templates:3002 ../templates:4002
+msgid ""
+"A new version of configuration file ${FILE} is available, but the version "
+"installed currently has been locally modified."
+msgstr ""
+"Der er kommet en ny version af opsætningsfilen ${FILE}, men din version er "
+"blevet ændret lokalt."
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid "Line by line differences between versions"
+msgstr "vis forskellene mellem udgaverne"
+
+#. Type: error
+#. Description
+#: ../templates:6001
+msgid "Conflicts found in three-way merge"
+msgstr ""
+
+#. Type: error
+#. Description
+#: ../templates:6001
+msgid ""
+"Conflicts found during three-way merge! Please edit `${dest_file}' and sort "
+"them out manually."
+msgstr ""
+
+#. Type: error
+#. Description
+#: ../templates:6001
+msgid ""
+"The file `${dest_file}.${ERR_SUFFIX}' has a record of the failed merge of "
+"the configuration file."
+msgstr ""
+
+#, fuzzy
+#~| msgid "What would you like to do about ${BASENAME}?"
+#~ msgid "What do you want to do about modified configration file ${BASENAME}?"
+#~ msgstr "Hvad vil du gøre med ${BASENAME}?"
+
+#~ msgid "The differences"
+#~ msgstr "Forskellene"
+
+#~ msgid "${DIFF}"
+#~ msgstr "${DIFF}"
