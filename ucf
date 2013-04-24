@@ -350,7 +350,7 @@ if [ "X$PURGE" = "XYES" ]; then
 	echo >&2 "*** ERROR: Need exactly one argument when purging, got $#";
 	echo >&2 ""
 	usageversion;
-	exit 0 ;
+	exit 2 ;
     fi
     temp_dest_file=$1;
     setq dest_file "$(readlink -q -m $temp_dest_file)" "The Destination file";
@@ -359,7 +359,7 @@ else
 	echo >&2 "*** ERROR: Need exactly two arguments, got $#";
 	echo >&2 ""
 	usageversion;
-	exit 0 ;
+	exit 2 ;
     fi
     temp_new_file=$1;
     temp_dest_file=$2;
