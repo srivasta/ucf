@@ -298,11 +298,6 @@ TEMP=`getopt -a -o hs:d::D::nv -n "$progname" \
       --long help,src-dir:,sum-file:,dest-dir:,debug::,DEBUG::,no-action,purge,verbose,three-way,debconf-ok,debconf-template:,state-dir: \
              -- "$@"`
 
-if [ $? != 0 ] ; then
-    echo "Error handling options.Terminating..." >&2 ;
-    exit 1 ;
-fi
-
 # Note the quotes around `$TEMP': they are essential!
 eval set -- "$TEMP"
 
