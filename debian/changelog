@@ -1,3 +1,12 @@
+ucf (3.0027) unstable; urgency=low
+
+  * Use dpkg-query --control-path instead of hard-coding a path to our
+    debconf templates file, for compatibility with multiarch. The patch
+    had apparently gotten reverted somewhere.
+  * Now that wheezy has been released, moving to unstable.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sat, 18 May 2013 16:26:58 -0700
+
 ucf (3.0026) experimental; urgency=low
 
   * Acknowledge NMUs. Thanks, bubulle.
