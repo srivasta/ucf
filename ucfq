@@ -27,7 +27,6 @@ package ucf;
 
 use strict;
 use Getopt::Long;
-use Cwd qw{abs_path};
 
 # set the version and revision
 ($main::MYNAME     = $main::0) =~ s|.*/||;
@@ -502,6 +501,7 @@ This is the encapsulation of a configuration file metadata.
 
 package conffile;
 use strict;
+use Cwd qw{abs_path};
 
 
 =head2 new

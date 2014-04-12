@@ -1,5 +1,5 @@
 Source: ucf
-VCS-Git: git://git.debian.org/~srivasta/debian/ucf.git
+VCS-Git: git://anonscm.debian.org/users/srivasta/debian/ucf.git
 VCS-Browser: http://git.debian.org/?p=users/srivasta/debian/ucf.git
 Section: utils
 Priority: standard
