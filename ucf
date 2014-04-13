@@ -856,7 +856,12 @@ else
 #         the user what action to take.
     if [ "X$force_conffnew" != "X" ]; then
 	echo >&2 "Replacing config file $dest_file with new version"
-	echo >&2 "even though the files differ, since you asked for it"
+	echo >&2 "since you asked for it."
+        if [ "$destsum" = "$newsum" ]; then
+            echo >&2 "The new and the old files are identical, AFAICS"
+        else
+            echo >&2 "The new and the old files are different"
+        fi
 	replace_conf_file;
 	exit 0;
     fi

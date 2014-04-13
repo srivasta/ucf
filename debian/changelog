@@ -1,3 +1,11 @@
+ucf (3.0028) unstable; urgency=low
+
+  * Ack the NMU.
+  * Bug fix: "Should not claim files differ if $newsum and $destsum are
+    identical", thanks to Frank Küster                 (Closes: #633391).
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sat, 12 Apr 2014 17:10:38 -0700
+
 ucf (3.0027+nmu1) unstable; urgency=medium
 
   [ Andreas Beckmann ]
