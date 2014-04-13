@@ -1,11 +1,11 @@
 Source: ucf
 VCS-Git: git://anonscm.debian.org/users/srivasta/debian/ucf.git
-VCS-Browser: http://git.debian.org/?p=users/srivasta/debian/ucf.git
+VCS-Browser: http://anonscm.debian.org/gitweb/?p=users/srivasta/debian/ucf.git
 Section: utils
 Priority: standard
 Maintainer: Manoj Srivastava <srivasta@debian.org>
 Build-Depends-Indep: po-debconf, gettext, debhelper (>= 9.0.0)
-Standards-Version: 3.9.4.0
+Standards-Version: 3.9.5
 
 Package: ucf
 Architecture: all
