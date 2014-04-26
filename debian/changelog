@@ -1,10 +1,18 @@
-ucf (3.0028) unstable; urgency=low
+ucf (3.0028) unstable; urgency=medium
 
   * Ack the NMU.
   * Bug fix: "Should not claim files differ if $newsum and $destsum are
     identical", thanks to Frank Küster                 (Closes: #633391).
+  * Differentiate between the file being registered in the registry and
+    the RE used to look it up. Account for the fact that the file being
+    registered might be a s symlink, so follow links for the
+    registry. Since registering symlinks is broken already, and we should
+    be registering files and not symlinks anyway. ucf already did follow
+    the symbolic links, it is only ucfr that needed changing.
+  * Bug fix: "database corruption if ucfr is used on symlinks instead of
+    files", thanks to Andreas Beckmann (Closes: #724457).
 
- -- Manoj Srivastava <srivasta@debian.org>  Sat, 12 Apr 2014 17:10:38 -0700
+ -- Manoj Srivastava <srivasta@debian.org>  Sat, 26 Apr 2014 15:45:35 -0700
 
 ucf (3.0027+nmu1) unstable; urgency=medium
 

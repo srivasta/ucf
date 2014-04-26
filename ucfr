@@ -59,7 +59,7 @@ purge_from_registry () {
         fi
         exit 0;
     fi
-    old_pkg=$(egrep "[[:space:]]${safe_conf_file}$" "$statedir/registry" | \
+    old_pkg=$(egrep "[[:space:]]${real_conf_file_re}$" "$statedir/registry" | \
         awk '{print $1;}' );
     if [ "$pkg" != "$old_pkg"  ]; then
         echo >&2 "ucfr: Association belongs to $old_pkg, not $pkg";
@@ -87,11 +87,11 @@ purge_from_registry () {
     if [ "X$docmd" = "XYES" ]; then
 	set +e
 	if [ "X$VERBOSE" != "X" ]; then
-	    echo "egrep -v [[:space:]]${safe_conf_file}$ $statedir/registry >\\"
+	    echo "egrep -v [[:space:]]${real_conf_file_re}$ $statedir/registry >\\"
             echo "	$statedir/registry.tmp || true";
 	fi
-	#echo "egrep -v [[:space:]]${safe_conf_file}$ $statedir/registry"
-	egrep -v "[[:space:]]${safe_conf_file}$" "$statedir/registry" > \
+	#echo "egrep -v [[:space:]]${real_conf_file_re}$ $statedir/registry"
+	egrep -v "[[:space:]]${real_conf_file_re}$" "$statedir/registry" > \
 	    "$statedir/registry.tmp" || true;
 	if [ "X$docmd" = "XYES" ]; then
 	    mv -f "$statedir/registry.tmp"  "$statedir/registry"
@@ -108,12 +108,12 @@ replace_in_registry () {
         exit 6;
     fi
     if [ $count -eq 1 ]; then
-        old_pkg=$(egrep "[[:space:]]${safe_conf_file}$" "$statedir/registry" | \
+        old_pkg=$(egrep "[[:space:]]${real_conf_file_re}$" "$statedir/registry" | \
             awk '{print $1;}' );
 
         if [ "$pkg" != "$old_pkg" ]; then
             if [ "X$FORCE" = "X" ]; then
-                echo >&2 "$progname: Attempt from package $pkg  to take ${conf_file} away from package $old_pkg";
+                echo >&2 "$progname: Attempt from package $pkg  to take ${real_conf_file} away from package $old_pkg";
                 echo >&2 "ucfr: Aborting.";
                 exit 4;
             fi
@@ -144,20 +144,20 @@ replace_in_registry () {
     if [ "X$docmd" = "XYES" ]; then
 	set +e
 	if [ "X$VERBOSE" != "X" ]; then
-	    echo "egrep -v \"[[:space:]]${safe_conf_file}$\" \"$statedir/registry\"  \\"
+	    echo "egrep -v \"[[:space:]]${real_conf_file_re}$\" \"$statedir/registry\"  \\"
             echo "	$statedir/registry.tmp || true"
-	    echo "echo \"$pkg 	 $conf_file\" >> \"$statedir/registry.tmp\""
+	    echo "echo \"$pkg 	 $real_conf_file\" >> \"$statedir/registry.tmp\""
 	    echo "mv -f  $statedir/registry.tmp $statedir/registry"
 	fi
-	egrep -v "[[:space:]]${safe_conf_file}$" "$statedir/registry" > \
+	egrep -v "[[:space:]]${real_conf_file_re}$" "$statedir/registry" > \
 	    "$statedir/registry.tmp" || true;
-	echo "$pkg 	 $conf_file" >>   "$statedir/registry.tmp";
+	echo "$pkg 	 $real_conf_file" >>   "$statedir/registry.tmp";
 	mv -f "$statedir/registry.tmp"  "$statedir/registry"
 	set -e
     else
-	echo "egrep -v \"[[:space:]]${safe_conf_file}$\" \"$statedir/registry\"  \\"
+	echo "egrep -v \"[[:space:]]${real_conf_file_re}$\" \"$statedir/registry\"  \\"
         echo "	$statedir/registry.tmp || true"
-	echo "echo \"$pkg 	 $conf_file\" >> \"$statedir/registry.tmp\""
+	echo "echo \"$pkg 	 $real_conf_file\" >> \"$statedir/registry.tmp\""
 	echo "mv -f  $statedir/registry.tmp $statedir/registry"
     fi
 }
@@ -254,24 +254,25 @@ if [ $# != 2 ]; then
     exit 3 ;
 fi
 
+# We have here a configuration file, which can be a symlink, and may
+# contain characters that are unsafe in regular expressions
 setq pkg  "$1" "The Package name";
 setq conf_file "$2" "The Configuration file";
+setq real_conf_file "$(readlink -q -m $conf_file)" "The (real) Configuration file";
 
-safe_pkg=$(echo $pkg       | sed -e 's,+,\\+,')
-safe_conf_file=$(echo $conf_file | sed -e 's,+,\\+,')
+pkg_re=$(echo $pkg       | sed -e 's,+,\\+,')
+conf_file_re=$(echo $conf_file | sed -e 's,+,\\+,')
+real_conf_file_re=$(echo $real_conf_file | sed -e 's,+,\\+,')
 
-case $safe_conf_file in
+case $conf_file_re in
     /*)
         : echo fine
         ;;
     *)
-        echo >&2 "$progname: Need a fully qualified path for the file \"$safe_conf_file\""
+        echo >&2 "$progname: Need a fully qualified path for the file \"$conf_file\""
         # Don't exit with an error for etch'
         exit 0;
 esac
-
-temp=$safe_conf_file
-setq safe_conf_file "$(readlink -q -m $temp)" "The configuration file";
 
 # Load site defaults and over rides.
 if [ -f /etc/ucf.conf ]; then
@@ -317,18 +318,18 @@ if [ "X$VERBOSE" != "X" ]; then
 fi
 
 # sanity check
-count=$(egrep --count "[[:space:]]${safe_conf_file}$" "$statedir/registry") || true
+count=$(egrep --count "[[:space:]]${real_conf_file_re}$" "$statedir/registry") || true
 
 if [ "$count" -ge 2 ]; then
     echo >&2 "$progname: Corrupt registry: Duplicate entries for ${conf_file}";
-    egrep "[[:space:]]${safe_conf_file}$" "$statedir/registry";
+    egrep "[[:space:]]${real_conf_file_re}$" "$statedir/registry";
     exit $count;
 fi
 
 if [ "X$PURGE" != "X" ]; then
-    purge_from_registry $pkg $conf_file;
+    purge_from_registry
 else
-    replace_in_registry $pkg $conf_file;
+    replace_in_registry
 fi
 
 
