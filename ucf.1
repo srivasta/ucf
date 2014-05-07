@@ -133,10 +133,11 @@ Print a short usage message
 Dry run. Print the actions that would be taken if the script is
 invoked, but take no action.
 .TP
-.B "\-d [n], \-\-debug [n]"
+.B "\-d[n], \-\-debug=[n]"
 Set the debug level to the (optional) level
 .I n
-(n defaults to 1). This turns on copious debugging information.
+(n defaults to 1). Please note there mist be no spaces before the
+optional digit n. This turns on copious debugging information.
 .TP
 .B "\-p, \-\-purge"
 Removes all vestiges of the file from the state hashfile. This is
@@ -348,6 +349,11 @@ examples in /usr/share/doc/ucf/examples):
 .B ucf
 .I \-\-purge
 .I /etc/foo.conf
+Please note that purge can also be used to make ucf forget the
+rpevious state of the files, and when the package is next installed or
+updated, ucf will ask the user to replace the current cofiguration
+file. Do this if you want to change your decision to not update to a
+maintainer provided version of the configuration file.
 .PP
 The motivation for this script was to provide conffile like handling
 for start files for emacs lisp packages (for example,

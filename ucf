@@ -36,7 +36,7 @@
 set -e
 
 # set the version and revision
-progname="`basename \"$0\"`"
+boseprogname="`basename \"$0\"`"
 pversion='$Revision: 1.26 $'
 
 ######################################################################
@@ -109,7 +109,8 @@ Options:
      -s foo, --src-dir  foo  Set the src dir (historical md5sums live here)
              --sum-file bar  Force the historical md5sums to be read from
                              this file.  Overrides any setting of --src-dir.
-     -d [n], --debug    [n]  Set the Debug level to N
+     -d[n], --debug=[n]      Set the Debug level to N. Please note there must
+                             be no spaces before the debug level
      -n,     --no-action     Dry run. No action is actually taken.
      -v,     --verbose       Make the script verbose
              --three-way     Register this file in the cache, and turn on the
@@ -900,6 +901,7 @@ else
 		db_fset $templ seen false
 		db_reset $templ
 		db_subst $templ FILE "$dest_file"
+		db_subst $templ NEW  "$new_file"
 		db_subst $templ BASENAME $(basename "$dest_file")
 		db_input critical $templ || true
 		if ! db_go; then

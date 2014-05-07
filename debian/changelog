@@ -1,3 +1,54 @@
+ucf (3.0029) unstable; urgency=medium
+
+  * When asking how to handle an upodate to a locally modified
+    configuration file, ucf does not tell the user where the new version
+    of the configuration file lives. This makes it hard to take action
+    when opening a new shell. This commit updates the debconf templates to
+    include that information.  (Closes: #616486, #747295, #747299)
+    (Closes: #747310, #747312, #747335, #747346, #747371, #747450)
+    (Closes: #747533, #748148, #748178, #748371).
+  * ucf uses getopt(1) to process command line arguments. The debug
+    options take a an optional level. For short options, If the option has
+    an optional argument, it must be written directly after the option
+    character if present. For long options, the optional argument must be
+    written directly after the long  option  name, separated by `=', if
+    present. This is now documented in the manual page.
+  * Document that ucf --purge can be used to make ucf forget about the
+    state of the previous decisions for a configuration file, so that when
+    the package is updated or reinstalled, ucf will ask again about
+    disposition,  (Closes: #566277).
+  * Bug fix #616486: "The start a shell option gives user no clue about
+    the location of maintainer version of config file", thanks to Robert
+    Luberda
+  * Bug fix #747295: "[INTL:sv] Swedish strings for ucf debconf", thanks
+    to Martin Bagge
+  * Bug fix #747299: "[l10n:eu] ucf 3.0028: updated Basque translation",
+    thanks to Iñaki Larrañaga Murgoitio
+  * Bug fix #747310: "[INTL:fr] French debconf templates translation
+    update", thanks to Christian Perrier
+  * Bug fix #747312: "[INTL:pt] Portuguese translation for debconf
+    messages (update)", thanks to Américo Monteiro
+  * Bug fix #747335: "[INTL:ru] Russian debconf templates translation
+    update", thanks to Yuri Kozlov
+  * Bug fix #747346: "[INTL:fi] Updated Finnish translation of the debconf
+    templates", thanks to Esko Arajärvivim Portuguese
+  * Bug fix #747371: "[INTL:ja] update Japanese debconf translation",
+    thanks to Kenshi Muto.
+  * Bug fix #747450: "[INTL:da] Danish translation of the debconf
+    templates ucf", thanks to Joe Dalton
+  * Bug fix #747533: "[INTL:sk] Slovak po-debconf translation", thanks to
+    Slavko
+  * Bug fix #566277: "no renewed question b/c changed config files",
+    thanks to arne anka
+  * Bug fix #748148: "[INTL:pl] Updated Polish debconf translation",
+    thanks to Michał Kułach
+  * Bug fix #748178: "[INTL:pt_BR] Brazilian Portuguese debconf templates
+    translation", thanks to Adriano Rafael Gomes
+  * Bug fix #748371: "[l10n] Updated Czech translation of ucf debconf
+    messages", thanks to Miroslav Kure
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sat, 17 May 2014 16:00:42 -0700
+
 ucf (3.0028) unstable; urgency=medium
 
   * Ack the NMU.
