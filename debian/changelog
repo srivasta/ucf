@@ -1,3 +1,11 @@
+ucf (3.0030) unstable; urgency=low
+
+  * Updated german translations. (Closes: #748975).
+  * Bug fix: #748975: "[L10N,DE] ucf: updated german debconf translation",
+    thanks to Holger Wansing
+
+ -- Manoj Srivastava <srivasta@debian.org>  Mon, 26 May 2014 16:16:43 -0700
+
 ucf (3.0029) unstable; urgency=medium
 
   * When asking how to handle an upodate to a locally modified
