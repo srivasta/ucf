@@ -124,6 +124,9 @@ Options:
              --debconf-template bar
                              Specify an alternate, caller-provided debconf
                              template to use for prompting.
+             --threeway-merge-command command
+                             Specifies the threeway merge command if the user
+                             chooses to try a threeway merge
 Usage: $progname  -p  destination
      -p,     --purge         Remove any reference to destination from records
 
@@ -296,11 +299,12 @@ done
 # separate word. The quotes around `$@' are essential!
 # We need TEMP as the `eval set --' would nuke the return value of getopt.
 TEMP=`getopt -a -o hs:d::D::nv -n "$progname" \
-      --long help,src-dir:,sum-file:,dest-dir:,debug::,DEBUG::,no-action,purge,verbose,three-way,debconf-ok,debconf-template:,state-dir: \
+      --long help,src-dir:,sum-file:,dest-dir:,debug::,DEBUG::,no-action,purge,verbose,three-way,debconf-ok,debconf-template:,state-dir:,threeway-merge-command: \
              -- "$@"`
 
 # Note the quotes around `$TEMP': they are essential!
 eval set -- "$TEMP"
+
 
 while true ; do
     case "$1" in
@@ -315,6 +319,8 @@ while true ; do
 	    opt_state_dir="$2";                        shift 2 ;;
 	--debconf-template)
 	    override_template="$2";                    shift 2 ;;
+	--threeway-merge-command)
+	    opt_threeway_merge_command="$2";           shift 2 ;;
 	-D|-d|--debug|--DEBUG)
             # d has an optional argument. As we are in quoted mode,
             # an empty parameter will be generated if its optional
@@ -478,6 +484,17 @@ elif [ ! "x$conf_old_mdsum_file" = "x" ]; then
 else
     old_mdsum_file="$source_dir/"$(basename "${new_file}")".md5sum";
 fi
+
+
+if [ -n "$opt_threeway_merge_command" ]; then
+    setq threeway_merge_command "$opt_threeway_merge_command" "Threeway merge command"
+elif [ ! "x$UCF_THREEWAY_MERGE_COMMAND" = "x" ]; then
+    setq threeway_merge_command "$UCF_THREEWAY_MERGE_COMMAND" "Threeway merge command"
+elif [ ! "x$conf_threeway_merge_command" = "x" ]; then
+    setq threeway_merge_command "$conf_threeway_merge_command" "Threeway merge command"
+else
+    conf_threeway_merge_command=''    
+fi    
 
 
 ######################################################################
@@ -1002,9 +1019,18 @@ else
 		if [ -e "$statedir/cache/$cached_file" \
 		    -a "X$THREEWAY" != "X" ]; then
 		    ret=0
+
+
+
+		    if [ "X$threeway_merge_command" != "X" ]; then
+			$threeway_merge_command "$dest_file" "$statedir/cache/$cached_file" \
+                            "$new_file" $dest_file.${NEW_SUFFIX} || ret=$?
+		    else 
 		    diff3 -L Current -L Older -L New -m \
 			"$dest_file" "$statedir/cache/$cached_file" \
 			"$new_file" > $dest_file.${NEW_SUFFIX} || ret=$?
+		    fi
+
                     case "$ret" in
                         0)
 		            new_file="$dest_file.${NEW_SUFFIX}"
