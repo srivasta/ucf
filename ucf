@@ -528,7 +528,7 @@ cached_file=$(echo $dest_file | tr / :)
 ######################################################################
 
 if [ $DEBUG -gt 0 ]; then
-    cat <<EOF
+    cat >&2 <<EOF
 The new start file is      \`$new_file\'
 The destination is         \`$dest_file\' (\`$safe_dest_file\')
 The history is kept under  \'$source_dir\'
