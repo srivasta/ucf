@@ -1,3 +1,18 @@
+ucf (3.0031) unstable; urgency=low
+
+  * New bugfixing release
+  * Bug fix: "[INTL:es] Spanish translation of debconf messages", thanks
+    to Matias A. Bellone                                (Closes: #752959).
+  * Bug fix: "incorrectly processed VERBOSE&amp;DEBUG in config", thanks
+    to YK. Correctly send the verbose output to STDERR, not STDOUt.
+                                                         (Closes: #762857).
+  * Bug fix: "[INTL:nl] Dutch translation of debconf messages", thanks to
+    Frans Spiesschaert (Closes: #763459).
+  * Update the policy version to the latest. No changes were required.
+  * Update the copyright file to follow DEP-5 format.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Thu, 05 Nov 2015 12:25:03 -0800
+
 ucf (3.0030) unstable; urgency=low
 
   * Updated german translations. (Closes: #748975).
