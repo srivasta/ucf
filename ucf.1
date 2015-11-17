@@ -222,6 +222,12 @@ option is also set.
 Set the state directory to /path/to/dir instead of the default
 .I /var/lib/ucf.
 Used mostly for testing.
+.TP
+.B "\-\-threeway\-merge\-command command"
+If given ucf invokes the given command for three-way-merging instead of diff3.
+The first parameter is the user config, the second the maintainer config, the
+third the cached file (base file) and the fourth is the file where the result
+should be written to.
 .SH USAGE
 The most common case usage is pretty simple: a single line invocation
 in the postinst on configure, and another single line in the postrm to

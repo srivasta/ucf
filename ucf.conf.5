@@ -94,6 +94,13 @@ variable unset, which makes the script ask in case of doubt.  This can
 be overridden by the environment variable
 .B UCF_FORCE_CONFFNEW
 .TP
+.B conf_threeway_merge_command
+Specifies a merge command to be used in case of threeway merging.
+The default is to have this variable unset, which makes the script
+use diff3. See the man page for details on how this command is invoked.
+This can be overridden by the environment variable
+.B UCF_THREEWAY_MERGE_COMMAND
+.TP
 .B conf_source_dir
 This is the directory where the historical md5sums for a file are
 looked for.  Specifically, the historical md5sums are looked for in
