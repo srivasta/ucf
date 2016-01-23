@@ -1,3 +1,12 @@
+ucf (3.0032) unstable; urgency=low
+
+  * Ran shellcheck on all the shell scripts, and fixed most of the issues
+    found.
+  * Bug fix: "[INTL:nl] Dutch translation of debconf messages", thanks to
+    Frans Spiesschaert (Closes: #812354).
+
+ -- Manoj Srivastava <srivasta@debian.org>  Fri, 22 Jan 2016 18:23:28 -0800
+
 ucf (3.0031) unstable; urgency=low
 
   * New bugfixing release
