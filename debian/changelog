@@ -1,3 +1,13 @@
+ucf (3.0033) unstable; urgency=low
+
+  * Bug fix: "ucf breaks installation of texlive-base (basename: missing
+    operand)", thanks to Andreas Metzler. This has been a long standing
+    bug, unmasked by the cleanup done last upload. When purging, there is
+    no new file, just a destination file that needs to be removed. So,
+    this commit makes no action on new-file when purging.  (Closes: #812402).
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sat, 23 Jan 2016 13:52:29 -0800
+
 ucf (3.0032) unstable; urgency=low
 
   * Ran shellcheck on all the shell scripts, and fixed most of the issues

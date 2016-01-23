@@ -354,7 +354,11 @@ if [ "X$PURGE" = "XYES" ]; then
 	exit 2 ;
     fi
     temp_dest_file="$1";
-    setq dest_file "$(readlink -q -m $temp_dest_file)" "The Destination file";
+    if [ -e "$temp_dest_file" ]; then
+        setq dest_file "$(readlink -q -m $temp_dest_file)" "The Destination file";
+    else
+        setq dest_file "$temp_dest_file" "The Destination file";
+    fi
 else
     if [ $# != 2 ]; then
 	echo >&2 "*** ERROR: Need exactly two arguments, got $#";
@@ -370,7 +374,11 @@ else
 	exit 1;
     fi
     setq new_file  "$(readlink -q -m $temp_new_file)"  "The new file";
-    setq dest_file "$(readlink -q -m $temp_dest_file)" "The Destination file";
+    if [ -e "$temp_dest_file" ]; then
+        setq dest_file "$(readlink -q -m $temp_dest_file)" "The Destination file";
+    else
+        setq dest_file "$temp_dest_file" "The Destination file";
+    fi
 fi
 
 
@@ -399,7 +407,7 @@ else
     if [ "X$new_file" != "X" ]; then
 	setq source_dir "$(dirname $new_file)" "The Source directory"
     else
-	setq source_dir /tmp "The Source directory"
+	setq source_dir "/tmp" "The Source directory"
     fi
 
 fi
@@ -468,8 +476,10 @@ elif [ ! "x$UCF_OLD_MDSUM_FILE" = "x" ]; then
     setq old_mdsum_file "$UCF_OLD_MDSUM_FILE" "The md5sum is found here"
 elif [ ! "x$conf_old_mdsum_file" = "x" ]; then
     setq old_mdsum_file "$conf_old_mdsum_file" "Replace the old file"
-else
+elif [ ! "x${new_file}" = "x" ]; then
     old_mdsum_file="$source_dir/$(basename ${new_file}).md5sum";
+else
+    old_mdsum_file="";
 fi
 
 
@@ -513,7 +523,12 @@ if [ -e "$statedir/hashfile" ]; then
                    awk '{print $1;}' )
 fi
 
-old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
+if [ ! "x${new_file}" = "x" ]; then
+    old_mdsum_dir="$source_dir/"$(basename "${new_file}")".md5sum.d";
+else
+    old_mdsum_dir="";
+fi
+
 cached_file="$(echo $dest_file | tr / :)"
 ######################################################################
 ########                                                     #########
