@@ -58,6 +58,21 @@ setq() {
 }
 
 # Use debconf to show the differences
+sep='
+######################################################################
+The existing file stats
+'
+sep2='
+----------------------------------------------------------------------
+New file stats
+'
+sep3='
+######################################################################
+'
+endline='
+
+The actual differences between the files follow
+'
 show_diff() {
     if [ -z "$1" ]; then
 	DIFF="There are no non-white space differences in the files."
@@ -71,7 +86,7 @@ show_diff() {
     if [ "$DEBCONF_OK" = "YES" ] && [ "$DEBIAN_HAS_FRONTEND" ]; then
 	templ=ucf/show_diff
 	db_capb escape
-	db_subst $templ DIFF "$(printf %s "$DIFF" | debconf-escape -e)"
+	db_subst $templ DIFF "$(printf %s "${sep}${2}${sep2}${3}${sep3}${endline}$DIFF" | debconf-escape -e)"
 	db_fset $templ seen false
 	db_input critical $templ || true
 	db_go || true
@@ -84,9 +99,9 @@ show_diff() {
 	db_capb
     else
         if [ -z "$my_pager" ]; then
-	    echo "$DIFF" | sensible-pager
+	    echo  "$2" "$3" "$DIFF" | sensible-pager
         else
-	    echo "$DIFF" | $my_pager
+	    echo  "$2" "$3" "$DIFF" | $my_pager
         fi
     fi
 }
@@ -290,7 +305,6 @@ ERR_SUFFIX="merge-error"
 for arg in "$@"; do
     saved="${saved:+$saved }'$(quote_single "$arg")'"
 done
-
 
 # Note that we use `"$@"' to let each command-line parameter expand to a
 # separate word. The quotes around `$@' are essential!
@@ -959,6 +973,8 @@ else
 ########################################################################################
 	fi
 
+        stat_dest="$(stat $dest_file)"
+        stat_new="$(stat $new_file)"
 	case "$ANSWER" in
 	    install_new|y|Y|I|i)
 		echo >&2 "Replacing config file $dest_file with new version"
@@ -972,7 +988,7 @@ else
 		else
 		    DIFF="$(diff -uBbw /dev/null "$new_file")" || true
 		fi
-		show_diff "$DIFF"
+		show_diff "$DIFF" "$stat_dest" "$stat_new"
 		;;
 	    sdiff|S|s)
 		if [ -e "$dest_file" ]; then
@@ -980,7 +996,7 @@ else
 		else
 		    DIFF="$(sdiff -BbW /dev/null "$new_file")"  || true
 		fi
-		show_diff "$DIFF"
+		show_diff "$DIFF" "$stat_dest" "$stat_new"
 		;;
 	    diff_threeway|3|t|T)
 		if [ -e "$statedir/cache/$cached_file" \
@@ -1001,7 +1017,7 @@ else
 		    else
 			DIFF="$(diff -uBbw /dev/null "$new_file")"  || true
 		    fi
-		    show_diff "$DIFF"
+		    show_diff "$DIFF" "$stat_dest" "$stat_new"
 		fi
 		;;
 	    merge_threeway|M|m)

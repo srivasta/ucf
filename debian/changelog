@@ -1,3 +1,12 @@
+ucf (3.0034) unstable; urgency=low
+
+  * Bug fix: "show differences with respect to permissions and ownership
+    of old/new file", thanks to Paul Gevers. Now uses /usr/bin/stat from
+    coreutils to show the metadata about the old and the new files before
+    the actual diffs. (Closes: #812321).
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sat, 13 Feb 2016 20:54:23 -0800
+
 ucf (3.0033) unstable; urgency=low
 
   * Bug fix: "ucf breaks installation of texlive-base (basename: missing
