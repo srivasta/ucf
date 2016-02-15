@@ -1,3 +1,9 @@
+ucf (3.0035) unstable; urgency=low
+
+  * Minor typo fixing release.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sun, 14 Feb 2016 22:18:52 -0800
+
 ucf (3.0034) unstable; urgency=low
 
   * Bug fix: "show differences with respect to permissions and ownership
