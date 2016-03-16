@@ -57,22 +57,52 @@ setq() {
     fi
 }
 
-# Use debconf to show the differences
-sep='
-######################################################################
-The existing file stats
-'
-sep2='
-----------------------------------------------------------------------
-New file stats
-'
-sep3='
-######################################################################
-'
-endline='
+# Usage: get_file_metadate file_name
+get_file_metadata()
+{
+    if [ -e "$1" ]; then
+        # get file modification date without the nanoseconds and timezone info
+        local moddate="$(date +"%F %T" --date $(stat --format '@%Y' "$1"))"
+        # print file_name user.group permissions above_date
+        stat --format "%n %U.%G 0%a $moddate" "$1"
+    else
+        echo "/dev/null"
+    fi
+}
 
-The actual differences between the files follow
-'
+# Runs the diff command with approrpiate arguments
+# Usage run_diff diff|sdiff diff_opts old_file new_file
+run_diff()
+{
+    local diff_cmd="$1"
+    local diff_opt="$2"
+    local old_file="$3"
+    local new_file="$4"
+
+    # Note: get_file_metadata not in quotes to ignore "\n" characters
+    local old_file_label=$(get_file_metadata "$old_file")
+    local new_file_label=$(get_file_metadata "$new_file")
+
+    [ -e "$old_file" ] || old_file=/dev/null
+    [ -e "$new_file" ] || new_file=/dev/null
+
+    if [ "$diff_cmd" = "diff" ] ; then
+      diff "$diff_opt" --label "$old_file_label" "$old_file" \
+            --label "$new_file_label" "$new_file" || true
+    elif [ "$diff_cmd" = "sdiff" ] ; then
+      # unfortunatelly the sdiff command does not support --label option
+      local out="$(sdiff "$diff_opt" "$old_file" "$new_file")" || true
+      [ -z "$out" ] || printf "Old file: %s\nNew file: %s\n\n%s" \
+                               "$old_file_label" "$new_file_label" "$out"
+    else
+      echo "Unknown diff command: $diff_cmd" >&2
+      exit 1
+    fi
+}
+
+
+# Use debconf to show the differences
+# Usage: show_diff actual_file_differences file_stat_differences
 show_diff() {
     if [ -z "$1" ]; then
 	DIFF="There are no non-white space differences in the files."
@@ -86,7 +116,7 @@ show_diff() {
     if [ "$DEBCONF_OK" = "YES" ] && [ "$DEBIAN_HAS_FRONTEND" ]; then
 	templ=ucf/show_diff
 	db_capb escape
-	db_subst $templ DIFF "$(printf %s "${sep}${2}${sep2}${3}${sep3}${endline}$DIFF" | debconf-escape -e)"
+	db_subst $templ DIFF "$(printf %s "$DIFF" | debconf-escape -e)"
 	db_fset $templ seen false
 	db_input critical $templ || true
 	db_go || true
@@ -99,9 +129,9 @@ show_diff() {
 	db_capb
     else
         if [ -z "$my_pager" ]; then
-	    echo  "$2" "$3" "$DIFF" | sensible-pager
+	    echo "$DIFF" | sensible-pager
         else
-	    echo  "$2" "$3" "$DIFF" | $my_pager
+	    echo "$DIFF" | $my_pager
         fi
     fi
 }
@@ -973,8 +1003,6 @@ else
 ########################################################################################
 	fi
 
-        stat_dest="$(stat $dest_file)"
-        stat_new="$(stat $new_file)"
 	case "$ANSWER" in
 	    install_new|y|Y|I|i)
 		echo >&2 "Replacing config file $dest_file with new version"
@@ -983,20 +1011,12 @@ else
 		exit 0;
 		;;
 	    diff|D|d)
-		if [ -e "$dest_file" ]; then
-		    DIFF="$(diff -uBbw "$dest_file" "$new_file")" || true
-		else
-		    DIFF="$(diff -uBbw /dev/null "$new_file")" || true
-		fi
-		show_diff "$DIFF" "$stat_dest" "$stat_new"
+		DIFF="$(run_diff diff -uBbw "$dest_file" "$new_file")"
+		show_diff "$DIFF"
 		;;
 	    sdiff|S|s)
-		if [ -e "$dest_file" ]; then
-		    DIFF="$( sdiff -BbW "$dest_file" "$new_file")"  || true
-		else
-		    DIFF="$(sdiff -BbW /dev/null "$new_file")"  || true
-		fi
-		show_diff "$DIFF" "$stat_dest" "$stat_new"
+		DIFF="$(run_diff sdiff -BbW "$dest_file" "$new_file")"
+		show_diff "$DIFF"
 		;;
 	    diff_threeway|3|t|T)
 		if [ -e "$statedir/cache/$cached_file" \
@@ -1012,12 +1032,8 @@ else
                     fi
 		    show_diff "$DIFF"
 		else
-		    if [ -e "$dest_file" ]; then
-			DIFF="$(diff -uBbw "$dest_file" "$new_file")"  || true
-		    else
-			DIFF="$(diff -uBbw /dev/null "$new_file")"  || true
-		    fi
-		    show_diff "$DIFF" "$stat_dest" "$stat_new"
+		    DIFF="$(run_diff diff -uBbw "$dest_file" "$new_file")"
+		    show_diff "$DIFF"
 		fi
 		;;
 	    merge_threeway|M|m)

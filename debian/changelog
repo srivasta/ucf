@@ -1,3 +1,22 @@
+ucf (3.0036) unstable; urgency=low
+
+  * Incorporate enhancement from Robert Luberda <robert@debian.org>
+  * Bug fix: "diff screen is ugly, unreadable and counterintuitive",
+    thanks to Robert Luberda                      (Closes: #817982).
+  * Updated the Standards version to 3.9.7. No changes needed.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Wed, 16 Mar 2016 13:57:43 -0700
+
+ucf (3.0035+local1) UNRELEASED; urgency=medium
+
+  * Display the file permissions and ownerships information either in diff
+    label lines or in additional lines prepended to sdiff output not to
+    hide the actuall file differences by the whole output of /usr/bin/stat
+    command (Closes: #817982). As a side effect, fix a bug introduced in
+    3.0034 that caused ucf to fail on not yet existing destination files.
+
+ -- Robert Luberda <robert@debian.org>  Sun, 13 Mar 2016 14:38:46 +0100
+
 ucf (3.0035) unstable; urgency=low
 
   * Minor typo fixing release.
