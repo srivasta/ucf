@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ucf 3.0028\n"
 "Report-Msgid-Bugs-To: ucf@packages.debian.org\n"
-"POT-Creation-Date: 2014-05-07 01:28-0700\n"
+"POT-Creation-Date: 2018-02-16 15:56-0800\n"
 "PO-Revision-Date: 2014-05-22 20:42+0200\n"
 "Last-Translator: Holger Wansing <linux@wansing-online.de>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -78,8 +78,10 @@ msgstr "3-Wege-Unterschiede verfügbarer Versionen anzeigen"
 #. Choices
 #. Translators, please keep translations *short* (less than 65 columns)
 #: ../templates:3001
-msgid "do a 3-way merge between available versions (experimental)"
-msgstr "3-Wege-Vereinigung verfügbarer Versionen [experimentell]"
+#, fuzzy
+#| msgid "show a 3-way difference between available versions"
+msgid "do a 3-way merge between available versions"
+msgstr "3-Wege-Unterschiede verfügbarer Versionen anzeigen"
 
 #. Type: select
 #. Choices
@@ -101,12 +103,24 @@ msgstr ""
 
 #. Type: select
 #. Description
-#. Type: select
-#. Description
-#: ../templates:3002 ../templates:4002
+#: ../templates:3002
 msgid ""
 "A new version (${NEW}) of configuration file ${FILE} is available, but the "
 "version installed currently has been locally modified."
+msgstr ""
+"Eine neue Version (${NEW}) der Konfigurationsdatei ${FILE} ist verfügbar, "
+"aber die installierte Version wurde verändert."
+
+#. Type: select
+#. Description
+#: ../templates:4002
+#, fuzzy
+#| msgid ""
+#| "A new version (${NEW}) of configuration file ${FILE} is available, but "
+#| "the version installed currently has been locally modified."
+msgid ""
+"${BASENAME}: A new version (${NEW}) of configuration file ${FILE} is "
+"available, but the version installed currently has been locally modified."
 msgstr ""
 "Eine neue Version (${NEW}) der Konfigurationsdatei ${FILE} ist verfügbar, "
 "aber die installierte Version wurde verändert."
@@ -143,3 +157,5 @@ msgstr ""
 "Die Datei »${dest_file}.${ERR_SUFFIX}« enthält eine Aufzeichnung der "
 "fehlgeschlagenen Vereinigung der Konfigurationsdateien."
 
+#~ msgid "do a 3-way merge between available versions (experimental)"
+#~ msgstr "3-Wege-Vereinigung verfügbarer Versionen [experimentell]"

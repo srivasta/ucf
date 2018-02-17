@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: ucf@packages.debian.org\n"
-"POT-Creation-Date: 2014-05-07 01:28-0700\n"
+"POT-Creation-Date: 2018-02-16 15:56-0800\n"
 "PO-Revision-Date: 2014-05-07 13:44+0200\n"
 "Last-Translator: Christian Perrier <bubulle@debian.org>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
@@ -74,8 +74,10 @@ msgstr "Montrer les différences entre les trois versions du fichier"
 #. Choices
 #. Translators, please keep translations *short* (less than 65 columns)
 #: ../templates:3001
-msgid "do a 3-way merge between available versions (experimental)"
-msgstr "Fusionner les trois versions (« 3-way merge » : expérimental)"
+#, fuzzy
+#| msgid "show a 3-way difference between available versions"
+msgid "do a 3-way merge between available versions"
+msgstr "Montrer les différences entre les trois versions du fichier"
 
 #. Type: select
 #. Choices
@@ -97,12 +99,24 @@ msgstr ""
 
 #. Type: select
 #. Description
-#. Type: select
-#. Description
-#: ../templates:3002 ../templates:4002
+#: ../templates:3002
 msgid ""
 "A new version (${NEW}) of configuration file ${FILE} is available, but the "
 "version installed currently has been locally modified."
+msgstr ""
+"Une nouvelle version (${NEW}) du fichier de configuration ${FILE} est "
+"disponible mais la version actuellement utilisée a été modifiée localement."
+
+#. Type: select
+#. Description
+#: ../templates:4002
+#, fuzzy
+#| msgid ""
+#| "A new version (${NEW}) of configuration file ${FILE} is available, but "
+#| "the version installed currently has been locally modified."
+msgid ""
+"${BASENAME}: A new version (${NEW}) of configuration file ${FILE} is "
+"available, but the version installed currently has been locally modified."
 msgstr ""
 "Une nouvelle version (${NEW}) du fichier de configuration ${FILE} est "
 "disponible mais la version actuellement utilisée a été modifiée localement."
@@ -138,6 +152,9 @@ msgid ""
 msgstr ""
 "Le fichier « ${dest_file}.${ERR_SUFFIX} » contient une trace de la fusion "
 "qui a échoué."
+
+#~ msgid "do a 3-way merge between available versions (experimental)"
+#~ msgstr "Fusionner les trois versions (« 3-way merge » : expérimental)"
 
 #~ msgid ""
 #~ "A new version of configuration file ${FILE} is available, but the version "

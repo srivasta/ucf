@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ucf 3.0028\n"
 "Report-Msgid-Bugs-To: ucf@packages.debian.org\n"
-"POT-Creation-Date: 2014-05-07 01:28-0700\n"
+"POT-Creation-Date: 2018-02-16 15:56-0800\n"
 "PO-Revision-Date: 2014-05-07 19:10+0400\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
@@ -73,8 +73,10 @@ msgstr "показать 3-x стороннее различие между до
 #. Choices
 #. Translators, please keep translations *short* (less than 65 columns)
 #: ../templates:3001
-msgid "do a 3-way merge between available versions (experimental)"
-msgstr "3-x стороннее слияние доступных версий (эксперимен. режим)"
+#, fuzzy
+#| msgid "show a 3-way difference between available versions"
+msgid "do a 3-way merge between available versions"
+msgstr "показать 3-x стороннее различие между доступными версиями"
 
 #. Type: select
 #. Choices
@@ -95,12 +97,24 @@ msgstr "Что нужно сделать с изменённым файлом н
 
 #. Type: select
 #. Description
-#. Type: select
-#. Description
-#: ../templates:3002 ../templates:4002
+#: ../templates:3002
 msgid ""
 "A new version (${NEW}) of configuration file ${FILE} is available, but the "
 "version installed currently has been locally modified."
+msgstr ""
+"Доступна новая версия (${NEW}) файла настройки ${FILE}, но версия файла, "
+"находящаяся в системе, была изменёна локально."
+
+#. Type: select
+#. Description
+#: ../templates:4002
+#, fuzzy
+#| msgid ""
+#| "A new version (${NEW}) of configuration file ${FILE} is available, but "
+#| "the version installed currently has been locally modified."
+msgid ""
+"${BASENAME}: A new version (${NEW}) of configuration file ${FILE} is "
+"available, but the version installed currently has been locally modified."
 msgstr ""
 "Доступна новая версия (${NEW}) файла настройки ${FILE}, но версия файла, "
 "находящаяся в системе, была изменёна локально."
@@ -136,6 +150,9 @@ msgid ""
 msgstr ""
 "Файл `${dest_file}.${ERR_SUFFIX}' содержит элементы, которые не дают "
 "объединить файлы настройки."
+
+#~ msgid "do a 3-way merge between available versions (experimental)"
+#~ msgstr "3-x стороннее слияние доступных версий (эксперимен. режим)"
 
 #~ msgid ""
 #~ "A new version of configuration file ${FILE} is available, but the version "

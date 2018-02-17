@@ -1,3 +1,26 @@
+ucf (3.0037) unstable; urgency=medium
+
+  * A new bugfixing release.
+  * Bug fix: "Typo in ucfr(1)", thanks to Carsten Leonhardt (Closes:
+    #835171).
+  * Bug fix: "[PATCH] diffs are rendered with broken spacing", thanks to
+    Dima Kogan (Closes: #862607).
+  * Bug fix: "offers 3-way merge even without --three-way option", thanks
+    to Marc Haber (Closes: #879558).
+  * Bug fix: "Corrupt its database if root&#39;s bashrc has GREP_OPTIONS
+    env", thanks to Adam Cecile &lt;adam.cecile@hitec.lu&gt; (Closes:
+    #845625).
+  * Bug fix: "please consider removing the experimental tag from
+    --three-way", thanks to Marc Haber (Closes: #879641).
+  * Bug fix: "manpage ucf(1) refers ancient releases", thanks to Marc
+    Haber (Closes: #878891).
+  * Bug fix: "Bad UI on prompts", thanks to Peter Palfrader (Closes:
+    #870474). We already had a title that mentioned the conffile
+    name. Added it to the beginning of the running text as well. If the
+    title is not displayed, then the denconf frontend should be improved.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Fri, 16 Feb 2018 16:07:03 -0800
+
 ucf (3.0036) unstable; urgency=low
 
   * Incorporate enhancement from Robert Luberda <robert@debian.org>

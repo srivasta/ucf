@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ucf 3.0028\n"
 "Report-Msgid-Bugs-To: ucf@packages.debian.org\n"
-"POT-Creation-Date: 2014-05-07 01:28-0700\n"
+"POT-Creation-Date: 2018-02-16 15:56-0800\n"
 "PO-Revision-Date: 2014-05-07 13:06+0100\n"
 "Last-Translator: Américo Monteiro <a_monteiro@gmx.com>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
@@ -74,10 +74,10 @@ msgstr "mostrar uma diferença em 3 vias entre as versões disponíveis"
 #. Choices
 #. Translators, please keep translations *short* (less than 65 columns)
 #: ../templates:3001
-msgid "do a 3-way merge between available versions (experimental)"
-msgstr ""
-"fazer uma fusão em 3 vias entre versões disponíveis do ficheiro "
-"(experimental)"
+#, fuzzy
+#| msgid "show a 3-way difference between available versions"
+msgid "do a 3-way merge between available versions"
+msgstr "mostrar uma diferença em 3 vias entre as versões disponíveis"
 
 #. Type: select
 #. Choices
@@ -99,12 +99,24 @@ msgstr ""
 
 #. Type: select
 #. Description
-#. Type: select
-#. Description
-#: ../templates:3002 ../templates:4002
+#: ../templates:3002
 msgid ""
 "A new version (${NEW}) of configuration file ${FILE} is available, but the "
 "version installed currently has been locally modified."
+msgstr ""
+"Está disponível nova versão (${NEW}) do ficheiro de configuração ${FILE}, "
+"mas a versão actualmente instalada foi modificada localmente."
+
+#. Type: select
+#. Description
+#: ../templates:4002
+#, fuzzy
+#| msgid ""
+#| "A new version (${NEW}) of configuration file ${FILE} is available, but "
+#| "the version installed currently has been locally modified."
+msgid ""
+"${BASENAME}: A new version (${NEW}) of configuration file ${FILE} is "
+"available, but the version installed currently has been locally modified."
 msgstr ""
 "Está disponível nova versão (${NEW}) do ficheiro de configuração ${FILE}, "
 "mas a versão actualmente instalada foi modificada localmente."
@@ -141,3 +153,7 @@ msgstr ""
 "O ficheiro '${dest_file}.${ERR_SUFFIX}' tem um registo da fusão falhada do "
 "ficheiro de configuração."
 
+#~ msgid "do a 3-way merge between available versions (experimental)"
+#~ msgstr ""
+#~ "fazer uma fusão em 3 vias entre versões disponíveis do ficheiro "
+#~ "(experimental)"
