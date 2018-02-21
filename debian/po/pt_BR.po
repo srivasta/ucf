@@ -2,15 +2,15 @@
 # Copyright (C) 2014 THE ucf'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the ucf package.
 # Flamarion Jorge <jorge.flamarion@gmail.com>, 2010.
-# Adriano Rafael Gomes <adrianorg@arg.eti.br>, 2014.
+# Adriano Rafael Gomes <adrianorg@debian.org>, 2014-2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ucf\n"
 "Report-Msgid-Bugs-To: ucf@packages.debian.org\n"
 "POT-Creation-Date: 2018-02-16 15:56-0800\n"
-"PO-Revision-Date: 2014-05-14 23:25-0300\n"
-"Last-Translator: Adriano Rafael Gomes <adrianorg@arg.eti.br>\n"
+"PO-Revision-Date: 2018-02-17 09:58-0200\n"
+"Last-Translator: Adriano Rafael Gomes <adrianorg@debian.org>\n"
 "Language-Team: Brazilian Portuguese <debian-l10n-portuguese@lists.debian."
 "org>\n"
 "Language: pt_BR\n"
@@ -71,10 +71,9 @@ msgstr "exibir as diferenças entre as 3 versões disponíveis"
 #. Choices
 #. Translators, please keep translations *short* (less than 65 columns)
 #: ../templates:3001
-#, fuzzy
 #| msgid "show a 3-way difference between available versions"
 msgid "do a 3-way merge between available versions"
-msgstr "exibir as diferenças entre as 3 versões disponíveis"
+msgstr "juntar as 3 versões disponíveis"
 
 #. Type: select
 #. Choices
@@ -107,7 +106,6 @@ msgstr ""
 #. Type: select
 #. Description
 #: ../templates:4002
-#, fuzzy
 #| msgid ""
 #| "A new version (${NEW}) of configuration file ${FILE} is available, but "
 #| "the version installed currently has been locally modified."
@@ -115,8 +113,8 @@ msgid ""
 "${BASENAME}: A new version (${NEW}) of configuration file ${FILE} is "
 "available, but the version installed currently has been locally modified."
 msgstr ""
-"Uma nova versão (${NEW}) do arquivo de configuração ${FILE} está disponível, "
-"mas a versão atualmente instalada foi modificada localmente."
+"${BASENAME}: Uma nova versão (${NEW}) do arquivo de configuração ${FILE} "
+"está disponível, mas a versão atualmente instalada foi modificada localmente."
 
 #. Type: note
 #. Description
@@ -138,7 +136,7 @@ msgid ""
 "them out manually."
 msgstr ""
 "Foram encontrados conflitos durante a junção das três versões! Por favor "
-"edite '${dest_file}' e os corrija manualmente."
+"edite \"${dest_file}\" e os corrija manualmente."
 
 #. Type: error
 #. Description
@@ -147,8 +145,8 @@ msgid ""
 "The file `${dest_file}.${ERR_SUFFIX}' has a record of the failed merge of "
 "the configuration file."
 msgstr ""
-"O arquivo '${dest_file}.${ERR_SUFFIX}' contém um registro da falha na junção "
-"do arquivo de configuração."
+"O arquivo \"${dest_file}.${ERR_SUFFIX}\" contém um registro da falha na "
+"junção do arquivo de configuração."
 
 #~ msgid "do a 3-way merge between available versions (experimental)"
 #~ msgstr "juntar as 3 versões disponíveis (experimental)"

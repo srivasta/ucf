@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: ucf\n"
 "Report-Msgid-Bugs-To: ucf@packages.debian.org\n"
 "POT-Creation-Date: 2018-02-16 15:56-0800\n"
-"PO-Revision-Date: 2014-05-08 08:47+0900\n"
+"PO-Revision-Date: 2018-02-19 09:37+0900\n"
 "Last-Translator: Kenshi Muto <kmuto@debian.org>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
 "Language: ja\n"
@@ -77,10 +77,8 @@ msgstr "利用可能なバージョン間の 3 ウェイ差分を表示"
 #. Choices
 #. Translators, please keep translations *short* (less than 65 columns)
 #: ../templates:3001
-#, fuzzy
-#| msgid "show a 3-way difference between available versions"
 msgid "do a 3-way merge between available versions"
-msgstr "利用可能なバージョン間の 3 ウェイ差分を表示"
+msgstr "利用可能なバージョン間の 3 ウェイマージを実行"
 
 #. Type: select
 #. Choices
@@ -112,16 +110,10 @@ msgstr ""
 #. Type: select
 #. Description
 #: ../templates:4002
-#, fuzzy
-#| msgid ""
-#| "A new version (${NEW}) of configuration file ${FILE} is available, but "
-#| "the version installed currently has been locally modified."
 msgid ""
 "${BASENAME}: A new version (${NEW}) of configuration file ${FILE} is "
 "available, but the version installed currently has been locally modified."
-msgstr ""
-"設定ファイル ${FILE} の新しいバージョン  (${NEW}) が利用可能ですが、現在イン"
-"ストールされているバージョンは、ローカルで変更されています。"
+msgstr "${BASENAME}: 設定ファイル ${FILE} の新しいバージョン  (${NEW}) が利用可能ですが、現在インストールされているバージョンは、ローカルで変更されています。"
 
 #. Type: note
 #. Description
@@ -154,6 +146,3 @@ msgid ""
 msgstr ""
 "ファイル `${dest_file}.${ERR_SUFFIX}' に設定ファイルのマージに失敗した記録が"
 "保持されています。"
-
-#~ msgid "do a 3-way merge between available versions (experimental)"
-#~ msgstr "利用可能なバージョン間での 3 ウェイマージを行う (実験的)"

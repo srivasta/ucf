@@ -150,6 +150,24 @@ examples in /usr/share/doc/ucf/examples):
 .I \-\-purge
 .I foo
 .I /etc/foo.conf
+.PP
+If you want to remove all the conf files for a given package
+.I foo,
+the simplest way is to use
+.B ucfq.
+For example
+.PP
+.B ucfq
+.I \-w
+.I foo |
+.B cut
+.I \-d : \-f 1 |
+.B while read
+.I cfile ;
+.B do
+.B ucfr
+.I \-v $cfile ;
+.B done
 .SH "SEE ALSO"
 ucf(1), ucf.conf(5).
 .SH AUTHOR

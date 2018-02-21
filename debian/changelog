@@ -1,3 +1,24 @@
+ucf (3.0038) unstable; urgency=medium
+
+  * A bug fixing and translation adding release.
+  * Bug fix: "Vcs-Git URL is 404-compliant", thanks to Sven Joachim
+    (Closes: #890647).
+  * Bug fix: "there should be a --purge-all option", thanks to Marc Haber
+    (Closes: #878893). Documented how to loop over ucfq to remove/purge
+    all the conffiles.
+  * Bug fix: "[INTL:ru] Russian debconf templates translation update",
+    thanks to Yuri Kozlov (Closes: #890643).
+  * Bug fix: "[INTL:pt] Updated Portuguese translation - debconf
+    messages", thanks to Américo Monteiro (Closes: #890708).
+  * Bug fix: "[INTL:da] Danish translation of the debconf templates ucf",
+    thanks to Joe Dalton (Closes: #890739).
+  * Bug fix: "[l10n] update Japanese debconf translation", thanks to
+    Kenshi Muto (Closes: #890802).
+  * Bug fix: "[INTL:pt_BR] Brazilian Portuguese debconf templates
+    translation", thanks to Adriano Rafael Gomes (Closes: #891165).
+
+ -- Manoj Srivastava <srivasta@debian.org>  Sun, 25 Feb 2018 16:58:23 -0800
+
 ucf (3.0037) unstable; urgency=medium
 
   * A new bugfixing release.
