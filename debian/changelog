@@ -1,3 +1,15 @@
+ucf (3.0038+nmu1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Obvious lintian fixes:
+    -vcs-obsolete-in-debian-infrastructure
+  * Update Debconf translations:
+    -es from Matias Bellone (Closes: #891524)
+    -fr from jean-pierre giraud (Closes: #891545)
+    -de from Holger Wansing (Closes: #898079)
+
+ -- Helge Kreutzmann <debian@helgefjell.de>  Fri, 14 Dec 2018 09:51:14 +0100
+
 ucf (3.0038) unstable; urgency=medium
 
   * A bug fixing and translation adding release.
