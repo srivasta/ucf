@@ -296,7 +296,12 @@ if set silently retains the installed file.
 is only applicable when the installed destination file does not exist
 (perhaps due to user removal),and forces ucf to recreate the missing
 file (the default behaviour is to honor the users wishes and not
-recreate the locally deleted file).
+recreate the locally deleted file). Additionally, when ucf creates an
+inferior shell, it populates the variables
+.B UCF_CONFFILE_NEW
+and
+.B UCF_CONFFILE_OLD
+which are useful for inspecting the changes.
 .SH FILES
 This script creates the file
 .I new_file.md5sum,
