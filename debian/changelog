@@ -1,3 +1,24 @@
+ucf (3.0039) unstable; urgency=medium
+
+  * NMU ack. Thanks to Helge Kreutzmann
+  * Updated thee VCS-* links in control file to salsa
+  * Updated the standards version to 4.3.0, no changes needed
+  * Bug fix: "ucf shouldn't change the file permissions", thanks to
+    Laurent Bigonville (Closes: #935439).
+  * Updated the debhelper dependency usding the new debhelper-compat
+    dependency convention.
+  * Bug fix: "ucf with -n as first argument results in error", thanks to
+    Ian Kelling (Closes: #892301).
+  * Bug fix: "Please load file names into environment when starting
+    &quot;a new shell to examine the situation&quot; (DPKG_CONFFILE_OLD,
+    DPKG_CONFFILE_NEW)", thanks to Christoph Biedl (Closes: #951006). mI
+    changed the variable names to not stomp over tyhe dpkg namespace; the
+    variables are actuall UCF_*
+  * Bug fix: "[INTL:nl] Dutch translation of debconf messages", thanks to
+    Frans Spiesschaert (Closes: #918255).
+
+ -- Manoj Srivastava <srivasta@debian.org>  Mon, 11 May 2020 20:53:59 -0700
+
 ucf (3.0038+nmu1) unstable; urgency=low
 
   * Non-maintainer upload.
