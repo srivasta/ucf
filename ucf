@@ -254,13 +254,14 @@ replace_conf_file () {
 	    $action cp -pf "${real_file}" "${real_file}.${OLD_SUFFIX}"
 	fi
     fi
-    $action cp -pf "$new_file" "${real_file}"
+    # Do not change the permissions and attributes of the destination
+    $action cp -f "$new_file" "${real_file}"
     replace_md5sum;
 }
 
 # Escape single quotes in the arguments passed in
 quote_single() {
-    echo "$1" | sed -e "s,','\\\\'',g"
+    printf "%s\n" "$1" | sed -e "s,','\\\\'',g"
 }
 
 
@@ -1036,6 +1037,8 @@ else
                 # </dev/tty). The easiest way do this from a shell is
                 # probably with /bin/ps.
                 if ps -o stat= --ppid $$ | grep -q '+'; then
+                    export UCF_CONFFILE_OLD="$dest_file"
+                    export UCF_CONFFILE_NEW="$new_file"
 		    bash >/dev/tty </dev/tty || true
                 elif [ -n "$DISPLAY" ]; then
                     x-terminal-emulator || true
