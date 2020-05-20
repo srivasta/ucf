@@ -159,6 +159,7 @@ Options:
      -d[n], --debug=[n]      Set the Debug level to N. Please note there must
                              be no spaces before the debug level
      -n,     --no-action     Dry run. No action is actually taken.
+     -P foo, --package foo   Don't follow dpkg-divert diversions by package foo.
      -v,     --verbose       Make the script verbose
              --three-way     Register this file in the cache, and turn on the
                              diff3 option allowing the merging of maintainer
@@ -355,6 +356,8 @@ while true ; do
 	-h|--help) usageversion;                        exit 0 ;;
 	-n|--no-action) action='echo'; docmd='NO';      shift  ;;
 	-v|--verbose) VERBOSE=1;                        shift  ;;
+	-P|--package)
+	    opt_package="$2";			       shift 2 ;;
 	-s|--src-dir)
 	    opt_source_dir="$2";                       shift 2 ;;
 	--sum-file)
@@ -430,10 +433,23 @@ else
     fi
 fi
 
-
 safe_dest_file=$(echo "$dest_file" | perl -nle 'print "\Q$_\E\n"')
+# Follow dpkg-divert as though we are installed as part of $opt_package
+divert_line=$(dpkg-divert --list "$safe_dest_file")
+if [ -n "$divert_line" ]; then
+   if [ echo "$divert_line" | grep "^local" ]; then
+       # local diversion; pick something not in the package namespace
+       divert_package="LOCAL"
+   else
+       # extract the name of the diverted package.
+       # The fact that this requires output parsing is bug #485012
+       divert_package=$(dpkg-divert --listpackage "$safe_dest_file")
+   fi
 
-
+   if [ "$divert_package" != "$opt_package" ]; then
+       safe_dest_file=$(dpkg-divert --truename "safe_dest_file")
+   fi
+fi
 
 ######################################################################
 ########                                                     #########
