@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 UCF="ucf --three-way --debconf-ok"
 
@@ -19,7 +19,7 @@ rename_ucf_file() {
         if [ -e "$oldname" ]; then
             mv "$oldname" "$newname"
         fi
-        # ucf doesn't offer a documented way to do this, so we need to 
+        # ucf doesn't offer a documented way to do this, so we need to
         # peddle around with undocumented ucf internals.
         sed -i "s|$oldname|$newname|" /var/lib/ucf/hashfile
         ucfr --purge "$PKGNAME" "$oldname"
@@ -135,4 +135,3 @@ handle_all_ucf_files() {
 }
 
 # vim:sw=4:sts=4:et:
-

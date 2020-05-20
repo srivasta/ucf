@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #                               -*- Mode: Sh -*-
 # updateConfFile.sh ---
 # Author           : Manoj Srivastava ( srivasta@glaurung.green-gryphon.com )
