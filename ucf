@@ -299,11 +299,11 @@ replace_conf_file () {
 		echo >&2 "Not saving ${real_file}, since it was unmodified"
 	    fi
 	else
-	    $action cp -pf "${real_file}" "${real_file}.${OLD_SUFFIX}"
+	    $action cp -pf $selinux "${real_file}" "${real_file}.${OLD_SUFFIX}"
 	fi
     fi
     # Do not change the permissions and attributes of the destination
-    $action cp -f "$new_file" "${real_file}"
+    $action cp -f $selinux "$new_file" "${real_file}"
     replace_md5sum;
 }
 
@@ -325,6 +325,7 @@ quote_single() {
 docmd='YES'
 action='withecho'
 action=
+selinux=''
 DEBUG=0
 VERBOSE=''
 statedir='/var/lib/ucf';
@@ -342,7 +343,7 @@ done
 # Note that we use `"$@"' to let each command-line parameter expand to a
 # separate word. The quotes around `$@' are essential!
 # We need TEMP as the `eval set --' would nuke the return value of getopt.
-TEMP=$(getopt -a -o hs:d::D::nv -n "$progname" \
+TEMP=$(getopt -a -o hs:d::D::nZv -n "$progname" \
       --long help,src-dir:,sum-file:,dest-dir:,debug::,DEBUG::,no-action,purge,verbose,three-way,debconf-ok,debconf-template:,state-dir: \
              -- "$@")
 
@@ -373,6 +374,7 @@ while true ; do
         -p|--purge) PURGE=YES;                         shift   ;;
        --three-way) THREEWAY=YES;                       shift   ;;
        --debconf-ok) DEBCONF_OK=YES;                    shift   ;;
+       -Z) selinux='-Z';                                shift   ;;
 	--)  shift ;                                   break   ;;
 	*) echo >&2 "Internal error!" ; exit 1 ;;
     esac
