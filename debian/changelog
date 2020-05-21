@@ -1,3 +1,15 @@
+ucf (3.0041) unstable; urgency=medium
+
+  * New bug fixing release
+  * Bug fix: "ucf breaks bacula autopkgtest: Job for
+    bacula-director.service failed", thanks to Paul Gevers
+    (Closes: #961144). while ucf should not alter the attributes of the
+    file if the destination exists (the maintainer can do anythjing she
+    wants after ucf is done), when there is no destination copy the
+    permissions from the source.
+
+ -- Manoj Srivastava <srivasta@debian.org>  Wed, 20 May 2020 22:56:42 -0700
+
 ucf (3.0040) unstable; urgency=medium
 
   * This is a feature add release, for the most part
