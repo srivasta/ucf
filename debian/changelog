@@ -1,3 +1,11 @@
+ucf (3.0042) unstable; urgency=medium
+
+  * Thisis a strange behaviour difference between bash and dash
+  * Bug fix: "85: local: root.root: bad variable name&quot; when showing
+    differences", thanks to Christoph Biedl (Closes: #961222).
+
+ -- Manoj Srivastava <srivasta@debian.org>  Fri, 22 May 2020 02:35:12 -0700
+
 ucf (3.0041) unstable; urgency=medium
 
   * New bug fixing release

@@ -82,8 +82,8 @@ run_diff()
     local new_file="$4"
 
     # Note: get_file_metadata not in quotes to ignore "\n" characters
-    local old_file_label=$(get_file_metadata "$old_file")
-    local new_file_label=$(get_file_metadata "$new_file")
+    local old_file_label="$(get_file_metadata "$old_file")"
+    local new_file_label="$(get_file_metadata "$new_file")"
 
     [ -e "$old_file" ] || old_file=/dev/null
     [ -e "$new_file" ] || new_file=/dev/null
