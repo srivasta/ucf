@@ -438,9 +438,8 @@ else
     fi
 fi
 
-safe_dest_file=$(echo "$dest_file" | perl -nle 'print "\Q$_\E\n"')
 # Follow dpkg-divert as though we are installed as part of $opt_package
-divert_line=$(dpkg-divert --list "$safe_dest_file")
+divert_line=$(dpkg-divert --list "$dest_file")
 if [ -n "$divert_line" ]; then
    if [ echo "$divert_line" | grep "^local" ]; then
        # local diversion; pick something not in the package namespace
@@ -448,13 +447,15 @@ if [ -n "$divert_line" ]; then
    else
        # extract the name of the diverted package.
        # The fact that this requires output parsing is bug #485012
-       divert_package=$(dpkg-divert --listpackage "$safe_dest_file")
+       divert_package=$(dpkg-divert --listpackage "$dest_file")
    fi
 
    if [ "$divert_package" != "$opt_package" ]; then
-       safe_dest_file=$(dpkg-divert --truename "safe_dest_file")
+       dest_file=$(dpkg-divert --truename "$dest_file")
    fi
 fi
+safe_dest_file=$(echo "$dest_file" | perl -nle 'print "\Q$_\E\n"')
+
 
 ######################################################################
 ########                                                     #########
