@@ -1,3 +1,12 @@
+ucf (3.0043) unstable; urgency=high
+
+  * The argument to dpkg-divert needs to be the actual file name, not the
+    fully escaped regexp safe one.
+  * Bug fix: "dpkg-divert error when upgrading grub with diverted config",
+    thanks to debian@project-mindfuck.org.uk</a>; (Closes: #962818).
+
+ -- Manoj Srivastava <srivasta@debian.org>  Mon, 15 Jun 2020 22:37:53 -0700
+
 ucf (3.0042) unstable; urgency=medium
 
   * Thisis a strange behaviour difference between bash and dash
